@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 
 const Wrapper = styled.div`
@@ -164,6 +165,16 @@ const array = [
 ];
 
 function Home() {
+  const [customersDate, setCustomersDate] = useState([]);
+
+  useEffect(() => {
+    (async () => {
+      const data = await (await fetch(`/api/customers`)).json();
+      setCustomersDate(data);
+    })();
+  }, []);
+  console.log(customersDate);
+
   return (
     <Wrapper>
       <BorderContent>
@@ -182,8 +193,8 @@ function Home() {
           </div>
         </BoardMenu>
         <Board>
-          {array.map((item) => (
-            <BoardList>
+          {array.map((item, index) => (
+            <BoardList key={index}>
               <BoardName>{item.name}</BoardName>
               <BoardContent>{item.title}</BoardContent>
               <BoardDate>{item.date}</BoardDate>

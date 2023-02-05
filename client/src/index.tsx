@@ -55,20 +55,25 @@ table {
 }
 * {
   box-sizing: border-box;
+  
 }
 body {
   font-weight: 300;
   font-family: 'Source Sans Pro', sans-serif;
   line-height: 1.2;
 }
+a{
+  text-decoration:none;
+  color:black;
+}
 `;
 
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
 root.render(
-  <React.StrictMode>
+  <>
     <GlobalStyle />
     <App />
-  </React.StrictMode>
+  </>
 );
 
 reportWebVitals();

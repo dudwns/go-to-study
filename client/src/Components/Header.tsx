@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 const Nav = styled.div`
@@ -13,6 +14,7 @@ const Nav = styled.div`
 const Title = styled.h1`
   font-size: 20px;
   margin-left: 20px;
+  cursor: pointer;
 `;
 
 const Items = styled.ul`
@@ -21,6 +23,7 @@ const Items = styled.ul`
 
 const Item = styled.li`
   margin: 0 10px;
+  cursor: pointer;
 `;
 
 const UserItems = styled.ul`
@@ -29,6 +32,7 @@ const UserItems = styled.ul`
 
 const UserItem = styled.li`
   margin: 0 10px;
+  cursor: pointer;
 `;
 
 function Header() {
@@ -41,7 +45,9 @@ function Header() {
         <Item>스톱워치</Item>
       </Items>
       <UserItems>
-        <UserItem>회원가입</UserItem>
+        <Link to="/join">
+          <UserItem>회원가입</UserItem>
+        </Link>
         <UserItem>로그인</UserItem>
       </UserItems>
     </Nav>
