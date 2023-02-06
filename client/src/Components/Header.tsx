@@ -40,7 +40,9 @@ function Header() {
     <Nav>
       <Title>타이틀</Title>
       <Items>
-        <Item>게시판</Item>
+        <Link to="/">
+          <Item>게시판</Item>
+        </Link>
         <Item>할 일</Item>
         <Item>스톱워치</Item>
       </Items>
@@ -48,7 +50,9 @@ function Header() {
         <Link to="/join">
           <UserItem>회원가입</UserItem>
         </Link>
-        <UserItem>로그인</UserItem>
+        <Link to="/login">
+          <UserItem>로그인</UserItem>
+        </Link>
       </UserItems>
     </Nav>
   );
