@@ -40,7 +40,7 @@ const JoinBtn = styled.button`
   cursor: pointer;
 `;
 
-function Login() {
+function Join() {
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
@@ -137,4 +137,4 @@ function Login() {
     </Wrraper>
   );
 }
-export default Login;
+export default Join;
