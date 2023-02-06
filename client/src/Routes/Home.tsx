@@ -99,7 +99,7 @@ const Bookmark = styled.div`
   display: flex;
   background-color: #d3d3d3;
   width: 18%;
-  height: 600px;
+  height: 500px;
   justify-content: center;
   margin-top: 45px;
   padding: 10px 5px;
@@ -154,6 +154,12 @@ const array = [
     name: "dudwns1",
     title: "제목",
     date: "3시간  전",
+    star: "",
+  },
+  {
+    name: "dudwns1",
+    title: "제목",
+    date: "4시간 전",
     star: "",
   },
   {

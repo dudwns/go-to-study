@@ -14,6 +14,7 @@ const Nav = styled.div`
 const Title = styled.h1`
   font-size: 20px;
   margin-left: 20px;
+  font-weight: 700;
   cursor: pointer;
 `;
 
@@ -38,7 +39,9 @@ const UserItem = styled.li`
 function Header() {
   return (
     <Nav>
-      <Title>타이틀</Title>
+      <Link to="/">
+        <Title>타이틀</Title>
+      </Link>
       <Items>
         <Link to="/">
           <Item>게시판</Item>
