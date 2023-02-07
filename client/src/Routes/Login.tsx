@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 const Wrraper = styled.div`
@@ -54,11 +54,6 @@ const JoinText = styled.span`
 `;
 
 function Login() {
-  // const [userId, setUserId] = useState("");
-  // const [userPasswd, setUserPasswd] = useState("");
-
-  const navigate = useNavigate();
-
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     login();
@@ -75,33 +70,17 @@ function Login() {
         email: email,
         password: password,
       },
-    }).then((result) => {
-      if (result.status === 200) {
-        window.open("/", "_self");
-      }
-    });
+    })
+      .then((result) => {
+        if (result.status === 200) {
+          window.open("/", "_self");
+        }
+      })
+      .catch((error) => {
+        alert("아이디 혹은 비밀번호가 틀렸습니다.");
+      });
   };
 
-  // const login = async () => {
-  //   return await axios
-  //     .post(
-  //       "/api/login/",
-  //       {
-  //         userId: userId,
-  //         password: userPasswd,
-  //       },
-  //       { withCredentials: true }
-  //     )
-  //     .then((response) => {
-  //       /// token이 필요한 API 요청 시 header Authorization에 token 담아서 보내기
-  //       axios.defaults.headers.common["Authorization"] = `Bearer ${response.data.access_token}`;
-  //       return response.data;
-  //     })
-  //     .catch((e) => {
-  //       console.log(e.response.data);
-  //       return "이메일 혹은 비밀번호를 확인하세요.";
-  //     });
-  // };
   return (
     <Wrraper>
       <Container>

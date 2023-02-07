@@ -66,6 +66,18 @@ function Header() {
     });
   };
 
+  const deleteCustomer = () => {
+    axios({
+      url: "/api/customers/" + userData.id,
+      method: "DELETE",
+      withCredentials: true,
+    }).then((result) => {
+      if (result.status === 200) {
+        window.open("/", "_self");
+      }
+    });
+  };
+
   return (
     <Nav>
       <Link to="/">
@@ -84,6 +96,7 @@ function Header() {
             <UserItem> {userData.username}님이 로그인했습니다.</UserItem>
             <UserItem>
               <LogoutBtn onClick={logout}>로그아웃</LogoutBtn>
+              <button onClick={deleteCustomer}>회원탈퇴</button>
             </UserItem>
           </>
         ) : (

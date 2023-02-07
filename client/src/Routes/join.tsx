@@ -42,8 +42,9 @@ const JoinBtn = styled.button`
 
 function Join() {
   const [id, setId] = useState("");
+  const [userName, setUserName] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
   const [gender, setGender] = useState("");
   const [birthday, setBirthday] = useState("");
   const navigate = useNavigate();
@@ -59,9 +60,9 @@ function Join() {
   const addCustomer = () => {
     const url = "/api/customers";
     const formData = new FormData();
-    formData.append("id", id);
+    formData.append("userName", userName);
+    formData.append("email", email);
     formData.append("password", password);
-    formData.append("name", name);
     formData.append("gender", gender);
     formData.append("birthday", birthday);
     const config = {
@@ -70,8 +71,7 @@ function Join() {
         "content-type": "application/json", //꼭 지정해주어야 함
       },
     };
-    console.log(formData);
-    console.log(id, password, name, gender, birthday);
+    console.log(userName, email, password, gender, birthday);
     return axios.post(url, formData, config); //post형식으로 데이터를 보냄, (주소, 데이터, 설정)
   };
 
@@ -95,25 +95,25 @@ function Join() {
             <input
               type="text"
               placeholder="이름을 입력하세요."
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={userName}
+              onChange={(e) => setUserName(e.target.value)}
             />
           </div>
 
           <div>
-            아이디:{" "}
+            이메일:{" "}
             <input
-              type="text"
-              placeholder="id를 입력하세요."
-              value={id}
-              onChange={(e) => setId(e.target.value)}
+              type="email"
+              placeholder="이메일을 입력하세요."
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
 
           <div>
             비밀번호:{" "}
             <input
-              type="text"
+              type="password"
               placeholder="비밀번호를 입력하세요."
               value={password}
               onChange={(e) => setPassword(e.target.value)}
