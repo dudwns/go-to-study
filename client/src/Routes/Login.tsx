@@ -1,4 +1,4 @@
-import { isDisabled } from "@testing-library/user-event/dist/utils";
+import axios from "axios";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
@@ -54,17 +54,54 @@ const JoinText = styled.span`
 `;
 
 function Login() {
-  const [userId, setUserId] = useState("");
-  const [userPasswd, setUserPasswd] = useState("");
+  // const [userId, setUserId] = useState("");
+  // const [userPasswd, setUserPasswd] = useState("");
 
   const navigate = useNavigate();
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    login();
+  };
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-    navigate("/");
+  const login = () => {
+    axios({
+      url: "http://localhost:5000/login",
+      method: "POST",
+      withCredentials: true,
+      data: {
+        email: email,
+        password: password,
+      },
+    }).then((result) => {
+      if (result.status === 200) {
+        window.open("/", "_self");
+      }
+    });
   };
 
+  // const login = async () => {
+  //   return await axios
+  //     .post(
+  //       "/api/login/",
+  //       {
+  //         userId: userId,
+  //         password: userPasswd,
+  //       },
+  //       { withCredentials: true }
+  //     )
+  //     .then((response) => {
+  //       /// token이 필요한 API 요청 시 header Authorization에 token 담아서 보내기
+  //       axios.defaults.headers.common["Authorization"] = `Bearer ${response.data.access_token}`;
+  //       return response.data;
+  //     })
+  //     .catch((e) => {
+  //       console.log(e.response.data);
+  //       return "이메일 혹은 비밀번호를 확인하세요.";
+  //     });
+  // };
   return (
     <Wrraper>
       <Container>
@@ -74,16 +111,16 @@ function Login() {
             <input
               type="text"
               placeholder="아이디"
-              value={userId}
-              onChange={(e) => setUserId(e.target.value)}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             ></input>
           </div>
           <div>
             <input
               type="password"
               placeholder="비밀번호"
-              value={userPasswd}
-              onChange={(e) => setUserPasswd(e.target.value)}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             ></input>
           </div>
           <LoginBtn>로그인</LoginBtn>

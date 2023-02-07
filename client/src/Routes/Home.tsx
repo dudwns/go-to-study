@@ -1,5 +1,8 @@
+import axios from "axios";
 import { useEffect, useState } from "react";
+import { useRecoilState } from "recoil";
 import styled from "styled-components";
+import { IUser, loginAtom, userAtom } from "../atoms";
 
 const Wrapper = styled.div`
   height: 100vh;
@@ -171,15 +174,46 @@ const array = [
 ];
 
 function Home() {
-  const [customersDate, setCustomersDate] = useState([]);
+  const [isLogin, setIsLogin] = useRecoilState(loginAtom);
+
+  const [user, setUser] = useRecoilState(userAtom);
+
+  const accessToken = () => {
+    axios({
+      url: "http://localhost:5000/accesstoken",
+      method: "GET",
+      withCredentials: true,
+    });
+  };
+
+  const refreshToken = () => {
+    axios({
+      url: "http://localhost:5000/refreshtoken",
+      method: "GET",
+      withCredentials: true,
+    });
+  };
 
   useEffect(() => {
-    (async () => {
-      const data = await (await fetch(`/api/customers`)).json();
-      setCustomersDate(data);
-    })();
+    try {
+      axios({
+        url: "http://localhost:5000/login/success",
+        method: "GET",
+        withCredentials: true,
+      })
+        .then((result) => {
+          if (result.data) {
+            setIsLogin(true);
+            setUser(result.data);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } catch (error) {
+      console.log(error);
+    }
   }, []);
-  console.log(customersDate);
 
   return (
     <Wrapper>
@@ -216,7 +250,11 @@ function Home() {
         </PageNumbers>
       </BorderContent>
       <Bookmark>
-        <BookmarkTitle>즐겨찾기 게시판</BookmarkTitle>
+        <BookmarkTitle>
+          즐겨찾기 게시판
+          <button onClick={accessToken}>get Access Token</button>
+          <button onClick={refreshToken}>get Refresh Token</button>
+        </BookmarkTitle>
       </Bookmark>
     </Wrapper>
   );

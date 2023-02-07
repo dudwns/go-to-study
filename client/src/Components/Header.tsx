@@ -1,5 +1,8 @@
+import axios from "axios";
 import { Link } from "react-router-dom";
+import { useRecoilValue } from "recoil";
 import styled from "styled-components";
+import { loginAtom, userAtom } from "../atoms";
 
 const Nav = styled.div`
   height: 60px;
@@ -27,7 +30,11 @@ const Item = styled.li`
   cursor: pointer;
 `;
 
-const UserItems = styled.ul`
+interface IValue {
+  value: boolean;
+}
+
+const UserItems = styled.ul<IValue>`
   display: flex;
 `;
 
@@ -36,7 +43,29 @@ const UserItem = styled.li`
   cursor: pointer;
 `;
 
+const LogoutBtn = styled.button`
+  cursor: pointer;
+  border: none;
+  padding: 0 10px;
+`;
+
 function Header() {
+  const isLogin = useRecoilValue(loginAtom);
+  const userData = useRecoilValue(userAtom);
+  console.log(userData);
+
+  const logout = () => {
+    axios({
+      url: "http://localhost:5000/logout",
+      method: "POST",
+      withCredentials: true,
+    }).then((result) => {
+      if (result.status === 200) {
+        window.open("/", "_self");
+      }
+    });
+  };
+
   return (
     <Nav>
       <Link to="/">
@@ -49,13 +78,24 @@ function Header() {
         <Item>할 일</Item>
         <Item>스톱워치</Item>
       </Items>
-      <UserItems>
-        <Link to="/join">
-          <UserItem>회원가입</UserItem>
-        </Link>
-        <Link to="/login">
-          <UserItem>로그인</UserItem>
-        </Link>
+      <UserItems value={isLogin}>
+        {isLogin ? (
+          <>
+            <UserItem> {userData.username}님이 로그인했습니다.</UserItem>
+            <UserItem>
+              <LogoutBtn onClick={logout}>로그아웃</LogoutBtn>
+            </UserItem>
+          </>
+        ) : (
+          <>
+            <Link to="/join">
+              <UserItem>회원가입</UserItem>
+            </Link>
+            <Link to="/login">
+              <UserItem>로그인</UserItem>
+            </Link>
+          </>
+        )}
       </UserItems>
     </Nav>
   );

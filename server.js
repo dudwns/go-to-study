@@ -3,13 +3,33 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
 const port = process.env.PORT || 5000;
+const dotenv = require("dotenv");
+const cookieParser = require("cookie-parser");
+const cors = require("cors");
+const { login, accessToken, refreshToken, loginSuccess, logout } = require("./controller");
 
+dotenv.config();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
+app.use(express.json());
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"],
+    credentials: true,
+  })
+);
 
 const data = fs.readFileSync("./database.json"); //datatase.json 파일을 읽어옴
 const conf = JSON.parse(data); //JSON 형식으로 변경
 const mysql = require("mysql"); //mysql 라이브러리를 불러옴
+
+app.post("/login", login);
+app.get("/accesstoken", accessToken);
+app.get("/refreshtoken", refreshToken);
+app.get("/login/success", loginSuccess);
+app.post("/logout", logout);
 
 //연결 설정
 const connection = mysql.createConnection({
