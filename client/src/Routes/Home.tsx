@@ -180,16 +180,7 @@ function Home() {
 
   const onTitleClickHandler = (e: React.MouseEvent<HTMLSpanElement>) => {
     const id = (e.target as HTMLButtonElement).id;
-    axios({
-      url: "http://localhost:5000/api/board/" + id,
-      method: "GET",
-      withCredentials: true,
-    }).then((result) => {
-      if (result.status === 200) {
-        setBoardData(result.data); // 클릭한 게시글의 데이터
-        navigate(`/board/${id}`);
-      }
-    });
+    navigate(`/board/${id}`);
   };
 
   const onWriteHandler = () => {

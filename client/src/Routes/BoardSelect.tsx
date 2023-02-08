@@ -2,7 +2,9 @@ import { useRecoilState } from "recoil";
 import { boardAtom } from "../atoms";
 import styled from "styled-components";
 import Bookmark from "../Components/Bookmark";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
 const Wrapper = styled.div`
   height: 100vh;
@@ -56,7 +58,22 @@ const ListBtn = styled.button`
 function BoardSelect() {
   const [boardData, setBoardData] = useRecoilState(boardAtom);
   console.log(boardData);
-  const content = boardData[0].content;
+  const [content, setContent] = useState("");
+  const { id } = useParams();
+
+  useEffect(() => {
+    axios({
+      url: "http://localhost:5000/api/board/" + id,
+      method: "GET",
+      withCredentials: true,
+    }).then((result) => {
+      if (result.status === 200) {
+        setBoardData(result.data); // 클릭한 게시글의 데이터
+        setContent(boardData[0]?.content);
+      }
+    });
+  }, []);
+
   return (
     <Wrapper>
       <BoardContainer>
@@ -69,18 +86,18 @@ function BoardSelect() {
         <BoardHeader>
           <ul>
             <div>
-              <li>{boardData[0].username}</li>
+              <li>{boardData[0]?.username}</li>
             </div>
             <div>
-              <li>{boardData[0].time}</li>
+              <li>{boardData[0]?.time}</li>
             </div>
             <div>
-              <li>추천: {boardData[0].recommend}</li>
+              <li>추천: {boardData[0]?.recommend}</li>
             </div>
           </ul>
         </BoardHeader>
         <BoardContent>
-          <BoardTitle>{boardData[0].title}</BoardTitle>
+          <BoardTitle>{boardData[0]?.title}</BoardTitle>
           <div dangerouslySetInnerHTML={{ __html: content }} />
         </BoardContent>
       </BoardContainer>
