@@ -20,7 +20,6 @@ const BoardContainer = styled.div`
 const BoardHeader = styled.div`
   border: 1px solid black;
   padding: 10px;
-
   & ul {
     display: flex;
     justify-content: space-between;
@@ -49,7 +48,6 @@ const ListBtn = styled.button`
   border: none;
   padding: 5px 10px;
   width: 60px;
-
   top: 10px;
   right: 20px;
   cursor: pointer;

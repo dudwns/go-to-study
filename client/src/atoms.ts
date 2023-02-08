@@ -35,7 +35,7 @@ export const userAtom = atom<IUser>({
 
 export const boardAtom = atom<IBoard>({
   //atom은 고유한 key와 default 값을 요구
-  key: "isUser",
+  key: "isBoard",
   default: {
     id: undefined,
     username: "",
@@ -45,4 +45,10 @@ export const boardAtom = atom<IBoard>({
     time: "",
     recommend: "",
   },
+});
+
+export const keywordAtom = atom({
+  //atom은 고유한 key와 default 값을 요구
+  key: "isKeyword",
+  default: "",
 });

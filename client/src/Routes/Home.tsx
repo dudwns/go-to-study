@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
-import { boardAtom, IUser, loginAtom, userAtom } from "../atoms";
+import { boardAtom, IUser, keywordAtom, loginAtom, userAtom } from "../atoms";
 import Bookmark from "../Components/Bookmark";
 
 const Wrapper = styled.div`
@@ -74,6 +74,10 @@ const BoardList = styled.div`
   &:first-child {
     border-top: 1px solid gray;
   }
+
+  &:hover {
+    background-color: whitesmoke;
+  }
 `;
 
 const BoardName = styled.div`
@@ -81,6 +85,9 @@ const BoardName = styled.div`
 `;
 const BoardTitle = styled.div`
   width: 500px;
+  & > span {
+    cursor: pointer;
+  }
 `;
 const BoardDate = styled.div`
   width: 70px;
@@ -95,7 +102,6 @@ const PageNumber = styled.li`
   cursor: pointer;
   border-left: 1px solid gray;
   font-size: 14px;
-
   &:first-child {
     border: none;
   }
@@ -106,6 +112,7 @@ function Home() {
   const [user, setUser] = useRecoilState(userAtom);
   const [boards, setBoards] = useState([]);
   const [boardData, setBoardData] = useRecoilState(boardAtom);
+  const [keyword, setKeyword] = useRecoilState(keywordAtom);
 
   const navigate = useNavigate();
   const accessToken = () => {
@@ -167,7 +174,6 @@ function Home() {
 
   const onTitleClickHandler = (e: React.MouseEvent<HTMLSpanElement>) => {
     const id = (e.target as HTMLButtonElement).id;
-
     axios({
       url: "http://localhost:5000/api/board/" + id,
       method: "GET",
@@ -179,6 +185,37 @@ function Home() {
       }
     });
   };
+
+  const onWriteHandler = () => {
+    if (isLogin) {
+      navigate("/board/write");
+    } else {
+      alert("로그인이 필요합니다.");
+    }
+  };
+
+  const searchComponent = (data: any) => {
+    const newData = data.filter((item: any) => {
+      return item.username.indexOf(keyword) > -1 || item.title.indexOf(keyword) > -1;
+    });
+    return newData
+      .slice(0)
+      .reverse()
+      .map((item: any, index: any) => {
+        return (
+          <BoardList key={index}>
+            <BoardName>{item.username}</BoardName>
+            <BoardTitle>
+              <span id={item.id} onClick={onTitleClickHandler}>
+                {item.title}
+              </span>
+            </BoardTitle>
+            <BoardDate>{item.time}</BoardDate>
+          </BoardList>
+        );
+      });
+  };
+
   return (
     <Wrapper>
       <BorderContent>
@@ -189,29 +226,20 @@ function Home() {
           </div>
 
           <SearchForm>
-            <SearchInput type="text" placeholder="검색 할 내용을 입력하세요."></SearchInput>
+            <SearchInput
+              type="text"
+              value={keyword}
+              onChange={(e) => setKeyword(e.target.value)}
+              placeholder="검색 할 내용을 입력하세요."
+            ></SearchInput>
           </SearchForm>
           <div>
-            <Link to="/board/write">
-              <WriteBtn>글 쓰기</WriteBtn>
-            </Link>
+            <WriteBtn onClick={onWriteHandler}>글 쓰기</WriteBtn>
+
             <ListBtn>목록</ListBtn>
           </div>
         </BoardMenu>
-        <Board>
-          {boards
-            .slice(0)
-            .reverse()
-            .map((item: any, index: any) => (
-              <BoardList key={index}>
-                <BoardName>{item.username}</BoardName>
-                <BoardTitle id={item.id} onClick={onTitleClickHandler}>
-                  {item.title}
-                </BoardTitle>
-                <BoardDate>{item.time}</BoardDate>
-              </BoardList>
-            ))}
-        </Board>
+        <Board>{searchComponent(boards)}</Board>
         <PageNumbers>
           <PageNumber>1</PageNumber>
           <PageNumber>2</PageNumber>
