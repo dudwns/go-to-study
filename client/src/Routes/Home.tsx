@@ -162,6 +162,7 @@ function Home() {
         .then((result) => {
           if (result.data) {
             setBoards(result.data);
+            console.log(result.data);
           }
         })
         .catch((error) => {
@@ -215,7 +216,6 @@ function Home() {
         );
       });
   };
-
   return (
     <Wrapper>
       <BorderContent>

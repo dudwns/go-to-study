@@ -33,6 +33,7 @@ const connection = mysql.createConnection({
   password: conf.password,
   port: conf.port,
   database: conf.database,
+  dateStrings: conf.dateStrings,
 });
 connection.connect(); //실제로 연결 실행
 
@@ -241,8 +242,6 @@ app.post("/api/board", (req, res) => {
   let params = [userName, title, content, image];
   connection.query(sql, params, (err, rows, fields) => {
     res.send(rows);
-    //console.log(`에러 내용 :${err}`); //오류가 나면 디버깅하는 방법
-    // console.log(rows);
   });
 });
 
@@ -251,7 +250,6 @@ app.get("/api/board/:id", (req, res) => {
   let params = [req.params.id];
   connection.query(sql, params, (err, rows, fileds) => {
     res.send(rows);
-    console.log(rows);
   });
 });
 
