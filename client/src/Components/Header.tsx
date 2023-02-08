@@ -52,7 +52,6 @@ const LogoutBtn = styled.button`
 function Header() {
   const isLogin = useRecoilValue(loginAtom);
   const userData = useRecoilValue(userAtom);
-  console.log(userData);
 
   const logout = () => {
     axios({

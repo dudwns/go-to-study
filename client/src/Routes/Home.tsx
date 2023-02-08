@@ -1,8 +1,10 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
-import { IUser, loginAtom, userAtom } from "../atoms";
+import { boardAtom, IUser, loginAtom, userAtom } from "../atoms";
+import Bookmark from "../Components/Bookmark";
 
 const Wrapper = styled.div`
   height: 100vh;
@@ -45,6 +47,7 @@ const SearchInput = styled.input`
 const WriteBtn = styled.button`
   border: none;
   padding: 5px 10px;
+  cursor: pointer;
 `;
 
 const ListBtn = styled.button`
@@ -76,7 +79,7 @@ const BoardList = styled.div`
 const BoardName = styled.div`
   width: 100px;
 `;
-const BoardContent = styled.div`
+const BoardTitle = styled.div`
   width: 500px;
 `;
 const BoardDate = styled.div`
@@ -98,86 +101,13 @@ const PageNumber = styled.li`
   }
 `;
 
-const Bookmark = styled.div`
-  display: flex;
-  background-color: #d3d3d3;
-  width: 18%;
-  height: 500px;
-  justify-content: center;
-  margin-top: 45px;
-  padding: 10px 5px;
-`;
-
-const BookmarkTitle = styled.span``;
-
-const array = [
-  {
-    name: "dudwns1",
-    title: "방금 독서실에서 공부하는데 옆자리 사람이 음료수 주셨는데 이거 시그널인가요?",
-    date: "1분 전",
-    star: "",
-  },
-  {
-    name: "wndus814",
-    title: "현직 개발자 취업 꿀팁 알려드립니다...",
-    date: "5분 전",
-    star: "",
-  },
-  {
-    name: "qkrtnqls1213",
-    title: "단어 앱 만들었는데 한번씩 사용해보시고 피드백 부탁드립니다!!",
-    date: "10분 전",
-    star: "",
-  },
-  {
-    name: "dudwns1",
-    title: "자바스크립트 깊게 공부 해보고 싶은데 참고 할만한 전공책 추천좀 해주시면 감사합니다 :)",
-    date: "20분 전",
-    star: "",
-  },
-  {
-    name: "dudwns1",
-    title: "이번에 프로젝트 하나 제작하려고 하는데 함께 하실 백엔드 한 분 구합니다!",
-    date: "1시간 전",
-    star: "",
-  },
-  {
-    name: "dudwns1",
-    title: "제목",
-    date: "1시간 전",
-    star: "",
-  },
-  {
-    name: "dudwns1",
-    title: "제목",
-    date: "2시간 전",
-    star: "",
-  },
-  {
-    name: "dudwns1",
-    title: "제목",
-    date: "3시간  전",
-    star: "",
-  },
-  {
-    name: "dudwns1",
-    title: "제목",
-    date: "4시간 전",
-    star: "",
-  },
-  {
-    name: "dudwns1",
-    title: "제목",
-    date: "4시간 전",
-    star: "",
-  },
-];
-
 function Home() {
   const [isLogin, setIsLogin] = useRecoilState(loginAtom);
-
   const [user, setUser] = useRecoilState(userAtom);
+  const [boards, setBoards] = useState([]);
+  const [boardData, setBoardData] = useRecoilState(boardAtom);
 
+  const navigate = useNavigate();
   const accessToken = () => {
     axios({
       url: "http://localhost:5000/accesstoken",
@@ -215,6 +145,40 @@ function Home() {
     }
   }, []);
 
+  useEffect(() => {
+    try {
+      axios({
+        url: "http://localhost:5000/api/board",
+        method: "GET",
+        withCredentials: true,
+      })
+        .then((result) => {
+          if (result.data) {
+            setBoards(result.data);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
+
+  const onTitleClickHandler = (e: React.MouseEvent<HTMLSpanElement>) => {
+    const id = (e.target as HTMLButtonElement).id;
+
+    axios({
+      url: "http://localhost:5000/api/board/" + id,
+      method: "GET",
+      withCredentials: true,
+    }).then((result) => {
+      if (result.status === 200) {
+        setBoardData(result.data); // 클릭한 게시글의 데이터
+        navigate(`/board/${id}`);
+      }
+    });
+  };
   return (
     <Wrapper>
       <BorderContent>
@@ -228,18 +192,25 @@ function Home() {
             <SearchInput type="text" placeholder="검색 할 내용을 입력하세요."></SearchInput>
           </SearchForm>
           <div>
-            <WriteBtn>글 쓰기</WriteBtn>
+            <Link to="/board/write">
+              <WriteBtn>글 쓰기</WriteBtn>
+            </Link>
             <ListBtn>목록</ListBtn>
           </div>
         </BoardMenu>
         <Board>
-          {array.map((item, index) => (
-            <BoardList key={index}>
-              <BoardName>{item.name}</BoardName>
-              <BoardContent>{item.title}</BoardContent>
-              <BoardDate>{item.date}</BoardDate>
-            </BoardList>
-          ))}
+          {boards
+            .slice(0)
+            .reverse()
+            .map((item: any, index: any) => (
+              <BoardList key={index}>
+                <BoardName>{item.username}</BoardName>
+                <BoardTitle id={item.id} onClick={onTitleClickHandler}>
+                  {item.title}
+                </BoardTitle>
+                <BoardDate>{item.time}</BoardDate>
+              </BoardList>
+            ))}
         </Board>
         <PageNumbers>
           <PageNumber>1</PageNumber>
@@ -248,14 +219,10 @@ function Home() {
           <PageNumber>4</PageNumber>
           <PageNumber>5</PageNumber>
         </PageNumbers>
+        <button onClick={accessToken}>get Access Token</button>
+        <button onClick={refreshToken}>get Refresh Token</button>
       </BorderContent>
-      <Bookmark>
-        <BookmarkTitle>
-          즐겨찾기 게시판
-          <button onClick={accessToken}>get Access Token</button>
-          <button onClick={refreshToken}>get Refresh Token</button>
-        </BookmarkTitle>
-      </Bookmark>
+      <Bookmark />
     </Wrapper>
   );
 }

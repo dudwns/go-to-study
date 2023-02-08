@@ -196,7 +196,7 @@ app.get("/api/customers", (req, res) => {
 //   console.log(rows);
 // });
 
-//post 메소드로 "/api/customers"에 접속을 한 경우 (회원가입)
+//post 메소드로 "/api/customers"에 접속을 한 경우 (insert)
 app.post("/api/customers", (req, res) => {
   let sql = "INSERT INTO CUSTOMER VALUES (null, ?, ?, ?, ?, ?, now(), 0)";
 
@@ -219,6 +219,39 @@ app.delete("/api/customers/:id", (req, res) => {
   let params = [req.params.id];
   connection.query(sql, params, (err, rows, fields) => {
     res.send(rows);
+  });
+});
+
+// -------------------------------------------------------------------------------------------- 게시판
+app.get("/api/board", (req, res) => {
+  let sql = "SELECT * FROM BOARD ";
+  connection.query(sql, (err, rows, fileds) => {
+    res.send(rows);
+    console.log(rows);
+  });
+});
+
+//post 메소드로 "/api/board"에 접속을 한 경우 (insert)
+app.post("/api/board", (req, res) => {
+  let sql = "INSERT INTO BOARD VALUES (null, ?, ?, ?, ?, now(), 0)";
+  let userName = req.body.userName;
+  let title = req.body.title;
+  let content = req.body.content;
+  let image = req.body.image;
+  let params = [userName, title, content, image];
+  connection.query(sql, params, (err, rows, fields) => {
+    res.send(rows);
+    //console.log(`에러 내용 :${err}`); //오류가 나면 디버깅하는 방법
+    // console.log(rows);
+  });
+});
+
+app.get("/api/board/:id", (req, res) => {
+  let sql = "SELECT * FROM BOARD WHERE id = ?";
+  let params = [req.params.id];
+  connection.query(sql, params, (err, rows, fileds) => {
+    res.send(rows);
+    console.log(rows);
   });
 });
 
