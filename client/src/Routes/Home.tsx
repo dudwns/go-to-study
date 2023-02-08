@@ -88,9 +88,14 @@ const BoardTitle = styled.div`
   & > span {
     cursor: pointer;
   }
+
+  & > span:hover {
+    text-decoration: underline;
+  }
 `;
 const BoardDate = styled.div`
   width: 70px;
+  text-align: center;
 `;
 
 const PageNumbers = styled.ul`
@@ -247,8 +252,12 @@ function Home() {
           <PageNumber>4</PageNumber>
           <PageNumber>5</PageNumber>
         </PageNumbers>
-        <button onClick={accessToken}>get Access Token</button>
-        <button onClick={refreshToken}>get Refresh Token</button>
+        <button style={{ display: "none" }} onClick={accessToken}>
+          get Access Token
+        </button>
+        <button style={{ display: "none" }} onClick={refreshToken}>
+          get Refresh Token
+        </button>
       </BorderContent>
       <Bookmark />
     </Wrapper>
