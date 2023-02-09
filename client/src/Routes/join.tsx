@@ -43,6 +43,7 @@ const JoinBtn = styled.button`
 function Join() {
   const [id, setId] = useState("");
   const [userName, setUserName] = useState("");
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [gender, setGender] = useState("");
@@ -61,6 +62,7 @@ function Join() {
     const url = "/api/customers";
     const formData = new FormData();
     formData.append("userName", userName);
+    formData.append("name", name);
     formData.append("email", email);
     formData.append("password", password);
     formData.append("gender", gender);
@@ -71,7 +73,7 @@ function Join() {
         "content-type": "application/json", //꼭 지정해주어야 함
       },
     };
-    console.log(userName, email, password, gender, birthday);
+    console.log(userName, name, email, password, gender, birthday);
     return axios.post(url, formData, config); //post형식으로 데이터를 보냄, (주소, 데이터, 설정)
   };
 
@@ -91,12 +93,22 @@ function Join() {
         <Title>회원가입</Title>
         <JoinForm onSubmit={handleFormSubmit}>
           <div>
-            이름:{" "}
+            닉네임:{" "}
+            <input
+              type="text"
+              placeholder="닉네임을 입력하세요."
+              value={userName}
+              onChange={(e) => setUserName(e.target.value)}
+            />
+          </div>
+
+          <div>
+            성함:{" "}
             <input
               type="text"
               placeholder="이름을 입력하세요."
-              value={userName}
-              onChange={(e) => setUserName(e.target.value)}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
             />
           </div>
 

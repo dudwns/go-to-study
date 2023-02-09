@@ -17,7 +17,7 @@ app.use(express.json());
 app.use(
   cors({
     origin: "http://localhost:3000",
-    methods: ["GET", "POST"],
+    methods: ["GET", "POST", "DELETE"],
     credentials: true,
   })
 );
@@ -39,7 +39,7 @@ connection.connect(); //실제로 연결 실행
 
 // -------------------------------------------------------------------------------------------- JWT 인증
 app.post("/login", (req, res, next) => {
-  connection.query("SELECT * FROM CUSTOMER WHERE isDeleted = 0", (err, rows, fields) => {
+  connection.query("SELECT * FROM CUSTOMER", (err, rows, fields) => {
     const userDatabase = rows;
 
     const { email, password } = req.body;
@@ -100,7 +100,7 @@ app.post("/login", (req, res, next) => {
 });
 
 app.get("/accesstoken", (req, res) => {
-  connection.query("SELECT * FROM CUSTOMER WHERE isDeleted = 0", (err, rows, fields) => {
+  connection.query("SELECT * FROM CUSTOMER", (err, rows, fields) => {
     const userDatabase = rows;
     try {
       const token = req.cookies.accessToken; //accessToken값 가져와서 저장
@@ -120,7 +120,7 @@ app.get("/accesstoken", (req, res) => {
 
 app.get("/refreshtoken", (req, res) => {
   // 용도: access token을 갱신.
-  connection.query("SELECT * FROM CUSTOMER WHERE isDeleted = 0", (err, rows, fields) => {
+  connection.query("SELECT * FROM CUSTOMER", (err, rows, fields) => {
     const userDatabase = rows;
     try {
       const token = req.cookies.refreshToken;
@@ -157,7 +157,7 @@ app.get("/refreshtoken", (req, res) => {
 });
 
 app.get("/login/success", (req, res) => {
-  connection.query("SELECT * FROM CUSTOMER WHERE isDeleted = 0", (err, rows, fields) => {
+  connection.query("SELECT * FROM CUSTOMER", (err, rows, fields) => {
     const userDatabase = rows;
     try {
       const token = req.cookies.accessToken;
@@ -187,7 +187,7 @@ app.post("/logout", (req, res) => {
 
 // api/customers에 접속하면 쿼리문을 보냄, 그 결과를 사용자에게 보냄
 app.get("/api/customers", (req, res) => {
-  connection.query("SELECT * FROM CUSTOMER WHERE isDeleted = 0", (err, rows, fields) => {
+  connection.query("SELECT * FROM CUSTOMER", (err, rows, fields) => {
     res.send(rows);
   });
 }); //api 명세
@@ -199,14 +199,15 @@ app.get("/api/customers", (req, res) => {
 
 //post 메소드로 "/api/customers"에 접속을 한 경우 (insert)
 app.post("/api/customers", (req, res) => {
-  let sql = "INSERT INTO CUSTOMER VALUES (null, ?, ?, ?, ?, ?, now(), 0)";
+  let sql = "INSERT INTO CUSTOMER VALUES (null,?, ?, ?, ?, ?, ?, now())";
 
   let userName = req.body.userName;
+  let name = req.body.name;
   let email = req.body.email;
   let password = req.body.password;
   let gender = req.body.gender;
   let birthday = req.body.birthday;
-  let params = [userName, email, password, gender, birthday];
+  let params = [userName, name, email, password, gender, birthday];
   connection.query(sql, params, (err, rows, fields) => {
     res.send(rows);
     //console.log(`에러 내용 :${err}`); //오류가 나면 디버깅하는 방법
@@ -216,7 +217,7 @@ app.post("/api/customers", (req, res) => {
 
 //delete 메소드로 "/api/customers"에 접속을 한 경우 (회원탈퇴)
 app.delete("/api/customers/:id", (req, res) => {
-  let sql = "UPDATE CUSTOMER SET isDeleted = 1 WHERE id = ?";
+  let sql = "DELETE FROM CUSTOMER WHERE id = ?";
   let params = [req.params.id];
   connection.query(sql, params, (err, rows, fields) => {
     res.send(rows);
@@ -225,16 +226,15 @@ app.delete("/api/customers/:id", (req, res) => {
 
 // -------------------------------------------------------------------------------------------- 게시판
 app.get("/api/board", (req, res) => {
-  let sql = "SELECT * FROM BOARD ";
+  let sql = "SELECT * FROM BOARD WHERE isDeleted = 0";
   connection.query(sql, (err, rows, fileds) => {
     res.send(rows);
-    console.log(rows);
   });
 });
 
 //post 메소드로 "/api/board"에 접속을 한 경우 (insert)
 app.post("/api/board", (req, res) => {
-  let sql = "INSERT INTO BOARD VALUES (null, ?, ?, ?, ?, now(), 0)";
+  let sql = "INSERT INTO BOARD VALUES (null, ?, ?, ?, ?, now(), 0, 0)";
   let userName = req.body.userName;
   let title = req.body.title;
   let content = req.body.content;
@@ -250,6 +250,17 @@ app.get("/api/board/:id", (req, res) => {
   let params = [req.params.id];
   connection.query(sql, params, (err, rows, fileds) => {
     res.send(rows);
+  });
+});
+
+//delete 메소드로 "/api/board/:id"에 접속을 한 경우 (게시글 삭제)
+app.delete("/api/board/:id", (req, res) => {
+  let sql = "UPDATE BOARD SET isDeleted = 1 WHERE id = ?";
+  let params = [req.params.id];
+  connection.query(sql, params, (err, rows, fields) => {
+    res.send(rows);
+    console.log(err);
+    console.log(rows);
   });
 });
 

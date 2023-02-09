@@ -116,7 +116,6 @@ function Home() {
   const [isLogin, setIsLogin] = useRecoilState(loginAtom);
   const [user, setUser] = useRecoilState(userAtom);
   const [boards, setBoards] = useState([]);
-  const [boardData, setBoardData] = useRecoilState(boardAtom);
   const [keyword, setKeyword] = useRecoilState(keywordAtom);
 
   const navigate = useNavigate();

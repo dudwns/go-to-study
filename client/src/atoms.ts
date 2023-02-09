@@ -2,8 +2,10 @@ import { atom } from "recoil";
 
 export interface IUser {
   id: number | undefined;
+  name: string;
   username: string;
   email: string;
+  [prop: string]: any; // 배열 속성 사용가능
 }
 
 export interface IBoard {
@@ -14,7 +16,7 @@ export interface IBoard {
   image: string;
   time: string;
   recommend: string;
-  [prop: string]: any;
+  [prop: string]: any; // 배열 속성 사용가능
 }
 
 export const loginAtom = atom({
@@ -28,6 +30,7 @@ export const userAtom = atom<IUser>({
   key: "isUser",
   default: {
     id: undefined,
+    name: "",
     username: "",
     email: "",
   },

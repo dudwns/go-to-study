@@ -92,7 +92,7 @@ function Header() {
       <UserItems value={isLogin}>
         {isLogin ? (
           <>
-            <UserItem> {userData.username}님이 로그인했습니다.</UserItem>
+            <UserItem> {userData.name}님이 로그인했습니다.</UserItem>
             <UserItem>
               <LogoutBtn onClick={logout}>로그아웃</LogoutBtn>
               <button onClick={deleteCustomer}>회원탈퇴</button>

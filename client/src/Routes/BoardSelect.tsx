@@ -1,5 +1,5 @@
 import { useRecoilState } from "recoil";
-import { boardAtom } from "../atoms";
+import { boardAtom, userAtom } from "../atoms";
 import styled from "styled-components";
 import Bookmark from "../Components/Bookmark";
 import { Link, useParams } from "react-router-dom";
@@ -46,19 +46,30 @@ const List = styled.div`
   justify-content: flex-end;
   margin-bottom: 15px;
 `;
-const ListBtn = styled.button`
+
+const RemoveBtn = styled.button`
   border: none;
   padding: 5px 10px;
   width: 60px;
   top: 10px;
   right: 20px;
   cursor: pointer;
+  background-color: #dd0f0f;
+`;
+
+const ListBtn = styled.button`
+  border: none;
+  padding: 5px 10px;
+  width: 60px;
+  top: 10px;
+  right: 20px;
+  margin-left: 15px;
+  cursor: pointer;
 `;
 
 function BoardSelect() {
   const [boardData, setBoardData] = useRecoilState(boardAtom);
-  console.log(boardData);
-  const [content, setContent] = useState("");
+  const [userData, setUserData] = useRecoilState(userAtom);
   const { id } = useParams();
 
   useEffect(() => {
@@ -69,15 +80,35 @@ function BoardSelect() {
     }).then((result) => {
       if (result.status === 200) {
         setBoardData(result.data); // 클릭한 게시글의 데이터
-        setContent(boardData[0]?.content);
       }
     });
   }, []);
+
+  const DeletedBoard = () => {
+    if (userData.username === boardData[0]?.username) {
+      const result = window.confirm("정말로 삭제하시겠습니까?");
+      if (result) {
+        axios({
+          url: "http://localhost:5000/api/board/" + id,
+          method: "DELETE",
+          withCredentials: true,
+        }).then((result) => {
+          if (result.status === 200) {
+            alert("삭제가 완료되었습니다.");
+            window.open("/", "_self");
+          }
+        });
+      }
+    } else {
+      alert("다른 사람의 게시글은 삭제할 수 없습니다.");
+    }
+  };
 
   return (
     <Wrapper>
       <BoardContainer>
         <List>
+          <RemoveBtn onClick={DeletedBoard}>삭제</RemoveBtn>
           <Link to="/">
             <ListBtn>목록</ListBtn>
           </Link>
@@ -98,7 +129,7 @@ function BoardSelect() {
         </BoardHeader>
         <BoardContent>
           <BoardTitle>{boardData[0]?.title}</BoardTitle>
-          <div dangerouslySetInnerHTML={{ __html: content }} />
+          <div dangerouslySetInnerHTML={{ __html: boardData[0]?.content }} />
         </BoardContent>
       </BoardContainer>
       <Bookmark />
