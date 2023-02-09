@@ -99,6 +99,7 @@ app.post("/login", (req, res, next) => {
   });
 });
 
+// access Token 발급
 app.get("/accesstoken", (req, res) => {
   connection.query("SELECT * FROM CUSTOMER", (err, rows, fields) => {
     const userDatabase = rows;
@@ -118,6 +119,7 @@ app.get("/accesstoken", (req, res) => {
   });
 });
 
+// access Token 갱신
 app.get("/refreshtoken", (req, res) => {
   // 용도: access token을 갱신.
   connection.query("SELECT * FROM CUSTOMER", (err, rows, fields) => {
@@ -156,6 +158,7 @@ app.get("/refreshtoken", (req, res) => {
   });
 });
 
+// 로그인이 성공했을 때
 app.get("/login/success", (req, res) => {
   connection.query("SELECT * FROM CUSTOMER", (err, rows, fields) => {
     const userDatabase = rows;
@@ -174,6 +177,7 @@ app.get("/login/success", (req, res) => {
   });
 });
 
+// 로그아웃
 app.post("/logout", (req, res) => {
   try {
     res.cookie("accessToken", ""); //accessToken을 비움
@@ -192,12 +196,7 @@ app.get("/api/customers", (req, res) => {
   });
 }); //api 명세
 
-// connection.query("SELECT * FROM CUSTOMER WHERE isDeleted = 0", (error, rows) => {
-//   console.log(`에러 내용: ${error}`);
-//   console.log(rows);
-// });
-
-//post 메소드로 "/api/customers"에 접속을 한 경우 (insert)
+// post 메소드로 "/api/customers"에 접속을 한 경우 (회원 가입)
 app.post("/api/customers", (req, res) => {
   let sql = "INSERT INTO CUSTOMER VALUES (null,?, ?, ?, ?, ?, ?, now())";
 
@@ -215,7 +214,7 @@ app.post("/api/customers", (req, res) => {
   });
 });
 
-//delete 메소드로 "/api/customers"에 접속을 한 경우 (회원탈퇴)
+// delete 메소드로 "/api/customers"에 접속을 한 경우 (회원 탈퇴)
 app.delete("/api/customers/:id", (req, res) => {
   let sql = "DELETE FROM CUSTOMER WHERE id = ?";
   let params = [req.params.id];
@@ -225,6 +224,8 @@ app.delete("/api/customers/:id", (req, res) => {
 });
 
 // -------------------------------------------------------------------------------------------- 게시판
+
+// 모든 게시글 가져오기 (select)
 app.get("/api/board", (req, res) => {
   let sql = "SELECT * FROM BOARD WHERE isDeleted = 0";
   connection.query(sql, (err, rows, fileds) => {
@@ -232,7 +233,7 @@ app.get("/api/board", (req, res) => {
   });
 });
 
-//post 메소드로 "/api/board"에 접속을 한 경우 (insert)
+// post 메소드로 "/api/board"에 접속을 한 경우 (게시글 등록)
 app.post("/api/board", (req, res) => {
   let sql = "INSERT INTO BOARD VALUES (null, ?, ?, ?, ?, now(), 0, 0)";
   let userName = req.body.userName;
@@ -245,6 +246,7 @@ app.post("/api/board", (req, res) => {
   });
 });
 
+// 특정 게시글 가져오기
 app.get("/api/board/:id", (req, res) => {
   let sql = "SELECT * FROM BOARD WHERE id = ?";
   let params = [req.params.id];
@@ -264,6 +266,18 @@ app.delete("/api/board/:id", (req, res) => {
   });
 });
 
+// 회원 탈퇴를 하면 해당 유저의 게시글도 삭제
+app.delete("/api/customers/board/:username", (req, res) => {
+  let sql = "UPDATE BOARD SET isDeleted = 1 WHERE username = ?";
+  let params = [req.params.username];
+  connection.query(sql, params, (err, rows, fields) => {
+    res.send(rows);
+    console.log(err);
+    console.log(rows);
+  });
+});
+
+// 게시글 수정
 app.put("/board/update/:id", (req, res) => {
   let sql = "UPDATE BOARD SET title = ?, content = ? WHERE id = ?";
   let params = [req.body.title, req.body.content, req.params.id];

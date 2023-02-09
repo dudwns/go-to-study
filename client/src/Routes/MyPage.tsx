@@ -55,6 +55,7 @@ const RemoveBtn = styled.button`
 function MyPage() {
   const { id } = useParams();
   const [userData, setUserData] = useRecoilState(userAtom);
+  console.log(userData?.username);
   const deleteCustomer = () => {
     if (userData?.username === "") {
       alert("로그인이 필요한 서비스입니다.");
@@ -68,7 +69,13 @@ function MyPage() {
         }).then((result) => {
           if (result.status === 200) {
             alert("삭제가 완료되었습니다.");
-            window.open("/", "_self");
+            axios({
+              url: "http://localhost:5000/api/customers/board/" + userData?.username,
+              method: "DELETE",
+              withCredentials: true,
+            }).then((result) => {
+              window.open("/", "_self");
+            });
           }
         });
       }
