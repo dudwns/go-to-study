@@ -7,6 +7,7 @@ import BoardWrite from "./Routes/BoardWrite";
 import Home from "./Routes/Home";
 import Join from "./Routes/Join";
 import Login from "./Routes/Login";
+import MyPage from "./Routes/MyPage";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path={"/"} element={<Home />} />
           <Route path={"/join"} element={<Join />} />
           <Route path={"/login"} element={<Login />} />
+          <Route path={"/mypage/:id"} element={<MyPage />} />
           <Route path={"/board/write"} element={<BoardWrite />} />
           <Route path={"/board/:id"} element={<BoardSelect />} />
           <Route path={"/board/:id/update"} element={<BoardUpdate />} />

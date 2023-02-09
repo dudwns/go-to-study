@@ -30,8 +30,6 @@ const UpdateBtn = styled.button`
   border: none;
   padding: 5px 10px;
   width: 60px;
-  top: 10px;
-  right: 20px;
   cursor: pointer;
 `;
 
@@ -75,7 +73,7 @@ function BoardUpdate() {
     };
   };
 
-  const UpdateHandler = (e: React.FormEvent<HTMLFormElement>) => {
+  const updateHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log(title, content);
     axios({
@@ -180,7 +178,7 @@ function BoardUpdate() {
 
   return (
     <Wrapper>
-      <form onSubmit={UpdateHandler}>
+      <form onSubmit={updateHandler}>
         <Header>
           <TitleInput
             type="text"

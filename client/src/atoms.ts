@@ -5,6 +5,8 @@ export interface IUser {
   name: string;
   username: string;
   email: string;
+  birthday: string;
+  createdDate: string;
   [prop: string]: any; // 배열 속성 사용가능
 }
 
@@ -33,6 +35,8 @@ export const userAtom = atom<IUser>({
     name: "",
     username: "",
     email: "",
+    birthday: "",
+    createdDate: "",
   },
 });
 

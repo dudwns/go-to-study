@@ -51,8 +51,6 @@ const UpdateBtn = styled.button`
   border: none;
   padding: 5px 10px;
   width: 60px;
-  top: 10px;
-  right: 20px;
   cursor: pointer;
   background-color: #376ed4;
 `;
@@ -61,8 +59,6 @@ const RemoveBtn = styled.button`
   border: none;
   padding: 5px 10px;
   width: 60px;
-  top: 10px;
-  right: 20px;
   margin-left: 15px;
   cursor: pointer;
   background-color: #dd0f0f;
@@ -72,8 +68,6 @@ const ListBtn = styled.button`
   border: none;
   padding: 5px 10px;
   width: 60px;
-  top: 10px;
-  right: 20px;
   margin-left: 15px;
   cursor: pointer;
 `;
@@ -96,7 +90,7 @@ function BoardSelect() {
     });
   }, []);
 
-  const UpdateBoard = () => {
+  const updateBoard = () => {
     if (userData.username === boardData[0]?.username) {
       navigate(`/board/${id}/update`);
     } else if (userData.username === "") {
@@ -106,7 +100,7 @@ function BoardSelect() {
     }
   };
 
-  const DeletedBoard = () => {
+  const deletedBoard = () => {
     if (userData.username === boardData[0]?.username) {
       const result = window.confirm("정말로 삭제하시겠습니까?");
       if (result) {
@@ -132,8 +126,8 @@ function BoardSelect() {
     <Wrapper>
       <BoardContainer>
         <List>
-          <UpdateBtn onClick={UpdateBoard}>수정</UpdateBtn>
-          <RemoveBtn onClick={DeletedBoard}>삭제</RemoveBtn>
+          <UpdateBtn onClick={updateBoard}>수정</UpdateBtn>
+          <RemoveBtn onClick={deletedBoard}>삭제</RemoveBtn>
           <Link to="/">
             <ListBtn>목록</ListBtn>
           </Link>

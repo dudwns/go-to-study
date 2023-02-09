@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import styled from "styled-components";
 import { loginAtom, userAtom } from "../atoms";
@@ -43,16 +43,24 @@ const UserItem = styled.li`
   cursor: pointer;
 `;
 
+const MyBtn = styled.button`
+  cursor: pointer;
+  border: none;
+`;
+
 const LogoutBtn = styled.button`
   cursor: pointer;
   border: none;
   padding: 0 10px;
+  margin-left: 15px;
 `;
 
 function Header() {
   const isLogin = useRecoilValue(loginAtom);
   const userData = useRecoilValue(userAtom);
-
+  const id = userData.id;
+  console.log(userData.id);
+  const navigate = useNavigate();
   const logout = () => {
     axios({
       url: "http://localhost:5000/logout",
@@ -65,16 +73,8 @@ function Header() {
     });
   };
 
-  const deleteCustomer = () => {
-    axios({
-      url: "/api/customers/" + userData.id,
-      method: "DELETE",
-      withCredentials: true,
-    }).then((result) => {
-      if (result.status === 200) {
-        window.open("/", "_self");
-      }
-    });
+  const myPage = () => {
+    navigate(`/mypage/` + id);
   };
 
   return (
@@ -94,8 +94,8 @@ function Header() {
           <>
             <UserItem> {userData.name}님이 로그인했습니다.</UserItem>
             <UserItem>
+              <MyBtn onClick={myPage}>마이 페이지</MyBtn>
               <LogoutBtn onClick={logout}>로그아웃</LogoutBtn>
-              <button onClick={deleteCustomer}>회원탈퇴</button>
             </UserItem>
           </>
         ) : (
