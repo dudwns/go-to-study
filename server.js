@@ -17,7 +17,7 @@ app.use(express.json());
 app.use(
   cors({
     origin: "http://localhost:3000",
-    methods: ["GET", "POST", "DELETE"],
+    methods: ["GET", "POST", "DELETE", "PUT"],
     credentials: true,
   })
 );
@@ -257,6 +257,16 @@ app.get("/api/board/:id", (req, res) => {
 app.delete("/api/board/:id", (req, res) => {
   let sql = "UPDATE BOARD SET isDeleted = 1 WHERE id = ?";
   let params = [req.params.id];
+  connection.query(sql, params, (err, rows, fields) => {
+    res.send(rows);
+    console.log(err);
+    console.log(rows);
+  });
+});
+
+app.put("/board/update/:id", (req, res) => {
+  let sql = "UPDATE BOARD SET title = ?, content = ? WHERE id = ?";
+  let params = [req.body.title, req.body.content, req.params.id];
   connection.query(sql, params, (err, rows, fields) => {
     res.send(rows);
     console.log(err);

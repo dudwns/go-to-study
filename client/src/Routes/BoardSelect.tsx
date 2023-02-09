@@ -2,7 +2,7 @@ import { useRecoilState } from "recoil";
 import { boardAtom, userAtom } from "../atoms";
 import styled from "styled-components";
 import Bookmark from "../Components/Bookmark";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
@@ -47,12 +47,23 @@ const List = styled.div`
   margin-bottom: 15px;
 `;
 
+const UpdateBtn = styled.button`
+  border: none;
+  padding: 5px 10px;
+  width: 60px;
+  top: 10px;
+  right: 20px;
+  cursor: pointer;
+  background-color: #376ed4;
+`;
+
 const RemoveBtn = styled.button`
   border: none;
   padding: 5px 10px;
   width: 60px;
   top: 10px;
   right: 20px;
+  margin-left: 15px;
   cursor: pointer;
   background-color: #dd0f0f;
 `;
@@ -71,6 +82,7 @@ function BoardSelect() {
   const [boardData, setBoardData] = useRecoilState(boardAtom);
   const [userData, setUserData] = useRecoilState(userAtom);
   const { id } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios({
@@ -83,6 +95,16 @@ function BoardSelect() {
       }
     });
   }, []);
+
+  const UpdateBoard = () => {
+    if (userData.username === boardData[0]?.username) {
+      navigate(`/board/${id}/update`);
+    } else if (userData.username === "") {
+      alert("로그인이 필요한 서비스입니다.");
+    } else {
+      alert("다른 사람의 게시글은 수정할 수 없습니다.");
+    }
+  };
 
   const DeletedBoard = () => {
     if (userData.username === boardData[0]?.username) {
@@ -99,6 +121,8 @@ function BoardSelect() {
           }
         });
       }
+    } else if (userData.username === "") {
+      alert("로그인이 필요한 서비스입니다.");
     } else {
       alert("다른 사람의 게시글은 삭제할 수 없습니다.");
     }
@@ -108,6 +132,7 @@ function BoardSelect() {
     <Wrapper>
       <BoardContainer>
         <List>
+          <UpdateBtn onClick={UpdateBoard}>수정</UpdateBtn>
           <RemoveBtn onClick={DeletedBoard}>삭제</RemoveBtn>
           <Link to="/">
             <ListBtn>목록</ListBtn>
