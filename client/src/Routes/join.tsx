@@ -29,7 +29,11 @@ const Title = styled.h2`
 
 const JoinForm = styled.form`
   & > div {
-    margin-bottom: 50px;
+    margin-bottom: 35px;
+  }
+
+  & > div > input {
+    padding: 5px;
   }
 `;
 
@@ -103,7 +107,7 @@ function Join() {
           </div>
 
           <div>
-            성함:{" "}
+            이름:{" "}
             <input
               type="text"
               placeholder="이름을 입력하세요."
