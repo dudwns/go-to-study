@@ -61,6 +61,9 @@ const ListBtn = styled.button`
 const BoardContent = styled.div`
   width: 100%;
   margin-bottom: 10px;
+  & > div:first-child {
+    border-top: 2px solid black;
+  }
 `;
 
 const BoardHeader = styled.div`
@@ -232,7 +235,7 @@ function Board() {
   useEffect(() => {
     try {
       axios({
-        url: "http://localhost:5000/api/board/select/" + page,
+        url: "http://localhost:5000/api/board/page/" + page,
         method: "POST",
         withCredentials: true,
         data: {

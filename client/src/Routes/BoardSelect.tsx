@@ -128,9 +128,7 @@ function BoardSelect() {
         <List>
           <UpdateBtn onClick={updateBoard}>수정</UpdateBtn>
           <RemoveBtn onClick={deletedBoard}>삭제</RemoveBtn>
-          <Link to="/">
-            <ListBtn>목록</ListBtn>
-          </Link>
+          <ListBtn onClick={() => navigate(-1)}>목록</ListBtn>
         </List>
 
         <BoardHeader>

@@ -45,7 +45,7 @@ app.post("/login", (req, res, next) => {
     const { email, password } = req.body;
 
     const userInfo = userDatabase.filter((item) => {
-      return item.email === email;
+      return (item.email === email) & (item.password === password);
     })[0];
 
     if (!userInfo) {
@@ -234,7 +234,7 @@ app.get("/api/board", (req, res) => {
 });
 
 // 게시글을 10개씩 잘라서 가져오기
-app.post("/api/board/select/:page", (req, res) => {
+app.post("/api/board/page/:page", (req, res) => {
   let page = req.params.page;
   let boardLen = req.body.boardLen;
   let firstValue = boardLen - page * 10 < 0 ? 0 : boardLen - page * 10;
