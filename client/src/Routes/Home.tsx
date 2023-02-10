@@ -13,105 +13,6 @@ const Wrapper = styled.div`
   padding-top: 70px;
 `;
 
-const BorderContent = styled.div`
-  width: 80%;
-  display: flex;
-  flex-direction: column;
-  padding: 0 20px;
-`;
-
-const BoardMenu = styled.div`
-  display: flex;
-  width: 100%;
-  justify-content: space-between;
-  height: 35px;
-  align-items: center;
-`;
-
-const RecentBtn = styled.button`
-  border: none;
-  margin-right: 15px;
-  padding: 5px 10px;
-`;
-
-const RecommendBtn = styled.button`
-  border: none;
-  padding: 5px 10px;
-`;
-
-const SearchForm = styled.form``;
-const SearchInput = styled.input`
-  width: 400px;
-`;
-
-const WriteBtn = styled.button`
-  border: none;
-  padding: 5px 10px;
-  cursor: pointer;
-`;
-
-const ListBtn = styled.button`
-  width: 60px;
-  border: none;
-  margin-left: 15px;
-  padding: 5px 10px;
-`;
-
-const Board = styled.div`
-  width: 100%;
-  margin: 10px 0px;
-`;
-
-const BoardList = styled.div`
-  width: 100%;
-  height: 50px;
-  border-bottom: 1px solid gray;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 20px;
-  font-size: 13px;
-  &:first-child {
-    border-top: 1px solid gray;
-  }
-
-  &:hover {
-    background-color: whitesmoke;
-  }
-`;
-
-const BoardName = styled.div`
-  width: 100px;
-`;
-const BoardTitle = styled.div`
-  width: 500px;
-  & > span {
-    cursor: pointer;
-  }
-
-  & > span:hover {
-    text-decoration: underline;
-  }
-`;
-const BoardDate = styled.div`
-  width: 70px;
-  text-align: center;
-`;
-
-const PageNumbers = styled.ul`
-  display: flex;
-  justify-content: center;
-`;
-const PageNumber = styled.li`
-  padding: 0 6px;
-  cursor: pointer;
-  border-left: 1px solid gray;
-  font-size: 14px;
-  &:first-child {
-    border: none;
-  }
-`;
-
 function Home() {
   const [isLogin, setIsLogin] = useRecoilState(loginAtom);
   const [user, setUser] = useRecoilState(userAtom);
@@ -177,11 +78,6 @@ function Home() {
     }
   }, []);
 
-  const onTitleClickHandler = (e: React.MouseEvent<HTMLSpanElement>) => {
-    const id = (e.target as HTMLButtonElement).id;
-    navigate(`/board/${id}`);
-  };
-
   const onWriteHandler = () => {
     if (isLogin) {
       navigate("/board/write");
@@ -190,67 +86,6 @@ function Home() {
     }
   };
 
-  const searchComponent = (data: any) => {
-    const newData = data.filter((item: any) => {
-      return item.username.indexOf(keyword) > -1 || item.title.indexOf(keyword) > -1;
-    });
-    return newData
-      .slice(0)
-      .reverse()
-      .map((item: any, index: any) => {
-        return (
-          <BoardList key={index}>
-            <BoardName>{item.username}</BoardName>
-            <BoardTitle>
-              <span id={item.id} onClick={onTitleClickHandler}>
-                {item.title}
-              </span>
-            </BoardTitle>
-            <BoardDate>{item.time}</BoardDate>
-          </BoardList>
-        );
-      });
-  };
-  return (
-    <Wrapper>
-      <BorderContent>
-        <BoardMenu>
-          <div>
-            <RecentBtn>최근 순</RecentBtn>
-            <RecommendBtn>추천 순</RecommendBtn>
-          </div>
-
-          <SearchForm>
-            <SearchInput
-              type="text"
-              value={keyword}
-              onChange={(e) => setKeyword(e.target.value)}
-              placeholder="검색 할 내용을 입력하세요."
-            ></SearchInput>
-          </SearchForm>
-          <div>
-            <WriteBtn onClick={onWriteHandler}>글 쓰기</WriteBtn>
-
-            <ListBtn>목록</ListBtn>
-          </div>
-        </BoardMenu>
-        <Board>{searchComponent(boards)}</Board>
-        <PageNumbers>
-          <PageNumber>1</PageNumber>
-          <PageNumber>2</PageNumber>
-          <PageNumber>3</PageNumber>
-          <PageNumber>4</PageNumber>
-          <PageNumber>5</PageNumber>
-        </PageNumbers>
-        <button style={{ display: "none" }} onClick={accessToken}>
-          get Access Token
-        </button>
-        <button style={{ display: "none" }} onClick={refreshToken}>
-          get Refresh Token
-        </button>
-      </BorderContent>
-      <Bookmark />
-    </Wrapper>
-  );
+  return <Wrapper>메인화면</Wrapper>;
 }
 export default Home;

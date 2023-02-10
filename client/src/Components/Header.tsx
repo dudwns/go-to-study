@@ -59,7 +59,6 @@ function Header() {
   const isLogin = useRecoilValue(loginAtom);
   const userData = useRecoilValue(userAtom);
   const id = userData.id;
-  console.log(userData.id);
   const navigate = useNavigate();
   const logout = () => {
     axios({
@@ -83,7 +82,7 @@ function Header() {
         <Title>타이틀</Title>
       </Link>
       <Items>
-        <Link to="/">
+        <Link to="/board/1">
           <Item>게시판</Item>
         </Link>
         <Item>할 일</Item>

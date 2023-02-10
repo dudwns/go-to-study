@@ -233,6 +233,19 @@ app.get("/api/board", (req, res) => {
   });
 });
 
+// 게시글을 10개씩 잘라서 가져오기
+app.post("/api/board/select/:page", (req, res) => {
+  let page = req.params.page;
+  let boardLen = req.body.boardLen;
+  let firstValue = boardLen - page * 10 < 0 ? 0 : boardLen - page * 10;
+  let secondValue = boardLen - page * 10 < 0 ? boardLen - (page - 1) * 10 : 10;
+
+  let sql = `SELECT * FROM BOARD WHERE isDeleted = 0 LIMIT ${firstValue}, ${secondValue}`;
+  connection.query(sql, (err, rows, fileds) => {
+    res.send(rows);
+  });
+});
+
 // post 메소드로 "/api/board"에 접속을 한 경우 (게시글 등록)
 app.post("/api/board", (req, res) => {
   let sql = "INSERT INTO BOARD VALUES (null, ?, ?, ?, ?, now(), 0, 0)";
