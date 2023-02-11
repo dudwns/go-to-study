@@ -12,6 +12,7 @@ const Nav = styled.div`
   justify-content: space-between;
   align-items: center;
   background-color: #d3d3d3;
+  z-index: 10;
 `;
 
 const Title = styled.h1`

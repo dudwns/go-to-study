@@ -2,40 +2,268 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { boardAtom, IUser, keywordAtom, loginAtom, userAtom } from "../atoms";
 import Bookmark from "../Components/Bookmark";
+import { motion, AnimatePresence } from "framer-motion";
 
-const Wrapper = styled.div`
+const Wrapper = styled(motion.div)`
   height: 100vh;
   width: 100%;
   display: flex;
-  padding-top: 70px;
+  padding-top: 60px;
+  position: relative;
+  background-color: rgba(255, 255, 255, 1);
+
+  &::after {
+    width: 100%;
+    height: 100%;
+    content: "";
+    background-image: //linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)),
+      url(${process.env.PUBLIC_URL + "/images/background.jpg"});
+    background-size: cover;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    opacity: 0.5;
+  }
 `;
+
+const SideBar = styled(motion.div)<ISide>`
+  width: 250px;
+  position: relative;
+  display: flex;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  position: absolute;
+  top: 60px;
+  left: ${(props) => (props.open ? 0 : "-250px")};
+  height: 800px;
+  transition: all 1s;
+
+  flex-direction: column;
+  & > div:nth-child(1) {
+    border-bottom: 1px solid gray;
+    height: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  & > div:nth-child(2) {
+    border-bottom: 1px solid gray;
+    height: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  & > div:nth-child(3) {
+    border-bottom: 1px solid gray;
+    height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-left: 4px solid gray;
+    border-left-color: ${(props) => props.count === 0 && "yellow"};
+  }
+  & > div:nth-child(4) {
+    border-bottom: 1px solid gray;
+    height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-left: 4px solid gray;
+    border-left-color: ${(props) => props.count === 1 && "yellow"};
+  }
+  & > div:nth-child(5) {
+    border-bottom: 1px solid gray;
+    height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-left: 4px solid gray;
+    border-left-color: ${(props) => props.count === 2 && "yellow"};
+  }
+`;
+
+const SideBarBtn = styled.button`
+  background-color: rgba(0, 0, 0, 0.7);
+  border: none;
+  border-left: 1px solid gray;
+  position: absolute;
+  top: 0;
+  width: 45px;
+  height: 45px;
+  right: -45px;
+  cursor: pointer;
+  & > svg {
+    width: 12px;
+    fill: white;
+  }
+`;
+
+const HomeBtn = styled.button`
+  border: none;
+  width: 200px;
+  padding: 10px;
+  border-radius: 20px;
+  cursor: pointer;
+`;
+
+const Container = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-left: 250px;
+`;
+
+const Content = styled.div`
+  height: 700px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const Text1 = styled(motion.div)`
+  font-size: 70px;
+`;
+const Text2 = styled(motion.div)`
+  font-size: 50px;
+  margin-bottom: 100px;
+`;
+
+const CircleContent = styled(motion.div)`
+  display: flex;
+  width: 100%;
+  height: 500px;
+  justify-content: space-around;
+  opacity: 0;
+`;
+
+const Circle1 = styled(motion.div)`
+  width: 300px;
+  height: 300px;
+  padding: 40px;
+  background-color: skyblue;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 150px;
+  border: 1px solid black;
+`;
+const Circle2 = styled(motion.div)`
+  width: 300px;
+  height: 300px;
+  padding: 40px;
+  background-color: skyblue;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 150px;
+  border: 1px solid black;
+`;
+
+const Circle3 = styled(motion.div)`
+  width: 300px;
+  height: 300px;
+  padding: 40px;
+  background-color: skyblue;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 150px;
+  border: 1px solid black;
+`;
+
+const opacityAnimation = keyframes`
+from{
+opacity:0;
+}
+to{
+  opacity:1;
+}
+`;
+
+const Character = styled(motion.img)`
+  width: 200px;
+  position: absolute;
+  top: 100px;
+  right: 100px;
+  animation: ${opacityAnimation} 2s;
+`;
+
+const wrapVariants = {
+  active: {
+    backgroundColor: "rgba(255, 255, 255, 0)",
+    transition: { duration: 1 },
+  },
+};
+
+const sideBarVariants = {
+  normla: {
+    left: "-250px",
+  },
+  active: {
+    left: 0,
+    transition: { duration: 1, type: "tween" },
+  },
+};
+
+const textVariants = {
+  normal: { scale: 0 },
+  active: {
+    scale: 1,
+    transition: { duration: 1, type: "spring" },
+  },
+};
+
+const circleContentVariants = {
+  normal: {},
+  active: { transition: { duration: 1 }, opacity: 1 },
+};
+
+const circleVariants = {
+  normal: {
+    x: 0,
+    y: 0,
+  },
+  active: {
+    y: [0, 100, 0],
+
+    transition: {
+      repeat: Infinity,
+      duration: 3,
+      type: "spring",
+    },
+  },
+};
+
+const characterVariants = {
+  normal: { rotate: -15 },
+  active: {
+    transition: { repeat: Infinity, duration: 1, type: "tween" },
+    rotate: [-15, 15, -15],
+  },
+};
+
+interface ISide {
+  count: number;
+  open: boolean;
+}
 
 function Home() {
   const [isLogin, setIsLogin] = useRecoilState(loginAtom);
   const [user, setUser] = useRecoilState(userAtom);
-  const [boards, setBoards] = useState([]);
-  const [keyword, setKeyword] = useRecoilState(keywordAtom);
-
+  const [count, setCount] = useState(0);
+  const [sideOpen, setSideOpen] = useState(true);
   const navigate = useNavigate();
-  const accessToken = () => {
-    axios({
-      url: "http://localhost:5000/accesstoken",
-      method: "GET",
-      withCredentials: true,
-    });
-  };
-
-  const refreshToken = () => {
-    axios({
-      url: "http://localhost:5000/refreshtoken",
-      method: "GET",
-      withCredentials: true,
-    });
-  };
-
+  console.log(sideOpen);
   useEffect(() => {
     try {
       axios({
@@ -57,35 +285,57 @@ function Home() {
     }
   }, []);
 
-  useEffect(() => {
-    try {
-      axios({
-        url: "http://localhost:5000/api/board",
-        method: "GET",
-        withCredentials: true,
-      })
-        .then((result) => {
-          if (result.data) {
-            setBoards(result.data);
-            console.log(result.data);
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    } catch (error) {
-      console.log(error);
-    }
-  }, []);
+  return (
+    <Wrapper variants={wrapVariants} animate="active">
+      <SideBar open={sideOpen} count={count}>
+        <div>고투스</div>
+        <div>
+          <HomeBtn onClick={() => navigate("/board/1")}>홈페이지 바로가기</HomeBtn>
+        </div>
+        <div onClick={() => setCount(0)}>홈페이지 소개</div>
+        <div onClick={() => setCount(1)}>두번째 컨텐츠</div>
+        <div onClick={() => setCount(2)}>세번째 컨텐츠</div>
+        <SideBarBtn onClick={() => setSideOpen((current) => !current)}>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512">
+            <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z" />
+          </svg>
+        </SideBarBtn>
+      </SideBar>
 
-  const onWriteHandler = () => {
-    if (isLogin) {
-      navigate("/board/write");
-    } else {
-      alert("로그인이 필요한 서비스입니다.");
-    }
-  };
+      <Container>
+        <Content>
+          <Text1 variants={textVariants} initial="normal" animate="active">
+            Go to Study!
+          </Text1>
+          <Text2 variants={textVariants} initial="normal" animate="active">
+            고투스에 오신것을 환영합니다!
+          </Text2>
+          <CircleContent variants={circleContentVariants} initial="normal" animate="active">
+            <Circle1 variants={circleVariants} initial="normal" animate="active">
+              혼자 공부하면 외롭고 지치지 않으신가요?
+              <br />
+              <br /> 고투스 커뮤니티를 이용하여 정보를 공유하고 사람들과 함께 공부해보세요!
+            </Circle1>
 
-  return <Wrapper>메인화면</Wrapper>;
+            <Circle2 variants={circleVariants} initial="normal" animate="active">
+              계획을 세우고 일정을 정리하고 싶은데 메모할 곳이 없으신가요?
+              <br />
+              <br /> 고투스에서 일정을 세워보고 정리해보세요!
+            </Circle2>
+            <Circle3 variants={circleVariants} initial="normal" animate="active">
+              매일 집중이 안되고 시간만 흘러가서 공부의 효율이 떨어지시나요?
+              <br />
+              <br /> 매일 공부 시간을 기록하고 목표 시간을 달성해보세요!
+            </Circle3>
+          </CircleContent>
+        </Content>
+        <Character
+          variants={characterVariants}
+          animate="active"
+          src="/images/character.png"
+        ></Character>
+      </Container>
+    </Wrapper>
+  );
 }
 export default Home;
