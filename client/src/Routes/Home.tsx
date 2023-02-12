@@ -38,9 +38,10 @@ const SideBar = styled(motion.div)<ISide>`
   color: white;
   position: absolute;
   top: 60px;
-  left: ${(props) => (props.open ? 0 : "-250px")};
   height: 800px;
-  transition: all 1s;
+  /* left: ${(props) => (props.open ? "-250px" : 0)}; */
+  /* transition: all 1s; */
+  left: -250px;
 
   flex-direction: column;
   & > div:nth-child(1) {
@@ -206,13 +207,27 @@ const wrapVariants = {
 };
 
 const sideBarVariants = {
-  normla: {
+  normal: {
     left: "-250px",
   },
-  active: {
+  open: {
     left: 0,
     transition: { duration: 1, type: "tween" },
   },
+  close: {
+    left: "-250px",
+    transition: { duration: 1, type: "tween" },
+  },
+
+  // normal: ({ sideOpen }: ISideOpen) => ({
+  //   left: sideOpen ? 0 : "-250px",
+  // }),
+  // active: ({ sideOpen }: ISideOpen) => ({
+  //   left: "-150px",
+  // }),
+  // exit: ({ sideOpen }: ISideOpen) => ({
+  //   left: sideOpen ? "-250px" : 0,
+  // }),
 };
 
 const textVariants = {
@@ -257,6 +272,10 @@ interface ISide {
   open: boolean;
 }
 
+interface ISideOpen {
+  sideOpen: boolean;
+}
+
 function Home() {
   const [isLogin, setIsLogin] = useRecoilState(loginAtom);
   const [user, setUser] = useRecoilState(userAtom);
@@ -287,7 +306,13 @@ function Home() {
 
   return (
     <Wrapper variants={wrapVariants} animate="active">
-      <SideBar open={sideOpen} count={count}>
+      <SideBar
+        variants={sideBarVariants}
+        initial="normal"
+        animate={sideOpen ? "open" : "close"}
+        open={sideOpen}
+        count={count}
+      >
         <div>고투스</div>
         <div>
           <HomeBtn onClick={() => navigate("/board/1")}>홈페이지 바로가기</HomeBtn>
