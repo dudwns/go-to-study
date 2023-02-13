@@ -4,7 +4,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import styled, { keyframes } from "styled-components";
 import { boardAtom, IUser, keywordAtom, loginAtom, userAtom } from "../atoms";
-import Bookmark from "../Components/Bookmark";
 import { motion, AnimatePresence } from "framer-motion";
 
 const Wrapper = styled(motion.div)`
@@ -39,8 +38,6 @@ const SideBar = styled(motion.div)<ISide>`
   position: absolute;
   top: 60px;
   height: 800px;
-  /* left: ${(props) => (props.open ? "-250px" : 0)}; */
-  /* transition: all 1s; */
   left: -250px;
 
   flex-direction: column;
@@ -120,8 +117,7 @@ const Container = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  margin-left: 250px;
+  margin-top: 30px;
 `;
 
 const Content = styled.div`
@@ -141,7 +137,7 @@ const Text2 = styled(motion.div)`
 
 const CircleContent = styled(motion.div)`
   display: flex;
-  width: 100%;
+  width: 1400px;
   height: 500px;
   justify-content: space-around;
   opacity: 0;
@@ -151,35 +147,53 @@ const Circle1 = styled(motion.div)`
   width: 300px;
   height: 300px;
   padding: 40px;
-  background-color: skyblue;
+  background-color: whitesmoke;
   display: flex;
   justify-content: center;
   align-items: center;
   border-radius: 150px;
-  border: 1px solid black;
+  border: none;
+  background-color: whitesmoke;
+
+  & > img {
+    position: absolute;
+    width: 300px;
+  }
 `;
 const Circle2 = styled(motion.div)`
   width: 300px;
   height: 300px;
   padding: 40px;
-  background-color: skyblue;
+  background-color: whitesmoke;
   display: flex;
   justify-content: center;
   align-items: center;
   border-radius: 150px;
-  border: 1px solid black;
+  border: none;
+  background-color: whitesmoke;
+
+  & > img {
+    position: absolute;
+    width: 300px;
+  }
 `;
 
 const Circle3 = styled(motion.div)`
   width: 300px;
   height: 300px;
   padding: 40px;
-  background-color: skyblue;
+  background-color: whitesmoke;
   display: flex;
   justify-content: center;
   align-items: center;
   border-radius: 150px;
-  border: 1px solid black;
+  border: none;
+  background-color: whitesmoke;
+
+  & > img {
+    position: absolute;
+    width: 300px;
+  }
 `;
 
 const opacityAnimation = keyframes`
@@ -212,22 +226,12 @@ const sideBarVariants = {
   },
   open: {
     left: 0,
-    transition: { duration: 1, type: "tween" },
+    transition: { duration: 0.5, type: "tween" },
   },
   close: {
     left: "-250px",
-    transition: { duration: 1, type: "tween" },
+    transition: { duration: 0.5, type: "tween" },
   },
-
-  // normal: ({ sideOpen }: ISideOpen) => ({
-  //   left: sideOpen ? 0 : "-250px",
-  // }),
-  // active: ({ sideOpen }: ISideOpen) => ({
-  //   left: "-150px",
-  // }),
-  // exit: ({ sideOpen }: ISideOpen) => ({
-  //   left: sideOpen ? "-250px" : 0,
-  // }),
 };
 
 const textVariants = {
@@ -249,7 +253,7 @@ const circleVariants = {
     y: 0,
   },
   active: {
-    y: [0, 100, 0],
+    y: [0, 50, 0],
 
     transition: {
       repeat: Infinity,
@@ -270,10 +274,6 @@ const characterVariants = {
 interface ISide {
   count: number;
   open: boolean;
-}
-
-interface ISideOpen {
-  sideOpen: boolean;
 }
 
 function Home() {
@@ -321,9 +321,15 @@ function Home() {
         <div onClick={() => setCount(1)}>두번째 컨텐츠</div>
         <div onClick={() => setCount(2)}>세번째 컨텐츠</div>
         <SideBarBtn onClick={() => setSideOpen((current) => !current)}>
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512">
-            <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z" />
-          </svg>
+          {sideOpen ? (
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512">
+              <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z" />
+            </svg>
+          ) : (
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+              <path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z" />
+            </svg>
+          )}
         </SideBarBtn>
       </SideBar>
 
@@ -337,17 +343,20 @@ function Home() {
           </Text2>
           <CircleContent variants={circleContentVariants} initial="normal" animate="active">
             <Circle1 variants={circleVariants} initial="normal" animate="active">
+              <img src="/images/circle.png" alt="" />
               혼자 공부하면 외롭고 지치지 않으신가요?
               <br />
               <br /> 고투스 커뮤니티를 이용하여 정보를 공유하고 사람들과 함께 공부해보세요!
             </Circle1>
 
             <Circle2 variants={circleVariants} initial="normal" animate="active">
+              <img src="/images/circle.png" alt="" />
               계획을 세우고 일정을 정리하고 싶은데 메모할 곳이 없으신가요?
               <br />
               <br /> 고투스에서 일정을 세워보고 정리해보세요!
             </Circle2>
             <Circle3 variants={circleVariants} initial="normal" animate="active">
+              <img src="/images/circle.png" alt="" />
               매일 집중이 안되고 시간만 흘러가서 공부의 효율이 떨어지시나요?
               <br />
               <br /> 매일 공부 시간을 기록하고 목표 시간을 달성해보세요!
