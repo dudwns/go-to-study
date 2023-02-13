@@ -7,7 +7,7 @@ import { boardAtom, IUser, keywordAtom, loginAtom, userAtom } from "../atoms";
 import { motion, AnimatePresence } from "framer-motion";
 
 const Wrapper = styled(motion.div)`
-  height: 100vh;
+  height: 200vh;
   width: 100%;
   display: flex;
   padding-top: 60px;

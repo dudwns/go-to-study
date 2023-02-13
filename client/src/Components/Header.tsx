@@ -3,23 +3,28 @@ import { Link, useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import styled from "styled-components";
 import { loginAtom, userAtom } from "../atoms";
+import { motion, AnimatePresence, useScroll, useAnimation } from "framer-motion";
+import { useEffect } from "react";
 
-const Nav = styled.div`
+const Nav = styled(motion.div)`
   height: 60px;
   width: 100%;
   position: fixed;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: whitesmoke;
+  background-color: rgba(0, 0, 0, 0.7);
   z-index: 10;
+  color: whitesmoke;
+  border-bottom: 1px solid gray;
 `;
 
 const Title = styled.h1`
   font-size: 20px;
   margin-left: 20px;
-  font-weight: 700;
+  font-weight: 600;
   cursor: pointer;
+  color: whitesmoke;
 `;
 
 const Items = styled.ul`
@@ -29,6 +34,8 @@ const Items = styled.ul`
 const Item = styled.li`
   margin: 0 10px;
   cursor: pointer;
+  font-weight: 600;
+  color: whitesmoke;
 `;
 
 interface IValue {
@@ -42,6 +49,8 @@ const UserItems = styled.ul<IValue>`
 const UserItem = styled.li`
   margin: 0 10px;
   cursor: pointer;
+  font-weight: 600;
+  color: whitesmoke;
 `;
 
 const MyBtn = styled.button`
@@ -56,11 +65,27 @@ const LogoutBtn = styled.button`
   margin-left: 15px;
 `;
 
+const navVariants = {
+  top: {
+    // backgroundColor: "rgba(0, 0, 0, 0)",
+    // backgroundImage: "linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1))",
+    top: 0,
+    transition: { type: "tween" },
+  },
+  scroll: {
+    // backgroundColor: "rgba(0 ,0 ,0, 1)",
+    top: "-60px",
+    transition: { type: "tween" },
+  },
+};
+
 function Header() {
   const isLogin = useRecoilValue(loginAtom);
   const userData = useRecoilValue(userAtom);
   const id = userData.id;
   const navigate = useNavigate();
+  const navAnimation = useAnimation();
+  const { scrollY } = useScroll(); //scrollY는 픽셀 단위
   const logout = () => {
     axios({
       url: "http://localhost:5000/logout",
@@ -76,9 +101,22 @@ function Header() {
   const myPage = () => {
     navigate(`/mypage/` + id);
   };
+  scrollY.onChange(() => {
+    console.log(scrollY.get());
+  });
 
+  useEffect(() => {
+    scrollY.onChange(() => {
+      //get을 하는 이유는 MotionValue는 값이 바뀌어도 자동으로 업데이트가 되지 않기 때문
+      if (scrollY.get() > 80) {
+        navAnimation.start("scroll"); //변수를 지정(variants)하는 방법
+      } else {
+        navAnimation.start("top");
+      }
+    });
+  }, [scrollY, navAnimation]);
   return (
-    <Nav>
+    <Nav variants={navVariants} initial="top" animate={navAnimation}>
       <Link to="/">
         <Title>타이틀</Title>
       </Link>
