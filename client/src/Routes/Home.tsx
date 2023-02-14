@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import styled, { keyframes } from "styled-components";
@@ -30,11 +30,10 @@ const Wrapper = styled(motion.div)`
 
 const SideBar = styled(motion.div)<ISide>`
   width: 250px;
-  position: relative;
+  position: fixed;
   display: flex;
   background-color: rgba(0, 0, 0, 0.7);
   color: white;
-  position: absolute;
   top: 60px;
   height: 800px;
   left: -250px;
@@ -335,8 +334,10 @@ function Home() {
   const [user, setUser] = useRecoilState(userAtom);
   const [count, setCount] = useState(0);
   const [sideOpen, setSideOpen] = useState(true);
+  const container2 = useRef<HTMLDivElement>(null);
+  const container3 = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
-  console.log(sideOpen);
+
   useEffect(() => {
     try {
       axios({
@@ -358,6 +359,13 @@ function Home() {
     }
   }, []);
 
+  useEffect(() => {
+    let con2 = container2.current?.offsetTop;
+    let con3 = container3.current?.offsetTop;
+    console.log(con2, con3);
+    window.scrollTo({ top: container2.current?.offsetTop, behavior: "smooth" });
+  }, []);
+
   return (
     <Wrapper variants={wrapVariants} animate="active">
       <SideBar
@@ -371,9 +379,30 @@ function Home() {
         <div>
           <HomeBtn onClick={() => navigate("/board/1")}>홈페이지 바로가기</HomeBtn>
         </div>
-        <div onClick={() => setCount(0)}>홈페이지 소개</div>
-        <div onClick={() => setCount(1)}>두번째 컨텐츠</div>
-        <div onClick={() => setCount(2)}>세번째 컨텐츠</div>
+        <div
+          onClick={() => {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+            setCount(0);
+          }}
+        >
+          홈페이지 소개
+        </div>
+        <div
+          onClick={() => {
+            window.scrollTo({ top: container2.current?.offsetTop, behavior: "smooth" });
+            setCount(1);
+          }}
+        >
+          두번째 컨텐츠
+        </div>
+        <div
+          onClick={() => {
+            window.scrollTo({ top: container3.current?.offsetTop, behavior: "smooth" });
+            setCount(2);
+          }}
+        >
+          세번째 컨텐츠
+        </div>
         <SideBarBtn onClick={() => setSideOpen((current) => !current)}>
           {sideOpen ? (
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512">
@@ -434,8 +463,8 @@ function Home() {
           <span>scroll</span>
         </ScrollBtn>
       </Container>
-      <Container2>Content2</Container2>
-      <Container3>Content3</Container3>
+      <Container2 ref={container2}>Content2</Container2>
+      <Container3 ref={container3}>Content3</Container3>
     </Wrapper>
   );
 }
