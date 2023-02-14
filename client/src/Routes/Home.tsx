@@ -7,12 +7,12 @@ import { boardAtom, IUser, keywordAtom, loginAtom, userAtom } from "../atoms";
 import { motion, AnimatePresence } from "framer-motion";
 
 const Wrapper = styled(motion.div)`
-  height: 200vh;
+  height: 100%;
   width: 100%;
   display: flex;
+  flex-direction: column;
   position: relative;
   background-color: rgba(255, 255, 255, 1);
-
   &::after {
     width: 100%;
     height: 100%;
@@ -39,7 +39,6 @@ const SideBar = styled(motion.div)<ISide>`
   height: 800px;
   left: -250px;
   z-index: 3;
-
   flex-direction: column;
   & > div:nth-child(1) {
     border-bottom: 1px solid gray;
@@ -49,7 +48,6 @@ const SideBar = styled(motion.div)<ISide>`
     justify-content: center;
     align-items: center;
   }
-
   & > div:nth-child(2) {
     border-bottom: 1px solid gray;
     height: 100px;
@@ -131,6 +129,26 @@ const HomeBtn = styled.button`
 
 const Container = styled.div`
   width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding-top: 90px;
+  border: 1px solid red;
+  position: relative;
+`;
+const Container2 = styled.div`
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding-top: 90px;
+  border: 1px solid red;
+  position: relative;
+`;
+
+const Container3 = styled.div`
+  width: 100%;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   padding-top: 90px;
@@ -172,7 +190,6 @@ const Circle1 = styled(motion.div)`
   border-radius: 150px;
   border: none;
   background-color: whitesmoke;
-
   & > img {
     position: absolute;
     width: 300px;
@@ -189,7 +206,6 @@ const Circle2 = styled(motion.div)`
   border-radius: 150px;
   border: none;
   background-color: whitesmoke;
-
   & > img {
     position: absolute;
     width: 300px;
@@ -207,7 +223,6 @@ const Circle3 = styled(motion.div)`
   border-radius: 150px;
   border: none;
   background-color: whitesmoke;
-
   & > img {
     position: absolute;
     width: 300px;
@@ -419,6 +434,8 @@ function Home() {
           <span>scroll</span>
         </ScrollBtn>
       </Container>
+      <Container2>Content2</Container2>
+      <Container3>Content3</Container3>
     </Wrapper>
   );
 }

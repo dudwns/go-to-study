@@ -67,13 +67,10 @@ const LogoutBtn = styled.button`
 
 const navVariants = {
   top: {
-    // backgroundColor: "rgba(0, 0, 0, 0)",
-    // backgroundImage: "linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1))",
     top: 0,
     transition: { type: "tween" },
   },
   scroll: {
-    // backgroundColor: "rgba(0 ,0 ,0, 1)",
     top: "-60px",
     transition: { type: "tween" },
   },
@@ -101,9 +98,6 @@ function Header() {
   const myPage = () => {
     navigate(`/mypage/` + id);
   };
-  scrollY.onChange(() => {
-    console.log(scrollY.get());
-  });
 
   useEffect(() => {
     scrollY.onChange(() => {
@@ -115,6 +109,7 @@ function Header() {
       }
     });
   }, [scrollY, navAnimation]);
+
   return (
     <Nav variants={navVariants} initial="top" animate={navAnimation}>
       <Link to="/">
