@@ -10,7 +10,6 @@ const Wrapper = styled(motion.div)`
   height: 200vh;
   width: 100%;
   display: flex;
-  padding-top: 60px;
   position: relative;
   background-color: rgba(255, 255, 255, 1);
 
@@ -39,6 +38,7 @@ const SideBar = styled(motion.div)<ISide>`
   top: 60px;
   height: 800px;
   left: -250px;
+  z-index: 3;
 
   flex-direction: column;
   & > div:nth-child(1) {
@@ -49,6 +49,7 @@ const SideBar = styled(motion.div)<ISide>`
     justify-content: center;
     align-items: center;
   }
+
   & > div:nth-child(2) {
     border-bottom: 1px solid gray;
     height: 100px;
@@ -66,6 +67,10 @@ const SideBar = styled(motion.div)<ISide>`
     align-items: center;
     border-left: 4px solid gray;
     border-left-color: ${(props) => props.count === 0 && "yellow"};
+    cursor: pointer;
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.2);
+    }
   }
   & > div:nth-child(4) {
     border-bottom: 1px solid gray;
@@ -76,6 +81,10 @@ const SideBar = styled(motion.div)<ISide>`
     align-items: center;
     border-left: 4px solid gray;
     border-left-color: ${(props) => props.count === 1 && "yellow"};
+    cursor: pointer;
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.2);
+    }
   }
   & > div:nth-child(5) {
     border-bottom: 1px solid gray;
@@ -86,6 +95,10 @@ const SideBar = styled(motion.div)<ISide>`
     align-items: center;
     border-left: 4px solid gray;
     border-left-color: ${(props) => props.count === 2 && "yellow"};
+    cursor: pointer;
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.2);
+    }
   }
 `;
 
@@ -103,6 +116,9 @@ const SideBarBtn = styled.button`
     width: 12px;
     fill: white;
   }
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.75);
+  }
 `;
 
 const HomeBtn = styled.button`
@@ -117,7 +133,9 @@ const Container = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
-  margin-top: 30px;
+  padding-top: 90px;
+  border: 1px solid red;
+  position: relative;
 `;
 
 const Content = styled.div`
@@ -213,6 +231,27 @@ const Character = styled(motion.img)`
   animation: ${opacityAnimation} 2s;
 `;
 
+const ScrollBtn = styled(motion.button)`
+  position: absolute;
+  width: 50px;
+  top: 800px;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  cursor: pointer;
+  background-color: inherit;
+  border: none;
+`;
+const ScrollSvg = styled(motion.svg)`
+  width: 10px;
+  fill: black;
+`;
+
+const AngleSvg = styled(motion.svg)`
+  width: 10px;
+`;
+
+//---------------------------------------------------------------Variants
 const wrapVariants = {
   active: {
     backgroundColor: "rgba(255, 255, 255, 0)",
@@ -368,6 +407,17 @@ function Home() {
           animate="active"
           src="/images/character.png"
         ></Character>
+        <ScrollBtn>
+          <div>
+            <ScrollSvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+              <path d="M0 192H176V0H160C71.6 0 0 71.6 0 160v32zm0 32V352c0 88.4 71.6 160 160 160h64c88.4 0 160-71.6 160-160V224H192 0zm384-32V160C384 71.6 312.4 0 224 0H208V192H384z" />
+            </ScrollSvg>
+          </div>
+          <AngleSvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+            <path d="M214.6 470.6c-12.5 12.5-32.8 12.5-45.3 0l-160-160c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L192 402.7 329.4 265.4c12.5-12.5 32.8-12.5 45.3 0s12.5 32.8 0 45.3l-160 160zm160-352l-160 160c-12.5 12.5-32.8 12.5-45.3 0l-160-160c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L192 210.7 329.4 73.4c12.5-12.5 32.8-12.5 45.3 0s12.5 32.8 0 45.3z" />
+          </AngleSvg>
+          <span>scroll</span>
+        </ScrollBtn>
       </Container>
     </Wrapper>
   );
