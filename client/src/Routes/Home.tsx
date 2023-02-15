@@ -5,6 +5,7 @@ import { useRecoilState } from "recoil";
 import styled, { keyframes } from "styled-components";
 import { boardAtom, IUser, keywordAtom, loginAtom, userAtom } from "../atoms";
 import { motion, AnimatePresence } from "framer-motion";
+import { throttle } from "lodash";
 
 const Wrapper = styled(motion.div)`
   height: 100%;
@@ -359,15 +360,31 @@ function Home() {
     }
   }, []);
 
-  useEffect(() => {
-    let con2 = container2.current?.offsetTop;
-    let con3 = container3.current?.offsetTop;
-    console.log(con2, con3);
-    window.scrollTo({ top: container2.current?.offsetTop, behavior: "smooth" });
-  }, []);
+  // 스크롤 함수
+  const onWhellHandler = (e: React.WheelEvent<HTMLDivElement>) => {
+    const { deltaY } = e;
+    console.log(window.scrollY);
+    if (deltaY > 0) {
+      if (count === 0) {
+        window.scrollTo({ top: container2.current?.offsetTop, behavior: "smooth" });
+        setCount(1);
+      } else if (count === 1) {
+        window.scrollTo({ top: container3.current?.offsetTop, behavior: "smooth" });
+        setCount(2);
+      }
+    } else if (deltaY < 0) {
+      if (count === 2) {
+        window.scrollTo({ top: container2.current?.offsetTop, behavior: "smooth" });
+        setCount(1);
+      } else if (count === 1) {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        setCount(0);
+      }
+    }
+  };
 
   return (
-    <Wrapper variants={wrapVariants} animate="active">
+    <Wrapper variants={wrapVariants} animate="active" onWheel={onWhellHandler}>
       <SideBar
         variants={sideBarVariants}
         initial="normal"
