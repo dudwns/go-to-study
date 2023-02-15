@@ -5,9 +5,14 @@ import { useRecoilState } from "recoil";
 import styled, { keyframes } from "styled-components";
 import { boardAtom, IUser, keywordAtom, loginAtom, userAtom } from "../atoms";
 import { motion, AnimatePresence } from "framer-motion";
-import { throttle } from "lodash";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Mousewheel, Pagination } from "swiper";
+import "swiper/css";
+import "swiper/css/pagination";
+import "../styles.css";
 
 const Wrapper = styled(motion.div)`
+  overflow-y: hidden;
   height: 100%;
   width: 100%;
   display: flex;
@@ -55,48 +60,6 @@ const SideBar = styled(motion.div)<ISide>`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-  }
-  & > div:nth-child(3) {
-    border-bottom: 1px solid gray;
-    height: 200px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    border-left: 4px solid gray;
-    border-left-color: ${(props) => props.count === 0 && "yellow"};
-    cursor: pointer;
-    &:hover {
-      background-color: rgba(0, 0, 0, 0.2);
-    }
-  }
-  & > div:nth-child(4) {
-    border-bottom: 1px solid gray;
-    height: 200px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    border-left: 4px solid gray;
-    border-left-color: ${(props) => props.count === 1 && "yellow"};
-    cursor: pointer;
-    &:hover {
-      background-color: rgba(0, 0, 0, 0.2);
-    }
-  }
-  & > div:nth-child(5) {
-    border-bottom: 1px solid gray;
-    height: 200px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    border-left: 4px solid gray;
-    border-left-color: ${(props) => props.count === 2 && "yellow"};
-    cursor: pointer;
-    &:hover {
-      background-color: rgba(0, 0, 0, 0.2);
-    }
   }
 `;
 
@@ -266,6 +229,13 @@ const AngleSvg = styled(motion.svg)`
   width: 10px;
 `;
 
+const PagiDiv = styled(motion.div)`
+  position: absolute;
+  top: 500px;
+  left: 7px;
+  width: 100%;
+`;
+
 //---------------------------------------------------------------Variants
 const wrapVariants = {
   active: {
@@ -329,7 +299,7 @@ interface ISide {
   count: number;
   open: boolean;
 }
-
+const menuList = ["홈페이지 소개", "자기 소개", "기술"];
 function Home() {
   const [isLogin, setIsLogin] = useRecoilState(loginAtom);
   const [user, setUser] = useRecoilState(userAtom);
@@ -360,31 +330,8 @@ function Home() {
     }
   }, []);
 
-  // 스크롤 함수
-  const onWhellHandler = (e: React.WheelEvent<HTMLDivElement>) => {
-    const { deltaY } = e;
-    console.log(window.scrollY);
-    if (deltaY > 0) {
-      if (count === 0) {
-        window.scrollTo({ top: container2.current?.offsetTop, behavior: "smooth" });
-        setCount(1);
-      } else if (count === 1) {
-        window.scrollTo({ top: container3.current?.offsetTop, behavior: "smooth" });
-        setCount(2);
-      }
-    } else if (deltaY < 0) {
-      if (count === 2) {
-        window.scrollTo({ top: container2.current?.offsetTop, behavior: "smooth" });
-        setCount(1);
-      } else if (count === 1) {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-        setCount(0);
-      }
-    }
-  };
-
   return (
-    <Wrapper variants={wrapVariants} animate="active" onWheel={onWhellHandler}>
+    <Wrapper variants={wrapVariants} animate="active">
       <SideBar
         variants={sideBarVariants}
         initial="normal"
@@ -395,30 +342,6 @@ function Home() {
         <div>고투스</div>
         <div>
           <HomeBtn onClick={() => navigate("/board/1")}>홈페이지 바로가기</HomeBtn>
-        </div>
-        <div
-          onClick={() => {
-            window.scrollTo({ top: 0, behavior: "smooth" });
-            setCount(0);
-          }}
-        >
-          홈페이지 소개
-        </div>
-        <div
-          onClick={() => {
-            window.scrollTo({ top: container2.current?.offsetTop, behavior: "smooth" });
-            setCount(1);
-          }}
-        >
-          두번째 컨텐츠
-        </div>
-        <div
-          onClick={() => {
-            window.scrollTo({ top: container3.current?.offsetTop, behavior: "smooth" });
-            setCount(2);
-          }}
-        >
-          세번째 컨텐츠
         </div>
         <SideBarBtn onClick={() => setSideOpen((current) => !current)}>
           {sideOpen ? (
@@ -431,57 +354,83 @@ function Home() {
             </svg>
           )}
         </SideBarBtn>
+        <PagiDiv>
+          <div className="swiper-pagination"></div>
+        </PagiDiv>
       </SideBar>
 
-      <Container>
-        <Content>
-          <Text1 variants={textVariants} initial="normal" animate="active">
-            Go to Study!
-          </Text1>
-          <Text2 variants={textVariants} initial="normal" animate="active">
-            고투스에 오신것을 환영합니다!
-          </Text2>
-          <CircleContent variants={circleContentVariants} initial="normal" animate="active">
-            <Circle1 variants={circleVariants} initial="normal" animate="active">
-              <img src="/images/circle.png" alt="" />
-              혼자 공부하면 외롭고 지치지 않으신가요?
-              <br />
-              <br /> 고투스 커뮤니티를 이용하여 정보를 공유하고 사람들과 함께 공부해보세요!
-            </Circle1>
+      <Swiper
+        direction={"vertical"}
+        speed={600}
+        slidesPerView={1}
+        spaceBetween={30}
+        mousewheel={true}
+        pagination={{
+          clickable: true,
+          el: ".swiper-pagination",
+          renderBullet: function (index, className) {
+            return '<span class="' + className + '">' + menuList[index] + "</span>";
+          },
+        }}
+        modules={[Mousewheel, Pagination]}
+        className="mySwiper"
+      >
+        <SwiperSlide>
+          <Container>
+            <Content>
+              <Text1 variants={textVariants} initial="normal" animate="active">
+                Go to Study!
+              </Text1>
+              <Text2 variants={textVariants} initial="normal" animate="active">
+                고투스에 오신것을 환영합니다!
+              </Text2>
+              <CircleContent variants={circleContentVariants} initial="normal" animate="active">
+                <Circle1 variants={circleVariants} initial="normal" animate="active">
+                  <img src="/images/circle.png" alt="" />
+                  혼자 공부하면 외롭고 지치지 않으신가요?
+                  <br />
+                  <br /> 고투스 커뮤니티를 이용하여 정보를 공유하고 사람들과 함께 공부해보세요!
+                </Circle1>
 
-            <Circle2 variants={circleVariants} initial="normal" animate="active">
-              <img src="/images/circle.png" alt="" />
-              계획을 세우고 일정을 정리하고 싶은데 메모할 곳이 없으신가요?
-              <br />
-              <br /> 고투스에서 일정을 세워보고 정리해보세요!
-            </Circle2>
-            <Circle3 variants={circleVariants} initial="normal" animate="active">
-              <img src="/images/circle.png" alt="" />
-              매일 집중이 안되고 시간만 흘러가서 공부의 효율이 떨어지시나요?
-              <br />
-              <br /> 매일 공부 시간을 기록하고 목표 시간을 달성해보세요!
-            </Circle3>
-          </CircleContent>
-        </Content>
-        <Character
-          variants={characterVariants}
-          animate="active"
-          src="/images/character.png"
-        ></Character>
-        <ScrollBtn>
-          <div>
-            <ScrollSvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-              <path d="M0 192H176V0H160C71.6 0 0 71.6 0 160v32zm0 32V352c0 88.4 71.6 160 160 160h64c88.4 0 160-71.6 160-160V224H192 0zm384-32V160C384 71.6 312.4 0 224 0H208V192H384z" />
-            </ScrollSvg>
-          </div>
-          <AngleSvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-            <path d="M214.6 470.6c-12.5 12.5-32.8 12.5-45.3 0l-160-160c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L192 402.7 329.4 265.4c12.5-12.5 32.8-12.5 45.3 0s12.5 32.8 0 45.3l-160 160zm160-352l-160 160c-12.5 12.5-32.8 12.5-45.3 0l-160-160c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L192 210.7 329.4 73.4c12.5-12.5 32.8-12.5 45.3 0s12.5 32.8 0 45.3z" />
-          </AngleSvg>
-          <span>scroll</span>
-        </ScrollBtn>
-      </Container>
-      <Container2 ref={container2}>Content2</Container2>
-      <Container3 ref={container3}>Content3</Container3>
+                <Circle2 variants={circleVariants} initial="normal" animate="active">
+                  <img src="/images/circle.png" alt="" />
+                  계획을 세우고 일정을 정리하고 싶은데 메모할 곳이 없으신가요?
+                  <br />
+                  <br /> 고투스에서 일정을 세워보고 정리해보세요!
+                </Circle2>
+                <Circle3 variants={circleVariants} initial="normal" animate="active">
+                  <img src="/images/circle.png" alt="" />
+                  매일 집중이 안되고 시간만 흘러가서 공부의 효율이 떨어지시나요?
+                  <br />
+                  <br /> 매일 공부 시간을 기록하고 목표 시간을 달성해보세요!
+                </Circle3>
+              </CircleContent>
+            </Content>
+            <Character
+              variants={characterVariants}
+              animate="active"
+              src="/images/character.png"
+            ></Character>
+            <ScrollBtn>
+              <div>
+                <ScrollSvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+                  <path d="M0 192H176V0H160C71.6 0 0 71.6 0 160v32zm0 32V352c0 88.4 71.6 160 160 160h64c88.4 0 160-71.6 160-160V224H192 0zm384-32V160C384 71.6 312.4 0 224 0H208V192H384z" />
+                </ScrollSvg>
+              </div>
+              <AngleSvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+                <path d="M214.6 470.6c-12.5 12.5-32.8 12.5-45.3 0l-160-160c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L192 402.7 329.4 265.4c12.5-12.5 32.8-12.5 45.3 0s12.5 32.8 0 45.3l-160 160zm160-352l-160 160c-12.5 12.5-32.8 12.5-45.3 0l-160-160c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L192 210.7 329.4 73.4c12.5-12.5 32.8-12.5 45.3 0s12.5 32.8 0 45.3z" />
+              </AngleSvg>
+              <span>scroll</span>
+            </ScrollBtn>
+          </Container>
+        </SwiperSlide>
+        <SwiperSlide>
+          <Container2 ref={container2}>Content2</Container2>
+        </SwiperSlide>
+        <SwiperSlide>
+          <Container3 ref={container3}>Content3</Container3>
+        </SwiperSlide>
+      </Swiper>
     </Wrapper>
   );
 }
