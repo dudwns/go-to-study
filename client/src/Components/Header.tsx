@@ -119,8 +119,13 @@ function Header() {
         <Link to="/board/1">
           <Item>게시판</Item>
         </Link>
-        <Item>할 일</Item>
-        <Item>스톱워치</Item>
+        <Link to="/todo">
+          <Item>할 일</Item>
+        </Link>
+
+        <Link to="/stopwatch">
+          <Item>스톱워치</Item>
+        </Link>
       </Items>
       <UserItems value={isLogin}>
         {isLogin ? (
