@@ -259,7 +259,7 @@ function Board() {
 
   const onTitleClickHandler = (e: React.MouseEvent<HTMLSpanElement>) => {
     const id = (e.target as HTMLButtonElement).id;
-    navigate(`/board/select/${id}`);
+    navigate(`/board/detail/${id}`);
   };
 
   const onWriteHandler = () => {

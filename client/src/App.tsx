@@ -2,8 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Header from "./Components/Header";
 import Board from "./Routes/Board";
-
-import BoardSelect from "./Routes/BoardSelect";
+import BoardDetail from "./Routes/BoardDetail";
 import BoardUpdate from "./Routes/BoardUpdate";
 import BoardWrite from "./Routes/BoardWrite";
 import Home from "./Routes/Home";
@@ -25,7 +24,7 @@ function App() {
           <Route path={"/login"} element={<Login />} />
           <Route path={"/mypage/:id"} element={<MyPage />} />
           <Route path={"/board/write"} element={<BoardWrite />} />
-          <Route path={"/board/select/:id"} element={<BoardSelect />} />
+          <Route path={"/board/detail/:id"} element={<BoardDetail />} />
           <Route path={"/board/:id/update"} element={<BoardUpdate />} />
           <Route path={"/todo"} element={<ToDoList />} />
           <Route path={"/stopwatch"} element={<Stopwatch />} />

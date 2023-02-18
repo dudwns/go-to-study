@@ -301,4 +301,26 @@ app.put("/board/update/:id", (req, res) => {
   });
 });
 
+// -------------------------------------------------------------------------------------------- 댓글
+
+// 댓글 가져오기 (select)
+app.get("/api/comment", (req, res) => {
+  let sql = "SELECT * FROM COMMENT";
+  connection.query(sql, (err, rows, fileds) => {
+    res.send(rows);
+  });
+});
+
+// post 메소드로 "/api/comment/insert"에 접속을 한 경우 (댓글 등록)
+app.post("/api/comment/insert", (req, res) => {
+  let sql = "INSERT INTO COMMENT VALUES (null, ?, ?, ?, now(), 0)";
+  let boardId = req.body.boardId;
+  let userName = req.body.userName;
+  let comment = req.body.comment;
+  let params = [boardId, userName, comment];
+  connection.query(sql, params, (err, rows, fields) => {
+    res.send(rows);
+  });
+});
+
 app.listen(port, () => console.log(`Listening on port ${port}`)); //서버 실행 여부를 console로 표현
