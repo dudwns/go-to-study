@@ -108,16 +108,25 @@ const CommentItem = styled.li`
     font-size: 13px;
     font-weight: 600;
     margin-bottom: 5px;
+    display: inline-block;
+    margin-right: 10px;
   }
 
   & > div:nth-child(2) {
     font-size: 13px;
+    margin-bottom: 3px;
+    display: inline-block;
+  }
+
+  & > div:nth-child(3) {
+    font-size: 12px;
     margin-bottom: 3px;
   }
 
   & > div:last-child {
     font-size: 12px;
     margin-bottom: 3px;
+    display: inline-block;
   }
 `;
 
@@ -267,6 +276,7 @@ function BoardDetail() {
             .map((data: any, index: number) => (
               <CommentItem key={index}>
                 <div>{data.username}</div>
+                <div>추천: {data.recommend}</div>
                 <div>{data.comment}</div>
                 <div>{data.date}</div>
               </CommentItem>
