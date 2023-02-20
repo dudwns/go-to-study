@@ -110,24 +110,34 @@ const CommentItem = styled.li`
     margin-bottom: 5px;
     display: inline-block;
     margin-right: 10px;
+    display: flex;
+    align-items: center;
   }
 
   & > div:nth-child(2) {
-    font-size: 13px;
+    font-size: 12px;
     margin-bottom: 3px;
-    display: inline-block;
   }
 
   & > div:nth-child(3) {
     font-size: 12px;
     margin-bottom: 3px;
-  }
-
-  & > div:last-child {
-    font-size: 12px;
-    margin-bottom: 3px;
     display: inline-block;
   }
+`;
+
+const UpBtn = styled.svg`
+  padding-left: 10px;
+  width: 27px;
+  margin: 10px;
+  fill: white;
+  stroke: black;
+  stroke-width: 20px;
+  cursor: pointer;
+`;
+
+const UpCount = styled.span`
+  font-weight: 100;
 `;
 
 interface IComment {
@@ -135,6 +145,7 @@ interface IComment {
   username: string;
   comment: string;
   date: string;
+  up: number;
   [prop: string]: any;
 }
 
@@ -154,6 +165,7 @@ function BoardDetail() {
     }).then((result) => {
       if (result.status === 200) {
         setBoardData(result.data); // 클릭한 게시글의 데이터
+        console.log(boardData[0].id);
       }
     });
   }, []);
@@ -167,10 +179,9 @@ function BoardDetail() {
       if (result.status === 200) {
         const data = result.data.filter((data: any) => data.boardId === boardData[0].id);
         setCommentAll(data); // 클릭한 게시글의 데이터
-        console.log(data);
       }
     });
-  }, []);
+  }, [boardData]);
 
   const updateBoard = () => {
     if (userData.username === boardData[0]?.username) {
@@ -206,26 +217,116 @@ function BoardDetail() {
 
   const commentSubmitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(boardData[0].id, userData.username, comment);
-    axios({
-      url: "http://localhost:5000/api/comment/insert",
-      method: "POST",
-      withCredentials: true,
-      data: {
-        boardId: boardData[0].id,
-        userName: userData.username,
-        comment: comment,
-      },
-    })
-      .then((result) => {
-        if (result.status === 200) {
-          setComment("");
-          // window.open("/", "_self");
-        }
+    if (userData.username) {
+      if (comment) {
+        axios({
+          url: "http://localhost:5000/api/comment/insert",
+          method: "POST",
+          withCredentials: true,
+          data: {
+            boardId: boardData[0].id,
+            userName: userData.username,
+            comment: comment,
+          },
+        })
+          .then((result) => {
+            if (result.status === 200) {
+              setComment("");
+            }
+          })
+          .catch((error) => {
+            alert(error);
+          })
+          .then(() => {
+            axios({
+              url: "http://localhost:5000/api/comment/",
+              method: "GET",
+              withCredentials: true,
+            }).then((result) => {
+              if (result.status === 200) {
+                const data = result.data.filter((data: any) => data.boardId === boardData[0].id);
+                setCommentAll(data); // 클릭한 게시글의 데이터
+              }
+            });
+          });
+      } else {
+        alert("내용을 입력하세요.");
+      }
+    } else {
+      alert("로그인이 필요한 서비스입니다.");
+    }
+  };
+
+  const upBtnClick = (id: number, up: number) => {
+    if (userData.username) {
+      // 로그인을 했을 때
+      axios({
+        url: "http://localhost:5000/api/like/",
+        method: "POST",
+        withCredentials: true,
+        data: {
+          id: id,
+          userId: userData.id,
+        },
       })
-      .catch((error) => {
-        alert("내용을 입력해주세요.");
-      });
+        .then((result) => {
+          if (result.status === 200) {
+            // 좋아요를 처음 눌렀을 때
+            if (result.data) {
+              axios({
+                url: "http://localhost:5000/api/comment/update",
+                method: "PUT",
+                withCredentials: true,
+                data: {
+                  id: id,
+                  up: up + 1,
+                },
+              });
+            }
+            // 좋아요를 중첩해서 눌렀을 때
+            else {
+              axios({
+                url: "http://localhost:5000/api/comment/update",
+                method: "PUT",
+                withCredentials: true,
+                data: {
+                  id: id,
+                  up: up - 1,
+                },
+              }).then(() => {
+                axios({
+                  url: "http://localhost:5000/api/like/down",
+                  method: "DELETE",
+                  withCredentials: true,
+                  data: {
+                    id: id,
+                    userId: userData.id,
+                  },
+                });
+              });
+            }
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        })
+        .then(() => {
+          // 다시 comment를 렌더링
+          axios({
+            url: "http://localhost:5000/api/comment/",
+            method: "GET",
+            withCredentials: true,
+          }).then((result) => {
+            if (result.status === 200) {
+              const data = result.data.filter((data: any) => data.boardId === boardData[0].id);
+              setCommentAll(data); // 클릭한 게시글의 데이터
+            }
+          });
+        });
+    } else {
+      // 로그인을 하지 않았을 때
+      alert("로그인이 필요한 서비스입니다.");
+    }
   };
 
   return (
@@ -275,8 +376,19 @@ function BoardDetail() {
             .reverse()
             .map((data: any, index: number) => (
               <CommentItem key={index}>
-                <div>{data.username}</div>
-                <div>추천: {data.recommend}</div>
+                <div>
+                  {data.username}
+                  <span>
+                    <UpBtn
+                      onClick={() => upBtnClick(data.id, data.up)}
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 512 512"
+                    >
+                      <path d="M313.4 32.9c26 5.2 42.9 30.5 37.7 56.5l-2.3 11.4c-5.3 26.7-15.1 52.1-28.8 75.2H464c26.5 0 48 21.5 48 48c0 18.5-10.5 34.6-25.9 42.6C497 275.4 504 288.9 504 304c0 23.4-16.8 42.9-38.9 47.1c4.4 7.3 6.9 15.8 6.9 24.9c0 21.3-13.9 39.4-33.1 45.6c.7 3.3 1.1 6.8 1.1 10.4c0 26.5-21.5 48-48 48H294.5c-19 0-37.5-5.6-53.3-16.1l-38.5-25.7C176 420.4 160 390.4 160 358.3V320 272 247.1c0-29.2 13.3-56.7 36-75l7.4-5.9c26.5-21.2 44.6-51 51.2-84.2l2.3-11.4c5.2-26 30.5-42.9 56.5-37.7zM32 192H96c17.7 0 32 14.3 32 32V448c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32V224c0-17.7 14.3-32 32-32z" />
+                    </UpBtn>
+                  </span>
+                  <UpCount>{data.up}</UpCount>
+                </div>
                 <div>{data.comment}</div>
                 <div>{data.date}</div>
               </CommentItem>

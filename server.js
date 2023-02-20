@@ -323,4 +323,37 @@ app.post("/api/comment/insert", (req, res) => {
   });
 });
 
+// 댓글 추천 수정
+app.put("/api/comment/update", (req, res) => {
+  let sql = "UPDATE COMMENT SET up = ? WHERE id = ?";
+  let params = [req.body.up, req.body.id];
+  connection.query(sql, params, (err, rows, fields) => {
+    res.send(rows);
+  });
+});
+
+// like table에 좋아요 정보 추가
+app.post("/api/like", (req, res) => {
+  let sql = "INSERT INTO LIKES VALUES (?, ?)";
+  let userId = req.body.userId;
+  let commentId = req.body.id;
+
+  let params = [userId, commentId];
+  connection.query(sql, params, (err, rows, fields) => {
+    res.send(rows);
+    console.log(err);
+  });
+});
+
+// like table에 좋아요 정보 삭제
+app.delete("/api/like/down", (req, res) => {
+  let sql = "DELETE FROM LIKES WHERE userId = ? AND commentId = ?";
+  let userId = req.body.userId;
+  let commentId = req.body.id;
+  let params = [userId, commentId];
+  connection.query(sql, params, (err, rows, fields) => {
+    res.send(rows);
+  });
+});
+
 app.listen(port, () => console.log(`Listening on port ${port}`)); //서버 실행 여부를 console로 표현
