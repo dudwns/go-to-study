@@ -332,6 +332,14 @@ app.put("/api/comment/update", (req, res) => {
   });
 });
 
+// 좋아요 정보 가져오기 (select)
+app.get("/api/likes", (req, res) => {
+  let sql = "SELECT * FROM LIKES";
+  connection.query(sql, (err, rows, fileds) => {
+    res.send(rows);
+  });
+});
+
 // like table에 좋아요 정보 추가
 app.post("/api/like", (req, res) => {
   let sql = "INSERT INTO LIKES VALUES (?, ?)";

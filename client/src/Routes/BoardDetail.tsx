@@ -1,8 +1,8 @@
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { boardAtom, userAtom } from "../atoms";
 import styled from "styled-components";
 import Bookmark from "../Components/Bookmark";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
@@ -107,8 +107,8 @@ const CommentItem = styled.li`
   & > div:first-child {
     font-size: 13px;
     font-weight: 600;
-    margin-bottom: 5px;
     display: inline-block;
+    margin-bottom: 5px;
     margin-right: 10px;
     display: flex;
     align-items: center;
@@ -124,16 +124,25 @@ const CommentItem = styled.li`
     margin-bottom: 3px;
     display: inline-block;
   }
+
+  & .active {
+    fill: black;
+    stroke: white;
+    stroke-width: 20px;
+  }
 `;
 
 const UpBtn = styled.svg`
   padding-left: 10px;
   width: 27px;
-  margin: 10px;
+  margin: 5px;
   fill: white;
   stroke: black;
   stroke-width: 20px;
   cursor: pointer;
+  & > path {
+    pointer-events: none;
+  }
 `;
 
 const UpCount = styled.span`
@@ -141,6 +150,7 @@ const UpCount = styled.span`
 `;
 
 interface IComment {
+  id: number;
   boardId: number;
   username: string;
   comment: string;
@@ -149,13 +159,20 @@ interface IComment {
   [prop: string]: any;
 }
 
+interface ILIKE {
+  userId: number;
+  commentId: number;
+  [prop: string]: any;
+}
+
 function BoardDetail() {
   const [boardData, setBoardData] = useRecoilState(boardAtom);
-  const [userData, setUserData] = useRecoilState(userAtom);
+  const userData = useRecoilValue(userAtom);
   const { id } = useParams();
   const navigate = useNavigate();
   const [comment, setComment] = useState("");
   const [commentAll, setCommentAll] = useState<IComment>([] as any);
+  const [likes, setLikes] = useState<ILIKE>([] as any);
 
   useEffect(() => {
     axios({
@@ -182,6 +199,19 @@ function BoardDetail() {
       }
     });
   }, [boardData]);
+
+  useEffect(() => {
+    axios({
+      url: "http://localhost:5000/api/likes",
+      method: "GET",
+      withCredentials: true,
+    }).then((result) => {
+      if (result.status === 200) {
+        setLikes(result.data); // 모든 댓글들의 데이터
+        console.log(result.data);
+      }
+    });
+  }, []);
 
   const updateBoard = () => {
     if (userData.username === boardData[0]?.username) {
@@ -245,7 +275,7 @@ function BoardDetail() {
             }).then((result) => {
               if (result.status === 200) {
                 const data = result.data.filter((data: any) => data.boardId === boardData[0].id);
-                setCommentAll(data); // 클릭한 게시글의 데이터
+                setCommentAll(data); // 클릭한 게시글의 댓글
               }
             });
           });
@@ -257,7 +287,7 @@ function BoardDetail() {
     }
   };
 
-  const upBtnClick = (id: number, up: number) => {
+  const upBtnClick = (e: any, id: number, up: number) => {
     if (userData.username) {
       // 로그인을 했을 때
       axios({
@@ -270,6 +300,7 @@ function BoardDetail() {
         },
       })
         .then((result) => {
+          e.target.classList.toggle("active");
           if (result.status === 200) {
             // 좋아요를 처음 눌렀을 때
             if (result.data) {
@@ -380,13 +411,17 @@ function BoardDetail() {
                   {data.username}
                   <span>
                     <UpBtn
-                      onClick={() => upBtnClick(data.id, data.up)}
+                      className={likes.map((like: any) =>
+                        like.commentId === data.id && userData.id === like.userId ? "active" : ""
+                      )}
+                      onClick={(e) => upBtnClick(e, data.id, data.up)}
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 512 512"
                     >
                       <path d="M313.4 32.9c26 5.2 42.9 30.5 37.7 56.5l-2.3 11.4c-5.3 26.7-15.1 52.1-28.8 75.2H464c26.5 0 48 21.5 48 48c0 18.5-10.5 34.6-25.9 42.6C497 275.4 504 288.9 504 304c0 23.4-16.8 42.9-38.9 47.1c4.4 7.3 6.9 15.8 6.9 24.9c0 21.3-13.9 39.4-33.1 45.6c.7 3.3 1.1 6.8 1.1 10.4c0 26.5-21.5 48-48 48H294.5c-19 0-37.5-5.6-53.3-16.1l-38.5-25.7C176 420.4 160 390.4 160 358.3V320 272 247.1c0-29.2 13.3-56.7 36-75l7.4-5.9c26.5-21.2 44.6-51 51.2-84.2l2.3-11.4c5.2-26 30.5-42.9 56.5-37.7zM32 192H96c17.7 0 32 14.3 32 32V448c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32V224c0-17.7 14.3-32 32-32z" />
                     </UpBtn>
                   </span>
+
                   <UpCount>{data.up}</UpCount>
                 </div>
                 <div>{data.comment}</div>
