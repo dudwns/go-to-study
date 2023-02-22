@@ -88,6 +88,12 @@ const BoardHeader = styled.div`
     font-weight: 700;
     text-align: center;
   }
+
+  & span:nth-child(4) {
+    width: 40px;
+    font-weight: 700;
+    text-align: center;
+  }
 `;
 
 const BoardList = styled.div`
@@ -127,6 +133,10 @@ const BoardDate = styled.div`
   text-align: center;
 `;
 
+const BoardRecomendation = styled.div`
+  width: 40px;
+  text-align: center;
+`;
 const PageNumbers = styled.ul`
   display: flex;
   justify-content: center;
@@ -144,8 +154,6 @@ const PrevBtn = styled.button`
   &:hover {
     background-color: #d3d3d3;
   }
-  & svg {
-  }
 `;
 
 const NextBtn = styled.button`
@@ -158,8 +166,6 @@ const NextBtn = styled.button`
   border-radius: 3px;
   &:hover {
     background-color: #d3d3d3;
-  }
-  & svg {
   }
 `;
 
@@ -245,8 +251,6 @@ function Board() {
         .then((result) => {
           if (result.data) {
             setSelectBoard(result.data);
-            console.log("가져온 데이터", result.data);
-            console.log(board.length);
           }
         })
         .catch((error) => {
@@ -298,6 +302,7 @@ function Board() {
               </span>
             </BoardTitle>
             <BoardDate>{item.time}</BoardDate>
+            <BoardRecomendation>{item.recommend}</BoardRecomendation>
           </BoardList>
         );
       });
@@ -323,8 +328,6 @@ function Board() {
       navigate("/board/" + (Number(page) + 1));
     }
   };
-  console.log(selectBoard);
-  console.log(board.length);
 
   return (
     <Wrapper>
@@ -351,7 +354,8 @@ function Board() {
         <BoardHeader>
           <span>글쓴이</span>
           <span>제목</span>
-          <span>시간</span>
+          <span>등록일</span>
+          <span>추천</span>
         </BoardHeader>
         <BoardContent>{searchComponent(selectBoard)}</BoardContent>
         <PageNumbers>

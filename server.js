@@ -301,6 +301,48 @@ app.put("/board/update/:id", (req, res) => {
   });
 });
 
+// -------------------------------------------------------------------------------------------- 게시글 추천
+
+// recommendation 가져오기 (select)
+app.get("/api/recommendation", (req, res) => {
+  let sql = "SELECT * FROM RECOMMENDATION";
+  connection.query(sql, (err, rows, fileds) => {
+    res.send(rows);
+  });
+});
+
+// recommendation 테이블에 추천 정보 추가
+app.post("/api/recommendation", (req, res) => {
+  let sql = "INSERT INTO RECOMMENDATION VALUES (?, ?)";
+  let userId = req.body.userId;
+  let boardId = req.body.boardId;
+  let params = [userId, boardId];
+  connection.query(sql, params, (err, rows, fields) => {
+    res.send(rows);
+    console.log(err);
+  });
+});
+
+// 게시글 추천 수정
+app.put("/api/board/update", (req, res) => {
+  let sql = "UPDATE BOARD SET recommend = ? WHERE id = ?";
+  let params = [req.body.recommend, req.body.id];
+  connection.query(sql, params, (err, rows, fields) => {
+    res.send(rows);
+  });
+});
+
+// recommendation 테이블에 추천 정보 삭제
+app.delete("/api/recommendation/down", (req, res) => {
+  let sql = "DELETE FROM RECOMMENDATION WHERE userId = ? AND boardId = ?";
+  let userId = req.body.userId;
+  let boardId = req.body.boardId;
+  let params = [userId, boardId];
+  connection.query(sql, params, (err, rows, fields) => {
+    res.send(rows);
+  });
+});
+
 // -------------------------------------------------------------------------------------------- 댓글
 
 // 댓글 가져오기 (select)
@@ -323,7 +365,7 @@ app.post("/api/comment/insert", (req, res) => {
   });
 });
 
-// 댓글 추천 수정
+// 댓글 좋아요 수정
 app.put("/api/comment/update", (req, res) => {
   let sql = "UPDATE COMMENT SET up = ? WHERE id = ?";
   let params = [req.body.up, req.body.id];
@@ -340,7 +382,7 @@ app.get("/api/likes", (req, res) => {
   });
 });
 
-// like table에 좋아요 정보 추가
+// like 테이블에 좋아요 정보 추가
 app.post("/api/like", (req, res) => {
   let sql = "INSERT INTO LIKES VALUES (?, ?)";
   let userId = req.body.userId;
@@ -353,7 +395,7 @@ app.post("/api/like", (req, res) => {
   });
 });
 
-// like table에 좋아요 정보 삭제
+// like 테이블에 좋아요 정보 삭제
 app.delete("/api/like/down", (req, res) => {
   let sql = "DELETE FROM LIKES WHERE userId = ? AND commentId = ?";
   let userId = req.body.userId;

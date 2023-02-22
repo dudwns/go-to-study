@@ -16,6 +16,12 @@ const Wrapper = styled.div`
   & > div {
     display: flex;
   }
+
+  & .active {
+    fill: black;
+    stroke: white;
+    stroke-width: 20px;
+  }
 `;
 const BoardContainer = styled.div`
   width: 80%;
@@ -38,6 +44,7 @@ const BoardContent = styled.div`
   padding: 10px;
   height: 600px;
   margin-bottom: 70px;
+  position: relative;
 `;
 
 const BoardTitle = styled.div`
@@ -45,6 +52,41 @@ const BoardTitle = styled.div`
   font-weight: 800;
   margin-bottom: 50px;
 `;
+
+const RecommendBtn = styled.button`
+  margin-top: 30px;
+  width: 80px;
+  height: 50px;
+  position: absolute;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  bottom: 30px;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  cursor: pointer;
+  & svg {
+    width: 25px;
+    fill: white;
+    stroke: black;
+    stroke-width: 10px;
+  }
+
+  & span {
+    font-size: 20px;
+    pointer-events: none;
+  }
+
+  & > svg {
+    pointer-events: none;
+  }
+  & > svg > path {
+    pointer-events: none;
+  }
+`;
+
+const RecommendSvg = styled.svg``;
 
 const List = styled.div`
   display: flex;
@@ -124,12 +166,6 @@ const CommentItem = styled.li`
     margin-bottom: 3px;
     display: inline-block;
   }
-
-  & .active {
-    fill: black;
-    stroke: white;
-    stroke-width: 20px;
-  }
 `;
 
 const UpBtn = styled.svg`
@@ -165,6 +201,12 @@ interface ILIKE {
   [prop: string]: any;
 }
 
+interface IRecommend {
+  userId: number;
+  boardId: number;
+  [prop: string]: any;
+}
+
 function BoardDetail() {
   const [boardData, setBoardData] = useRecoilState(boardAtom);
   const userData = useRecoilValue(userAtom);
@@ -173,6 +215,7 @@ function BoardDetail() {
   const [comment, setComment] = useState("");
   const [commentAll, setCommentAll] = useState<IComment>([] as any);
   const [likes, setLikes] = useState<ILIKE>([] as any);
+  const [recommend, setRecommend] = useState<IRecommend>([] as any);
 
   useEffect(() => {
     axios({
@@ -182,7 +225,6 @@ function BoardDetail() {
     }).then((result) => {
       if (result.status === 200) {
         setBoardData(result.data); // 클릭한 게시글의 데이터
-        console.log(boardData[0].id);
       }
     });
   }, []);
@@ -202,13 +244,24 @@ function BoardDetail() {
 
   useEffect(() => {
     axios({
+      url: "http://localhost:5000/api/recommendation",
+      method: "GET",
+      withCredentials: true,
+    }).then((result) => {
+      if (result.status === 200) {
+        setRecommend(result.data); // 모든 댓글들의 데이터
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    axios({
       url: "http://localhost:5000/api/likes",
       method: "GET",
       withCredentials: true,
     }).then((result) => {
       if (result.status === 200) {
         setLikes(result.data); // 모든 댓글들의 데이터
-        console.log(result.data);
       }
     });
   }, []);
@@ -242,6 +295,78 @@ function BoardDetail() {
       alert("로그인이 필요한 서비스입니다.");
     } else {
       alert("다른 사람의 게시글은 삭제할 수 없습니다.");
+    }
+  };
+
+  const onRecommendClick = (e: any, count: number) => {
+    if (userData.username) {
+      // 로그인을 했을 때
+      axios({
+        url: "http://localhost:5000/api/recommendation",
+        method: "POST",
+        withCredentials: true,
+        data: {
+          userId: userData.id,
+          boardId: id,
+        },
+      })
+        .then((result) => {
+          e.target.childNodes[0].classList.toggle("active");
+          if (result.status === 200) {
+            // 추천을 처음 눌렀을 때
+            if (result.data) {
+              axios({
+                url: "http://localhost:5000/api/board/update",
+                method: "PUT",
+                withCredentials: true,
+                data: {
+                  id: id,
+                  recommend: count + 1,
+                },
+              });
+            }
+            // 추천을 중첩해서 눌렀을 때
+            else {
+              axios({
+                url: "http://localhost:5000/api/board/update",
+                method: "PUT",
+                withCredentials: true,
+                data: {
+                  id: id,
+                  recommend: count - 1,
+                },
+              }).then(() => {
+                axios({
+                  url: "http://localhost:5000/api/recommendation/down",
+                  method: "DELETE",
+                  withCredentials: true,
+                  data: {
+                    userId: userData.id,
+                    boardId: id,
+                  },
+                });
+              });
+            }
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        })
+        .then(() => {
+          // 다시 board 렌더링
+          axios({
+            url: "http://localhost:5000/api/board/" + id,
+            method: "GET",
+            withCredentials: true,
+          }).then((result) => {
+            if (result.status === 200) {
+              setBoardData(result.data); // 클릭한 게시글의 데이터
+            }
+          });
+        });
+    } else {
+      // 로그인을 하지 않았을 때
+      alert("로그인이 필요한 서비스입니다.");
     }
   };
 
@@ -387,6 +512,20 @@ function BoardDetail() {
             <BoardContent>
               <BoardTitle>{boardData[0]?.title}</BoardTitle>
               <div dangerouslySetInnerHTML={{ __html: boardData[0]?.content }} />
+              <RecommendBtn onClick={(e) => onRecommendClick(e, boardData[0]?.recommend)}>
+                <RecommendSvg
+                  className={recommend.map((recommendation: IRecommend) =>
+                    recommendation.boardId === Number(id) && userData.id === recommendation.userId
+                      ? "active"
+                      : ""
+                  )}
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 512 512"
+                >
+                  <path d="M313.4 32.9c26 5.2 42.9 30.5 37.7 56.5l-2.3 11.4c-5.3 26.7-15.1 52.1-28.8 75.2H464c26.5 0 48 21.5 48 48c0 18.5-10.5 34.6-25.9 42.6C497 275.4 504 288.9 504 304c0 23.4-16.8 42.9-38.9 47.1c4.4 7.3 6.9 15.8 6.9 24.9c0 21.3-13.9 39.4-33.1 45.6c.7 3.3 1.1 6.8 1.1 10.4c0 26.5-21.5 48-48 48H294.5c-19 0-37.5-5.6-53.3-16.1l-38.5-25.7C176 420.4 160 390.4 160 358.3V320 272 247.1c0-29.2 13.3-56.7 36-75l7.4-5.9c26.5-21.2 44.6-51 51.2-84.2l2.3-11.4c5.2-26 30.5-42.9 56.5-37.7zM32 192H96c17.7 0 32 14.3 32 32V448c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32V224c0-17.7 14.3-32 32-32z" />
+                </RecommendSvg>
+                <span>{boardData[0]?.recommend}</span>
+              </RecommendBtn>
             </BoardContent>
           </BoardContainer>
           <Bookmark />
@@ -411,7 +550,7 @@ function BoardDetail() {
                   {data.username}
                   <span>
                     <UpBtn
-                      className={likes.map((like: any) =>
+                      className={likes.map((like: ILIKE) =>
                         like.commentId === data.id && userData.id === like.userId ? "active" : ""
                       )}
                       onClick={(e) => upBtnClick(e, data.id, data.up)}
