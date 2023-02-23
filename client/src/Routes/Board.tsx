@@ -1,9 +1,17 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
-import { boardAtom, IUser, keywordAtom, loginAtom, userAtom } from "../atoms";
+import {
+  boardAtom,
+  bookmarkAtom,
+  IBoard,
+  IBookmark,
+  keywordAtom,
+  loginAtom,
+  userAtom,
+} from "../atoms";
 import Bookmark from "../Components/Bookmark";
 import Pagination from "../Components/Pagination";
 
@@ -56,6 +64,7 @@ const ListBtn = styled.button`
   border: none;
   margin-left: 15px;
   padding: 5px 10px;
+  cursor: pointer;
 `;
 
 const BoardContent = styled.div`
@@ -91,6 +100,11 @@ const BoardHeader = styled.div`
 
   & span:nth-child(4) {
     width: 40px;
+    font-weight: 700;
+    text-align: center;
+  }
+  & span:nth-child(5) {
+    width: 70px;
     font-weight: 700;
     text-align: center;
   }
@@ -137,6 +151,30 @@ const BoardRecomendation = styled.div`
   width: 40px;
   text-align: center;
 `;
+
+const BoardBookmark = styled.div`
+  width: 70px;
+  text-align: center;
+
+  & > svg {
+    width: 20px;
+    cursor: pointer;
+    fill: white;
+    stroke: black;
+    stroke-width: 30px;
+
+    & > path {
+      pointer-events: none;
+    }
+  }
+
+  & .bookmark {
+    fill: yellow;
+  }
+`;
+
+const BookmarkSvg = styled.svg``;
+
 const PageNumbers = styled.ul`
   display: flex;
   justify-content: center;
@@ -170,15 +208,16 @@ const NextBtn = styled.button`
 `;
 
 function Board() {
-  const [isLogin, setIsLogin] = useRecoilState(loginAtom);
-  const [user, setUser] = useRecoilState(userAtom);
-  const [board, setBoard] = useState([]);
-  const [keyword, setKeyword] = useRecoilState(keywordAtom);
-  const [selectBoard, setSelectBoard] = useState([]);
-  const [pageNumber, setPageNumber] = useState(0);
+  const [isLogin, setIsLogin] = useRecoilState(loginAtom); // 로그인 유무를 나타내는 boolean 값
+  const [user, setUser] = useRecoilState(userAtom); // 로그인 한 유저의 정보
+  const [board, setBoard] = useRecoilState(boardAtom); // 전체 board 정보
+  const [keyword, setKeyword] = useRecoilState(keywordAtom); // 유저가 검색한 키워드
+  const [selectBoard, setSelectBoard] = useState<IBoard[]>([]); // 10개씩 자른 board 정보
+  const [pageNumber, setPageNumber] = useState(0); // 페이지 쪽수
+  const [bookmark, setBookmark] = useRecoilState(bookmarkAtom); // 전체 북마크 정보
   const { page } = useParams();
-
   const navigate = useNavigate();
+
   const accessToken = () => {
     axios({
       url: "http://localhost:5000/accesstoken",
@@ -237,6 +276,26 @@ function Board() {
     }
   }, []);
 
+  useEffect(() => {
+    try {
+      axios({
+        url: "http://localhost:5000/api/bookmark",
+        method: "GET",
+        withCredentials: true,
+      })
+        .then((result) => {
+          if (result.data) {
+            setBookmark(result.data);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
+
   // 게시글을 10개씩 잘라서 가져옴
   useEffect(() => {
     try {
@@ -274,35 +333,113 @@ function Board() {
     }
   };
 
-  const searchComponent = (data: any) => {
-    // const newData = data.filter((item: any) => {
-    //   return item.username.indexOf(keyword) > -1 || item.title.indexOf(keyword) > -1;
-    // });
+  const onBookmarkClickHandler = (
+    e: any,
+    boardId: number,
+    userName: string,
+    boardTitle: string
+  ) => {
+    if (user.username) {
+      // 로그인을 했을 때
+      try {
+        axios({
+          url: "http://localhost:5000/api/bookmark",
+          method: "POST",
+          withCredentials: true,
+          data: {
+            userId: user.id,
+            boardId: boardId,
+            userName: userName,
+            title: boardTitle,
+          },
+        })
+          .then((result) => {
+            e.target.classList.toggle("bookmark");
+            if (result.status === 200) {
+              // 즐찾을 처음 눌렀을 때
+              if (result.data) {
+              }
+              // 즐찾을 중첩해서 눌렀을 때
+              else {
+                axios({
+                  url: "http://localhost:5000/api/bookmark",
+                  method: "DELETE",
+                  withCredentials: true,
+                  data: {
+                    userId: user.id,
+                    boardId: boardId,
+                  },
+                });
+              }
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          })
+          .then(() => {
+            // 다시 bookmark 렌더링
+            axios({
+              url: "http://localhost:5000/api/bookmark",
+              method: "GET",
+              withCredentials: true,
+            }).then((result) => {
+              if (result.status === 200) {
+                setBookmark(result.data); // 클릭한 게시글의 데이터
+              }
+            });
+          });
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      // 로그인을 하지 않았을 때
+      alert("로그인이 필요한 서비스입니다.");
+    }
+  };
+
+  const searchComponent = (data: IBoard[]) => {
     let newData = data;
 
     if (keyword === "") {
-      newData = data.filter((item: any) => {
+      newData = data.filter((item: IBoard) => {
         return item.username.indexOf(keyword) > -1 || item.title.indexOf(keyword) > -1;
       });
     } else {
-      newData = board.filter((item: any) => {
+      newData = board.filter((item: IBoard) => {
         return item.username.indexOf(keyword) > -1 || item.title.indexOf(keyword) > -1;
       });
     }
     return newData
       .slice(0)
       .reverse()
-      .map((item: any, index: any) => {
+      .map((item: IBoard, index: number) => {
         return (
           <BoardList key={index}>
             <BoardName>{item.username}</BoardName>
             <BoardTitle>
-              <span id={item.id} onClick={onTitleClickHandler}>
-                {item.title}
+              <span id={String(item.id)} onClick={onTitleClickHandler}>
+                {item.title.length > 35 ? `${item.title.slice(0, 35)}...` : item.title}
               </span>
             </BoardTitle>
             <BoardDate>{item.time}</BoardDate>
             <BoardRecomendation>{item.recommend}</BoardRecomendation>
+            <BoardBookmark>
+              <BookmarkSvg
+                className={(() => {
+                  let isTrue = false;
+                  bookmark.map((mark: IBookmark) => {
+                    if (mark.boardId === item.id && user.id === mark.userId) isTrue = true;
+                  });
+                  if (isTrue) return "bookmark";
+                  else return "";
+                })()}
+                onClick={(e) => onBookmarkClickHandler(e, item.id, item.username, item.title)}
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 576 512"
+              >
+                <path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z" />
+              </BookmarkSvg>
+            </BoardBookmark>
           </BoardList>
         );
       });
@@ -348,7 +485,7 @@ function Board() {
           </SearchForm>
           <div>
             <WriteBtn onClick={onWriteHandler}>글 쓰기</WriteBtn>
-            <ListBtn>목록</ListBtn>
+            <ListBtn onClick={() => navigate("/board/1")}>목록</ListBtn>
           </div>
         </BoardMenu>
         <BoardHeader>
@@ -356,6 +493,7 @@ function Board() {
           <span>제목</span>
           <span>등록일</span>
           <span>추천</span>
+          <span>즐겨찾기</span>
         </BoardHeader>
         <BoardContent>{searchComponent(selectBoard)}</BoardContent>
         <PageNumbers>

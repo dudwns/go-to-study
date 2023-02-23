@@ -300,6 +300,48 @@ app.put("/board/update/:id", (req, res) => {
     console.log(rows);
   });
 });
+// -------------------------------------------------------------------------------------------- 북마크
+
+// bookmark 가져오기 (select)
+app.get("/api/bookmark", (req, res) => {
+  let sql = "SELECT * FROM BOOKMARK";
+  connection.query(sql, (err, rows, fileds) => {
+    res.send(rows);
+  });
+});
+
+// post 메소드로 "/api/bookmark"에 접속을 한 경우 (bookmark 정보 추가)
+app.post("/api/bookmark", (req, res) => {
+  let sql = "INSERT INTO BOOKMARK VALUES (?, ?, ?, ?)";
+  let userId = req.body.userId;
+  let boardId = req.body.boardId;
+  let userName = req.body.userName;
+  let title = req.body.title;
+  let params = [userId, boardId, userName, title];
+  connection.query(sql, params, (err, rows, fields) => {
+    res.send(rows);
+  });
+});
+
+// bookmark 테이블 정보 수정
+app.put("/api/bookmark/:id", (req, res) => {
+  let sql = "UPDATE BOOKMARK SET title = ? WHERE boardId = ?";
+  let params = [req.body.title, req.params.id];
+  connection.query(sql, params, (err, rows, fields) => {
+    res.send(rows);
+  });
+});
+
+// bookmark 테이블에 정보 삭제
+app.delete("/api/bookmark", (req, res) => {
+  let sql = "DELETE FROM BOOKMARK WHERE userId = ? AND boardId = ?";
+  let userId = req.body.userId;
+  let boardId = req.body.boardId;
+  let params = [userId, boardId];
+  connection.query(sql, params, (err, rows, fields) => {
+    res.send(rows);
+  });
+});
 
 // -------------------------------------------------------------------------------------------- 게시글 추천
 

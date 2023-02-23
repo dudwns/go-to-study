@@ -7,18 +7,23 @@ export interface IUser {
   email: string;
   birthday: string;
   createdDate: string;
-  [prop: string]: any; // 배열 속성 사용가능
 }
 
 export interface IBoard {
-  id: number | undefined;
+  id: number;
   username: string;
   title: string;
   content: string;
   image: string;
   time: string;
-  recommend: string;
-  [prop: string]: any; // 배열 속성 사용가능
+  recommend: number;
+}
+
+export interface IBookmark {
+  userId: number;
+  boardId: number;
+  username: string;
+  title: string;
 }
 
 export const loginAtom = atom({
@@ -40,18 +45,15 @@ export const userAtom = atom<IUser>({
   },
 });
 
-export const boardAtom = atom<IBoard>({
+export const boardAtom = atom<IBoard[]>({
   //atom은 고유한 key와 default 값을 요구
   key: "isBoard",
-  default: {
-    id: undefined,
-    username: "",
-    title: "",
-    content: "",
-    image: "",
-    time: "",
-    recommend: "",
-  },
+  default: [],
+});
+
+export const bookmarkAtom = atom<IBookmark[]>({
+  key: "isBookmark",
+  default: [],
 });
 
 export const keywordAtom = atom({
