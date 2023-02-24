@@ -1,5 +1,5 @@
-import { useRecoilState, useRecoilValue } from "recoil";
-import { boardAtom, userAtom } from "../atoms";
+import { useRecoilValue } from "recoil";
+import { IBoard, userAtom } from "../atoms";
 import styled from "styled-components";
 import Bookmark from "../Components/Bookmark";
 import { useNavigate, useParams } from "react-router-dom";
@@ -165,6 +165,9 @@ const CommentItem = styled.li`
     font-size: 12px;
     margin-bottom: 3px;
     display: inline-block;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
 `;
 
@@ -185,6 +188,11 @@ const UpCount = styled.span`
   font-weight: 100;
 `;
 
+const TarshSvg = styled.svg`
+  width: 15px;
+  cursor: pointer;
+`;
+
 interface IComment {
   id: number;
   boardId: number;
@@ -192,30 +200,27 @@ interface IComment {
   comment: string;
   date: string;
   up: number;
-  [prop: string]: any;
 }
 
 interface ILIKE {
   userId: number;
   commentId: number;
-  [prop: string]: any;
 }
 
 interface IRecommend {
   userId: number;
   boardId: number;
-  [prop: string]: any;
 }
 
 function BoardDetail() {
-  const [boardData, setBoardData] = useRecoilState(boardAtom);
-  const userData = useRecoilValue(userAtom);
+  const user = useRecoilValue(userAtom); // 로그인 한 유저의 정보
+  const [boardData, setBoardData] = useState<IBoard[]>([]); // 선택한 게시글의 정보
+  const [comment, setComment] = useState(""); //댓글 폼 변수
+  const [boardComment, setBoardComment] = useState<IComment[]>([]); // 클릭한 게시글의 댓글 정보
+  const [likes, setLikes] = useState<ILIKE[]>([]); // 전체 좋아요 정보
+  const [recommend, setRecommend] = useState<IRecommend[]>([]); // 전체 추천 정보
   const { id } = useParams();
   const navigate = useNavigate();
-  const [comment, setComment] = useState("");
-  const [commentAll, setCommentAll] = useState<IComment>([] as any);
-  const [likes, setLikes] = useState<ILIKE>([] as any);
-  const [recommend, setRecommend] = useState<IRecommend>([] as any);
 
   useEffect(() => {
     axios({
@@ -236,8 +241,8 @@ function BoardDetail() {
       withCredentials: true,
     }).then((result) => {
       if (result.status === 200) {
-        const data = result.data.filter((data: any) => data.boardId === boardData[0].id);
-        setCommentAll(data); // 클릭한 게시글의 데이터
+        const data = result.data.filter((data: IComment) => data.boardId === boardData[0].id);
+        setBoardComment(data); // 클릭한 게시글의 데이터
       }
     });
   }, [boardData]);
@@ -249,27 +254,27 @@ function BoardDetail() {
       withCredentials: true,
     }).then((result) => {
       if (result.status === 200) {
-        setRecommend(result.data); // 모든 댓글들의 데이터
+        setRecommend(result.data); // 모든 추천 데이터
       }
     });
   }, []);
 
   useEffect(() => {
     axios({
-      url: "http://localhost:5000/api/likes",
+      url: "http://localhost:5000/api/like",
       method: "GET",
       withCredentials: true,
     }).then((result) => {
       if (result.status === 200) {
-        setLikes(result.data); // 모든 댓글들의 데이터
+        setLikes(result.data); // 모든 좋아요 데이터
       }
     });
   }, []);
 
   const updateBoard = () => {
-    if (userData.username === boardData[0]?.username) {
+    if (user.username === boardData[0]?.username) {
       navigate(`/board/${id}/update`);
-    } else if (userData.username === "") {
+    } else if (user.username === "") {
       alert("로그인이 필요한 서비스입니다.");
     } else {
       alert("다른 사람의 게시글은 수정할 수 없습니다.");
@@ -277,7 +282,7 @@ function BoardDetail() {
   };
 
   const deletedBoard = () => {
-    if (userData.username === boardData[0]?.username) {
+    if (user.username === boardData[0]?.username) {
       const result = window.confirm("정말로 삭제하시겠습니까?");
       if (result) {
         axios({
@@ -287,11 +292,11 @@ function BoardDetail() {
         }).then((result) => {
           if (result.status === 200) {
             alert("삭제가 완료되었습니다.");
-            window.open("/", "_self");
+            navigate("/board/1");
           }
         });
       }
-    } else if (userData.username === "") {
+    } else if (user.username === "") {
       alert("로그인이 필요한 서비스입니다.");
     } else {
       alert("다른 사람의 게시글은 삭제할 수 없습니다.");
@@ -299,14 +304,14 @@ function BoardDetail() {
   };
 
   const onRecommendClick = (e: any, count: number) => {
-    if (userData.username) {
+    if (user.username) {
       // 로그인을 했을 때
       axios({
         url: "http://localhost:5000/api/recommendation",
         method: "POST",
         withCredentials: true,
         data: {
-          userId: userData.id,
+          userId: user.id,
           boardId: id,
         },
       })
@@ -341,7 +346,7 @@ function BoardDetail() {
                   method: "DELETE",
                   withCredentials: true,
                   data: {
-                    userId: userData.id,
+                    userId: user.id,
                     boardId: id,
                   },
                 });
@@ -372,7 +377,7 @@ function BoardDetail() {
 
   const commentSubmitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (userData.username) {
+    if (user.username) {
       if (comment) {
         axios({
           url: "http://localhost:5000/api/comment/insert",
@@ -380,7 +385,7 @@ function BoardDetail() {
           withCredentials: true,
           data: {
             boardId: boardData[0].id,
-            userName: userData.username,
+            userName: user.username,
             comment: comment,
           },
         })
@@ -399,8 +404,10 @@ function BoardDetail() {
               withCredentials: true,
             }).then((result) => {
               if (result.status === 200) {
-                const data = result.data.filter((data: any) => data.boardId === boardData[0].id);
-                setCommentAll(data); // 클릭한 게시글의 댓글
+                const data = result.data.filter(
+                  (data: IComment) => data.boardId === boardData[0].id
+                );
+                setBoardComment(data); // 클릭한 게시글의 댓글
               }
             });
           });
@@ -413,7 +420,7 @@ function BoardDetail() {
   };
 
   const upBtnClick = (e: any, id: number, up: number) => {
-    if (userData.username) {
+    if (user.username) {
       // 로그인을 했을 때
       axios({
         url: "http://localhost:5000/api/like/",
@@ -421,7 +428,7 @@ function BoardDetail() {
         withCredentials: true,
         data: {
           id: id,
-          userId: userData.id,
+          userId: user.id,
         },
       })
         .then((result) => {
@@ -456,7 +463,7 @@ function BoardDetail() {
                   withCredentials: true,
                   data: {
                     id: id,
-                    userId: userData.id,
+                    userId: user.id,
                   },
                 });
               });
@@ -474,14 +481,61 @@ function BoardDetail() {
             withCredentials: true,
           }).then((result) => {
             if (result.status === 200) {
-              const data = result.data.filter((data: any) => data.boardId === boardData[0].id);
-              setCommentAll(data); // 클릭한 게시글의 데이터
+              const data = result.data.filter((data: IComment) => data.boardId === boardData[0].id);
+              setBoardComment(data); // 클릭한 게시글의 데이터
             }
           });
         });
     } else {
       // 로그인을 하지 않았을 때
       alert("로그인이 필요한 서비스입니다.");
+    }
+  };
+
+  const onTrashClickHandler = (e: any, commentId: number) => {
+    const result = window.confirm("정말로 삭제하시겠습니까?");
+    if (result) {
+      axios({
+        url: "http://localhost:5000/api/comment",
+        method: "DELETE",
+        withCredentials: true,
+        data: {
+          id: commentId,
+          boardId: boardData[0].id,
+        },
+      }).then((result) => {
+        if (result.status === 200) {
+          axios({
+            url: "http://localhost:5000/api/like/down",
+            method: "DELETE",
+            withCredentials: true,
+            data: {
+              id: commentId,
+              userId: user.id,
+            },
+          })
+            .then((result) => {
+              if (result.status === 200) {
+                alert("삭제가 완료되었습니다.");
+              }
+            })
+            .then(() => {
+              // 다시 comment를 렌더링
+              axios({
+                url: "http://localhost:5000/api/comment/",
+                method: "GET",
+                withCredentials: true,
+              }).then((result) => {
+                if (result.status === 200) {
+                  const data = result.data.filter(
+                    (data: IComment) => data.boardId === boardData[0].id
+                  );
+                  setBoardComment(data); // 클릭한 게시글의 데이터
+                }
+              });
+            });
+        }
+      });
     }
   };
 
@@ -514,11 +568,18 @@ function BoardDetail() {
               <div dangerouslySetInnerHTML={{ __html: boardData[0]?.content }} />
               <RecommendBtn onClick={(e) => onRecommendClick(e, boardData[0]?.recommend)}>
                 <RecommendSvg
-                  className={recommend.map((recommendation: IRecommend) =>
-                    recommendation.boardId === Number(id) && userData.id === recommendation.userId
-                      ? "active"
-                      : ""
-                  )}
+                  className={(() => {
+                    let isTrue = false;
+                    recommend.map((recommendation: IRecommend) => {
+                      if (
+                        recommendation.boardId === Number(id) &&
+                        user.id === recommendation.userId
+                      )
+                        isTrue = true;
+                    });
+                    if (isTrue) return "active";
+                    else return "";
+                  })()}
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 512 512"
                 >
@@ -541,18 +602,23 @@ function BoardDetail() {
           <CommentBtn>등록</CommentBtn>
         </CommentForm>
         <CommentItems>
-          {commentAll
+          {boardComment
             .slice(0)
             .reverse()
-            .map((data: any, index: number) => (
+            .map((data: IComment, index: number) => (
               <CommentItem key={index}>
                 <div>
                   {data.username}
                   <span>
                     <UpBtn
-                      className={likes.map((like: ILIKE) =>
-                        like.commentId === data.id && userData.id === like.userId ? "active" : ""
-                      )}
+                      className={(() => {
+                        let isTrue = false;
+                        likes.map((like: ILIKE) => {
+                          if (like.commentId === data.id && user.id === like.userId) isTrue = true;
+                        });
+                        if (isTrue) return "active";
+                        else return "";
+                      })()}
                       onClick={(e) => upBtnClick(e, data.id, data.up)}
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 512 512"
@@ -564,7 +630,20 @@ function BoardDetail() {
                   <UpCount>{data.up}</UpCount>
                 </div>
                 <div>{data.comment}</div>
-                <div>{data.date}</div>
+                <div>
+                  {data.date}
+                  {data.username === user.username || boardData[0].username === user.username ? (
+                    <TarshSvg
+                      onClick={(e) => onTrashClickHandler(e, data.id)}
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 448 512"
+                    >
+                      <path d="M170.5 51.6L151.5 80h145l-19-28.4c-1.5-2.2-4-3.6-6.7-3.6H177.1c-2.7 0-5.2 1.3-6.7 3.6zm147-26.6L354.2 80H368h48 8c13.3 0 24 10.7 24 24s-10.7 24-24 24h-8V432c0 44.2-35.8 80-80 80H112c-44.2 0-80-35.8-80-80V128H24c-13.3 0-24-10.7-24-24S10.7 80 24 80h8H80 93.8l36.7-55.1C140.9 9.4 158.4 0 177.1 0h93.7c18.7 0 36.2 9.4 46.6 24.9zM80 128V432c0 17.7 14.3 32 32 32H336c17.7 0 32-14.3 32-32V128H80zm80 64V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16zm80 0V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16zm80 0V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16z" />
+                    </TarshSvg>
+                  ) : (
+                    ""
+                  )}
+                </div>
               </CommentItem>
             ))}
         </CommentItems>

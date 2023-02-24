@@ -304,7 +304,7 @@ app.put("/board/update/:id", (req, res) => {
 
 // bookmark 가져오기 (select)
 app.get("/api/bookmark", (req, res) => {
-  let sql = "SELECT * FROM BOOKMARK";
+  let sql = "SELECT * FROM BOOKMARK ORDER BY time";
   connection.query(sql, (err, rows, fileds) => {
     res.send(rows);
   });
@@ -312,7 +312,7 @@ app.get("/api/bookmark", (req, res) => {
 
 // post 메소드로 "/api/bookmark"에 접속을 한 경우 (bookmark 정보 추가)
 app.post("/api/bookmark", (req, res) => {
-  let sql = "INSERT INTO BOOKMARK VALUES (?, ?, ?, ?)";
+  let sql = "INSERT INTO BOOKMARK VALUES (?, ?, ?, ?, now())";
   let userId = req.body.userId;
   let boardId = req.body.boardId;
   let userName = req.body.userName;
@@ -407,6 +407,17 @@ app.post("/api/comment/insert", (req, res) => {
   });
 });
 
+// 댓글 삭제
+app.delete("/api/comment", (req, res) => {
+  let sql = "DELETE FROM COMMENT WHERE id = ? AND boardId = ?";
+  let id = req.body.id;
+  let boardId = req.body.boardId;
+  let params = [id, boardId];
+  connection.query(sql, params, (err, rows, fields) => {
+    res.send(rows);
+  });
+});
+
 // 댓글 좋아요 수정
 app.put("/api/comment/update", (req, res) => {
   let sql = "UPDATE COMMENT SET up = ? WHERE id = ?";
@@ -417,7 +428,7 @@ app.put("/api/comment/update", (req, res) => {
 });
 
 // 좋아요 정보 가져오기 (select)
-app.get("/api/likes", (req, res) => {
+app.get("/api/like", (req, res) => {
   let sql = "SELECT * FROM LIKES";
   connection.query(sql, (err, rows, fileds) => {
     res.send(rows);
