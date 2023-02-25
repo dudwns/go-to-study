@@ -1,5 +1,5 @@
-import { useRecoilValue } from "recoil";
-import { IBoard, userAtom } from "../atoms";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { IBoard, userAtom, bookmarkAtom } from "../atoms";
 import styled from "styled-components";
 import Bookmark from "../Components/Bookmark";
 import { useNavigate, useParams } from "react-router-dom";
@@ -219,6 +219,7 @@ function BoardDetail() {
   const [boardComment, setBoardComment] = useState<IComment[]>([]); // 클릭한 게시글의 댓글 정보
   const [likes, setLikes] = useState<ILIKE[]>([]); // 전체 좋아요 정보
   const [recommend, setRecommend] = useState<IRecommend[]>([]); // 전체 추천 정보
+  const [bookmark, setBookmark] = useRecoilState(bookmarkAtom); // 전체 북마크 정보
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -232,7 +233,7 @@ function BoardDetail() {
         setBoardData(result.data); // 클릭한 게시글의 데이터
       }
     });
-  }, []);
+  }, [id]);
 
   useEffect(() => {
     axios({
@@ -242,7 +243,7 @@ function BoardDetail() {
     }).then((result) => {
       if (result.status === 200) {
         const data = result.data.filter((data: IComment) => data.boardId === boardData[0].id);
-        setBoardComment(data); // 클릭한 게시글의 데이터
+        setBoardComment(data); // 클릭한 게시글의 댓글
       }
     });
   }, [boardData]);
@@ -291,8 +292,56 @@ function BoardDetail() {
           withCredentials: true,
         }).then((result) => {
           if (result.status === 200) {
-            alert("삭제가 완료되었습니다.");
-            navigate("/board/1");
+            // 게시글 추천 정보 삭제
+            axios({
+              url: "http://localhost:5000/api/recommendation/board",
+              method: "DELETE",
+              withCredentials: true,
+              data: {
+                boardId: boardData[0].id,
+              },
+            }).then((result) => {
+              if (result.status === 200) {
+                axios({
+                  //좋아요 정보 삭제
+                  url: "http://localhost:5000/api/like/board",
+                  method: "DELETE",
+                  withCredentials: true,
+                  data: {
+                    boardId: boardData[0].id,
+                  },
+                }).then((result) => {
+                  if (result.status === 200) {
+                    axios({
+                      // 북마크 정보 삭제
+                      url: "http://localhost:5000/api/bookmark/board",
+                      method: "DELETE",
+                      withCredentials: true,
+                      data: {
+                        boardId: boardData[0].id,
+                      },
+                    }).then((result) => {
+                      if (result.status === 200) {
+                        axios({
+                          // 댓글 정보 삭제
+                          url: "http://localhost:5000/api/comment/board",
+                          method: "DELETE",
+                          withCredentials: true,
+                          data: {
+                            boardId: boardData[0].id,
+                          },
+                        }).then((result) => {
+                          if (result.status === 200) {
+                            alert("삭제가 완료되었습니다.");
+                            navigate("/board/1");
+                          }
+                        });
+                      }
+                    });
+                  }
+                });
+              }
+            });
           }
         });
       }
@@ -312,7 +361,7 @@ function BoardDetail() {
         withCredentials: true,
         data: {
           userId: user.id,
-          boardId: id,
+          boardId: boardData[0].id,
         },
       })
         .then((result) => {
@@ -325,7 +374,7 @@ function BoardDetail() {
                 method: "PUT",
                 withCredentials: true,
                 data: {
-                  id: id,
+                  id: boardData[0].id,
                   recommend: count + 1,
                 },
               });
@@ -337,7 +386,7 @@ function BoardDetail() {
                 method: "PUT",
                 withCredentials: true,
                 data: {
-                  id: id,
+                  id: boardData[0].id,
                   recommend: count - 1,
                 },
               }).then(() => {
@@ -347,7 +396,7 @@ function BoardDetail() {
                   withCredentials: true,
                   data: {
                     userId: user.id,
-                    boardId: id,
+                    boardId: boardData[0].id,
                   },
                 });
               });
@@ -429,6 +478,7 @@ function BoardDetail() {
         data: {
           id: id,
           userId: user.id,
+          boardId: boardData[0].id,
         },
       })
         .then((result) => {
@@ -506,12 +556,12 @@ function BoardDetail() {
       }).then((result) => {
         if (result.status === 200) {
           axios({
-            url: "http://localhost:5000/api/like/down",
+            //좋아요 정보 삭제
+            url: "http://localhost:5000/api/like",
             method: "DELETE",
             withCredentials: true,
             data: {
               id: commentId,
-              userId: user.id,
             },
           })
             .then((result) => {
