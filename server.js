@@ -353,6 +353,16 @@ app.delete("/api/bookmark/board", (req, res) => {
   });
 });
 
+//  회원 탈퇴했을 때 bookmark 테이블에 정보 삭제
+app.delete("/api/bookmark/:userId", (req, res) => {
+  let sql = "DELETE FROM BOOKMARK WHERE userId = ?";
+  let userId = req.params.userId;
+  let params = [userId];
+  connection.query(sql, params, (err, rows, fields) => {
+    res.send(rows);
+  });
+});
+
 // -------------------------------------------------------------------------------------------- 게시글 추천
 
 // recommendation 가져오기 (select)
@@ -405,6 +415,16 @@ app.delete("/api/recommendation/board", (req, res) => {
   });
 });
 
+// 회원 탈퇴했을 때 recommendation 테이블에 추천 정보 삭제
+app.delete("/api/recommendation/:userId", (req, res) => {
+  let sql = "DELETE FROM RECOMMENDATION WHERE userId = ?";
+  let userId = req.params.userId;
+  let params = [userId];
+  connection.query(sql, params, (err, rows, fields) => {
+    res.send(rows);
+  });
+});
+
 // -------------------------------------------------------------------------------------------- 댓글
 
 // 댓글 가져오기 (select)
@@ -438,7 +458,7 @@ app.delete("/api/comment", (req, res) => {
   });
 });
 
-// 댓글 삭제
+// 게시물이 삭제됐을 때 댓글 삭제
 app.delete("/api/comment/board", (req, res) => {
   let sql = "DELETE FROM COMMENT WHERE boardId = ?";
   let boardId = req.body.boardId;
@@ -448,9 +468,19 @@ app.delete("/api/comment/board", (req, res) => {
   });
 });
 
+// 게시물이 삭제됐을 때 댓글 삭제
+app.delete("/api/comment/:userId", (req, res) => {
+  let sql = "DELETE FROM COMMENT WHERE userId = ?";
+  let userId = req.params.userId;
+  let params = [userId];
+  connection.query(sql, params, (err, rows, fields) => {
+    res.send(rows);
+  });
+});
+
 // -------------------------------------------------------------------------------------------- 댓글 좋아요 기능
 
-// 댓글 좋아요 수정
+// 좋아요 정보 수정
 app.put("/api/comment/update", (req, res) => {
   let sql = "UPDATE COMMENT SET up = ? WHERE id = ?";
   let params = [req.body.up, req.body.id];
@@ -506,6 +536,16 @@ app.delete("/api/like/board", (req, res) => {
   let sql = "DELETE FROM LIKES WHERE boardId = ?";
   let boardId = req.body.boardId;
   let params = [boardId];
+  connection.query(sql, params, (err, rows, fields) => {
+    res.send(rows);
+  });
+});
+
+// 회원 탈퇴했을 때 like 테이블에 좋아요 정보 삭제
+app.delete("/api/like/:userId", (req, res) => {
+  let sql = "DELETE FROM LIKES WHERE userId = ?";
+  let userId = req.params.userId;
+  let params = [userId];
   connection.query(sql, params, (err, rows, fields) => {
     res.send(rows);
   });

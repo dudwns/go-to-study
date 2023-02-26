@@ -1,5 +1,4 @@
 import axios from "axios";
-import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
@@ -54,13 +53,13 @@ const RemoveBtn = styled.button`
 
 function MyPage() {
   const { id } = useParams();
-  const [userData, setUserData] = useRecoilState(userAtom);
-  console.log(userData?.username);
+  const [user, setUser] = useRecoilState(userAtom);
+  console.log(user?.username);
   const deleteCustomer = () => {
-    if (userData?.username === "") {
+    if (user?.username === "") {
       alert("로그인이 필요한 서비스입니다.");
     } else {
-      const result = window.confirm("정말로 삭제하시겠습니까?");
+      const result = window.confirm("정말로 탈퇴하시겠습니까?");
       if (result) {
         axios({
           url: "/api/customers/" + id,
@@ -68,13 +67,52 @@ function MyPage() {
           withCredentials: true,
         }).then((result) => {
           if (result.status === 200) {
-            alert("삭제가 완료되었습니다.");
+            // 게시글 삭제
             axios({
-              url: "http://localhost:5000/api/customers/board/" + userData?.username,
+              url: "http://localhost:5000/api/customers/board/" + user?.username,
               method: "DELETE",
               withCredentials: true,
             }).then((result) => {
-              window.open("/", "_self");
+              if (result.status === 200) {
+                // 추천 정보 삭제
+                axios({
+                  url: "http://localhost:5000/api/recommendation/" + user?.id,
+                  method: "DELETE",
+                  withCredentials: true,
+                }).then((result) => {
+                  if (result.status === 200) {
+                    // 좋아요 정보 삭제
+                    axios({
+                      url: "http://localhost:5000/api/like/" + user?.id,
+                      method: "DELETE",
+                      withCredentials: true,
+                    }).then((result) => {
+                      if (result.status === 200) {
+                        // 북마크 정보 삭제
+                        axios({
+                          url: "http://localhost:5000/api/bookmark/" + user?.id,
+                          method: "DELETE",
+                          withCredentials: true,
+                        }).then((result) => {
+                          if (result.status === 200) {
+                            // 댓글 정보 삭제
+                            axios({
+                              url: "http://localhost:5000/api/comment/" + user?.id,
+                              method: "DELETE",
+                              withCredentials: true,
+                            }).then((result) => {
+                              if (result.status === 200) {
+                                alert("탈퇴가 완료되었습니다.");
+                                window.open("/", "_self");
+                              }
+                            });
+                          }
+                        });
+                      }
+                    });
+                  }
+                });
+              }
             });
           }
         });
@@ -88,15 +126,15 @@ function MyPage() {
         <HeaderText>프로필 정보를 볼 수 있습니다.</HeaderText>
         <Layout>
           <div>닉네임</div>
-          <div>{userData?.username}</div>
+          <div>{user?.username}</div>
           <div>이름</div>
-          <div>{userData?.name}</div>
+          <div>{user?.name}</div>
           <div>이메일</div>
-          <div>{userData?.email}</div>
+          <div>{user?.email}</div>
           <div>출생년도</div>
-          <div>{userData?.birthday}</div>
+          <div>{user?.birthday}</div>
           <div>가입 날짜</div>
-          <div>{userData?.createdDate}</div>
+          <div>{user?.createdDate}</div>
         </Layout>
         <RemoveBtn onClick={deleteCustomer}>회원 탈퇴</RemoveBtn>
       </Container>
