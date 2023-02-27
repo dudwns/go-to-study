@@ -1,6 +1,8 @@
 import styled from "styled-components";
 import { bookmarkAtom, IBookmark, userAtom } from "../atoms";
 import { useRecoilState, useRecoilValue } from "recoil";
+import { useNavigate } from "react-router-dom";
+// import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 const Wrapper = styled.div`
   display: flex;
@@ -36,6 +38,11 @@ const BookmarkList = styled.ul`
 function Bookmark() {
   const user = useRecoilValue(userAtom); // 로그인 한 유저의 정보
   const [bookmark, setBookmark] = useRecoilState(bookmarkAtom); // 전체 북마크 정보
+  const navigate = useNavigate();
+
+  const onListClick = (boardId: number) => {
+    navigate("/board/detail/" + boardId);
+  };
 
   return (
     <>
@@ -45,7 +52,7 @@ function Bookmark() {
           {bookmark &&
             bookmark.map((data: IBookmark, index: number) =>
               data.userId === user.id ? (
-                <li key={index}>
+                <li key={index} onClick={() => onListClick(data.boardId)}>
                   {data.title.length > 20 ? `${data.title.slice(0, 20)}...` : data.title}
                 </li>
               ) : (
