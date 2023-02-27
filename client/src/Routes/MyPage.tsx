@@ -74,42 +74,15 @@ function MyPage() {
               withCredentials: true,
             }).then((result) => {
               if (result.status === 200) {
-                // 추천 정보 삭제
+                // 해당 유저의 북마크 정보 삭제
                 axios({
-                  url: "http://localhost:5000/api/recommendation/" + user?.id,
+                  url: "http://localhost:5000/api/bookmark/" + user?.id,
                   method: "DELETE",
                   withCredentials: true,
                 }).then((result) => {
                   if (result.status === 200) {
-                    // 좋아요 정보 삭제
-                    axios({
-                      url: "http://localhost:5000/api/like/" + user?.id,
-                      method: "DELETE",
-                      withCredentials: true,
-                    }).then((result) => {
-                      if (result.status === 200) {
-                        // 북마크 정보 삭제
-                        axios({
-                          url: "http://localhost:5000/api/bookmark/" + user?.id,
-                          method: "DELETE",
-                          withCredentials: true,
-                        }).then((result) => {
-                          if (result.status === 200) {
-                            // 댓글 정보 삭제
-                            axios({
-                              url: "http://localhost:5000/api/comment/" + user?.id,
-                              method: "DELETE",
-                              withCredentials: true,
-                            }).then((result) => {
-                              if (result.status === 200) {
-                                alert("탈퇴가 완료되었습니다.");
-                                window.open("/", "_self");
-                              }
-                            });
-                          }
-                        });
-                      }
-                    });
+                    alert("탈퇴가 완료되었습니다.");
+                    window.open("/", "_self");
                   }
                 });
               }

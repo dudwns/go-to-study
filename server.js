@@ -468,11 +468,11 @@ app.delete("/api/comment/board", (req, res) => {
   });
 });
 
-// 게시물이 삭제됐을 때 댓글 삭제
-app.delete("/api/comment/:userId", (req, res) => {
-  let sql = "DELETE FROM COMMENT WHERE userId = ?";
-  let userId = req.params.userId;
-  let params = [userId];
+// 회원 탈퇴했을 때 댓글 삭제
+app.delete("/api/comment/:username", (req, res) => {
+  let sql = "DELETE FROM COMMENT WHERE username = ?";
+  let username = req.params.username;
+  let params = [username];
   connection.query(sql, params, (err, rows, fields) => {
     res.send(rows);
   });
