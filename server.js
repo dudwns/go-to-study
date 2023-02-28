@@ -437,11 +437,24 @@ app.get("/api/comment", (req, res) => {
 
 // post 메소드로 "/api/comment/insert"에 접속을 한 경우 (댓글 등록)
 app.post("/api/comment/insert", (req, res) => {
-  let sql = "INSERT INTO COMMENT VALUES (null, ?, ?, ?, now(), 0)";
+  let sql = "INSERT INTO COMMENT VALUES (null, ?, ?, ?, now(), 0, null, null)";
   let boardId = req.body.boardId;
   let userName = req.body.userName;
   let comment = req.body.comment;
   let params = [boardId, userName, comment];
+  connection.query(sql, params, (err, rows, fields) => {
+    res.send(rows);
+  });
+});
+
+// post 메소드로 "/api/comment/reply/insert"에 접속을 한 경우 (대댓글 등록)
+app.post("/api/comment/reply/insert", (req, res) => {
+  let sql = "INSERT INTO COMMENT VALUES (null, ?, ?, ?, now(), 0, ?, null)";
+  let boardId = req.body.boardId;
+  let userName = req.body.userName;
+  let reply = req.body.reply;
+  let group = req.body.group;
+  let params = [boardId, userName, reply, group];
   connection.query(sql, params, (err, rows, fields) => {
     res.send(rows);
   });
