@@ -153,12 +153,14 @@ const CommentBtn = styled.button`
 const CommentItems = styled.ul`
   padding: 0 20px;
   width: 80%;
+  padding-bottom: 50px;
 `;
 
 const CommentItem = styled.li`
-  border-bottom: 1px solid gray;
-  margin: 20px 0;
+  margin-top: 20px;
+  margin-bottom: 10px;
   position: relative;
+  border-bottom: 1px solid gray;
 
   & > div:first-child {
     font-size: 13px;
@@ -202,6 +204,11 @@ const UpCount = styled.span`
   font-weight: 100;
 `;
 
+const ReplyDate = styled.div`
+  width: 120px;
+  display: inline-block;
+`;
+
 const ReplyBtn = styled.span`
   margin-left: 30px;
   cursor: pointer;
@@ -211,6 +218,50 @@ const TarshSvg = styled.svg`
   width: 15px;
   cursor: pointer;
 `;
+
+const ReplyList = styled.div`
+  display: none;
+`;
+
+const ReplyItems = styled.ul`
+  width: 100%;
+  padding-left: 20px;
+`;
+
+const ReplyItem = styled.li`
+  margin: 20px 0;
+  position: relative;
+  border-bottom: 1px solid gray;
+
+  &:first-child {
+    margin-top: 10px;
+  }
+
+  & > div:first-child {
+    font-size: 13px;
+    font-weight: 600;
+    display: inline-block;
+    margin-bottom: 5px;
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+  }
+
+  & > div:nth-child(2) {
+    font-size: 12px;
+    margin-bottom: 3px;
+  }
+
+  & > div:nth-child(3) {
+    font-size: 12px;
+    margin-bottom: 3px;
+    display: inline-block;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+`;
+
 const ReplyForm = styled.form`
   position: absolute;
   top: 80px;
@@ -248,16 +299,17 @@ const ReplyInput = styled.input`
   }
 `;
 
-const ReplyList = styled.div`
-  display: none;
-`;
+const ReplyToggle = styled.span`
+  display: flex;
 
-const ReplyOpen = styled.span`
+  align-items: center;
   cursor: pointer;
+  font-size: 12px;
 
   & svg {
     width: 10px;
     pointer-events: none;
+    margin-right: 7px;
   }
 `;
 
@@ -320,7 +372,6 @@ function BoardDetail() {
           (data: IComment) => data.boardId === boardData[0].id && data.group
         );
         setReplyDatas(replyData); // 클릭한 게시글의 대댓글
-        console.log(replyData);
       }
     });
   }, [boardData]);
@@ -699,25 +750,41 @@ function BoardDetail() {
           reply: reply,
           group: group,
         },
-      })
-        .then((result) => {
-          if (result.status === 200) {
-            setReply("");
-          }
+      }).then(() => {
+        axios({
+          url: "http://localhost:5000/api/comment/update/reply",
+          method: "PUT",
+          withCredentials: true,
+          data: {
+            id: group,
+          },
         })
-        .then(() => {
-          // 다시 comment를 렌더링
-          axios({
-            url: "http://localhost:5000/api/comment/",
-            method: "GET",
-            withCredentials: true,
-          }).then((result) => {
+          .then((result) => {
             if (result.status === 200) {
-              const data = result.data.filter((data: IComment) => data.boardId === boardData[0].id);
-              setBoardComment(data); // 클릭한 게시글의 데이터
+              setReply("");
             }
+          })
+          .then(() => {
+            // 다시 comment를 렌더링
+            axios({
+              url: "http://localhost:5000/api/comment/",
+              method: "GET",
+              withCredentials: true,
+            }).then((result) => {
+              if (result.status === 200) {
+                const data = result.data.filter(
+                  (data: IComment) => data.boardId === boardData[0].id
+                );
+                setBoardComment(data); // 클릭한 게시글의 데이터
+
+                const replyData = result.data.filter(
+                  (data: IComment) => data.boardId === boardData[0].id && data.group
+                );
+                setReplyDatas(replyData); // 클릭한 게시글의 대댓글
+              }
+            });
           });
-        });
+      });
     } else {
       // 로그인을 하지 않았을 때
       alert("로그인이 필요한 서비스입니다.");
@@ -725,8 +792,8 @@ function BoardDetail() {
   };
 
   const onReplyOpen = (e: any) => {
-    console.log(e.target.nextSibling.childNodes[0]);
-    e.target.nextSibling.childNodes[0].classList.toggle("block");
+    console.log(e.target.nextSibling);
+    e.target.nextSibling.classList.toggle("block");
   };
   return (
     <>
@@ -824,7 +891,8 @@ function BoardDetail() {
                     <div>{data.comment}</div>
                     <div>
                       <div>
-                        {data.date} <ReplyBtn onClick={onReplyClick}>답글</ReplyBtn>
+                        <ReplyDate>{data.date}</ReplyDate>{" "}
+                        <ReplyBtn onClick={onReplyClick}>답글</ReplyBtn>
                         <ReplyForm>
                           <ReplyInput
                             type="text"
@@ -852,18 +920,18 @@ function BoardDetail() {
                     </div>
                   </CommentItem>
                   {data.reply && (
-                    <ReplyOpen onClick={onReplyOpen}>
+                    <ReplyToggle onClick={onReplyOpen}>
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
                         <path d="M169.4 342.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 274.7 54.6 137.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z" />
-                      </svg>{" "}
+                      </svg>
                       답글 열기
-                    </ReplyOpen>
+                    </ReplyToggle>
                   )}
-                  <CommentItems>
-                    {replyDatas.map((value, index) =>
+                  <ReplyList>
+                    {replyDatas.map((value) =>
                       value.group === data.id ? (
-                        <ReplyList>
-                          <CommentItem key={index}>
+                        <ReplyItems>
+                          <ReplyItem key={value.id}>
                             <div>
                               {value.username}
                               <span>
@@ -890,7 +958,8 @@ function BoardDetail() {
                             <div>{value.comment}</div>
                             <div>
                               <div>
-                                {value.date} <ReplyBtn onClick={onReplyClick}>답글</ReplyBtn>
+                                <ReplyDate>{value.date}</ReplyDate>
+                                <ReplyBtn onClick={onReplyClick}>답글</ReplyBtn>
                                 <ReplyForm>
                                   <ReplyInput
                                     type="text"
@@ -916,11 +985,11 @@ function BoardDetail() {
                                 ""
                               )}
                             </div>
-                          </CommentItem>
-                        </ReplyList>
+                          </ReplyItem>
+                        </ReplyItems>
                       ) : null
                     )}
-                  </CommentItems>
+                  </ReplyList>
                 </>
               )
             )}

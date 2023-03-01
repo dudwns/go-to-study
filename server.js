@@ -447,6 +447,15 @@ app.post("/api/comment/insert", (req, res) => {
   });
 });
 
+// 대댓글을 달았을 때 댓글 수정
+app.put("/api/comment/update/reply", (req, res) => {
+  let sql = "UPDATE COMMENT SET reply = 1 WHERE id = ?";
+  let params = [req.body.id];
+  connection.query(sql, params, (err, rows, fields) => {
+    res.send(rows);
+  });
+});
+
 // post 메소드로 "/api/comment/reply/insert"에 접속을 한 경우 (대댓글 등록)
 app.post("/api/comment/reply/insert", (req, res) => {
   let sql = "INSERT INTO COMMENT VALUES (null, ?, ?, ?, now(), 0, ?, null)";
