@@ -31,7 +31,12 @@ const Wrapper = styled.div`
   & .block {
     display: block;
   }
+
+  & .cancel {
+    transform: scaleY(-1);
+  }
 `;
+
 const BoardContainer = styled.div`
   width: 80%;
   display: flex;
@@ -342,6 +347,7 @@ function BoardDetail() {
   const [likes, setLikes] = useState<ILIKE[]>([]); // 전체 좋아요 정보
   const [recommend, setRecommend] = useState<IRecommend[]>([]); // 전체 추천 정보
   const [reply, setReply] = useState(""); // 대댓글 폼 변수
+  const [replyreply, setReplyReply] = useState("");
   const [replyDatas, setReplyDatas] = useState<IComment[]>([]);
   const { id } = useParams();
   const navigate = useNavigate();
@@ -723,20 +729,24 @@ function BoardDetail() {
     }
   };
 
-  const onReplyClick = (e: any) => {
+  const onReplyClick = (e: any, username: string, isReply: boolean) => {
     e.target.nextSibling.classList.toggle("block");
     e.target.nextSibling.children[0].focus();
     e.target.parentElement.parentElement.parentElement.classList.toggle("bottom");
+
+    if (!isReply) {
+      setReplyReply("");
+      setReplyReply(`@${username} `);
+    }
   };
 
   const onCencleClick = (e: any) => {
     e.preventDefault();
-    console.log(e.target.parentElement);
     e.target.parentElement.classList.toggle("block");
     e.target.parentElement.parentElement.parentElement.parentElement.classList.toggle("bottom");
   };
 
-  const onReplySubmit = (e: any, group: number) => {
+  const onReplySubmit = (e: any, group: number, isReply: boolean) => {
     e.preventDefault();
     if (user.username) {
       // 로그인을 했을 때
@@ -747,7 +757,7 @@ function BoardDetail() {
         data: {
           boardId: boardData[0].id,
           userName: user.username,
-          reply: reply,
+          reply: isReply ? reply : replyreply,
           group: group,
         },
       }).then(() => {
@@ -792,9 +802,10 @@ function BoardDetail() {
   };
 
   const onReplyOpen = (e: any) => {
-    console.log(e.target.nextSibling);
     e.target.nextSibling.classList.toggle("block");
+    e.target.childNodes[0].classList.toggle("cancel");
   };
+
   return (
     <>
       <Wrapper>
@@ -891,8 +902,10 @@ function BoardDetail() {
                     <div>{data.comment}</div>
                     <div>
                       <div>
-                        <ReplyDate>{data.date}</ReplyDate>{" "}
-                        <ReplyBtn onClick={onReplyClick}>답글</ReplyBtn>
+                        <ReplyDate>{data.date}</ReplyDate>
+                        <ReplyBtn onClick={(e) => onReplyClick(e, data.username, true)}>
+                          답글
+                        </ReplyBtn>
                         <ReplyForm>
                           <ReplyInput
                             type="text"
@@ -902,7 +915,7 @@ function BoardDetail() {
                             required
                           ></ReplyInput>
                           <button onClick={onCencleClick}>취소</button>
-                          <button onClick={(e) => onReplySubmit(e, data.id)}>답글</button>
+                          <button onClick={(e) => onReplySubmit(e, data.id, true)}>답글</button>
                         </ReplyForm>
                       </div>
                       {data.username === user.username ||
@@ -959,17 +972,21 @@ function BoardDetail() {
                             <div>
                               <div>
                                 <ReplyDate>{value.date}</ReplyDate>
-                                <ReplyBtn onClick={onReplyClick}>답글</ReplyBtn>
+                                <ReplyBtn onClick={(e) => onReplyClick(e, value.username, false)}>
+                                  답글
+                                </ReplyBtn>
                                 <ReplyForm>
                                   <ReplyInput
                                     type="text"
                                     placeholder="답글 추가..."
-                                    value={reply}
-                                    onChange={(e) => setReply(e.target.value)}
+                                    value={replyreply}
+                                    onChange={(e) => setReplyReply(e.target.value)}
                                     required
                                   ></ReplyInput>
                                   <button onClick={onCencleClick}>취소</button>
-                                  <button onClick={(e) => onReplySubmit(e, value.id)}>답글</button>
+                                  <button onClick={(e) => onReplySubmit(e, value.group, false)}>
+                                    답글
+                                  </button>
                                 </ReplyForm>
                               </div>
                               {value.username === user.username ||
