@@ -56,6 +56,7 @@ table {
 }
 * {
   box-sizing: border-box;
+  transition: background-color 0.1s linear;
 }
 body {
   font-weight: 300;
@@ -66,9 +67,14 @@ a{
   text-decoration:none;
   color:black;
 }
+
+input:focus{
+      outline: none;
+}
 `;
 
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
+
 root.render(
   <>
     <RecoilRoot>

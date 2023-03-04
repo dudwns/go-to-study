@@ -3,7 +3,7 @@ import ReactQuill from "react-quill"; //내용 작성을 위해 React-Quill 호�
 import "react-quill/dist/quill.snow.css"; //React-Quill에서 사용될 스타일 CSS 파일까지 호출
 import { useMemo, useState } from "react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
 
 const Wrapper = styled.div`
@@ -13,6 +13,10 @@ const Wrapper = styled.div`
   padding-top: 120px;
   align-items: center;
   flex-direction: column;
+  background-color: ${(props) => props.theme.bgColor};
+  & .quill {
+    background-color: white;
+  }
 `;
 
 const Header = styled.div`
@@ -24,12 +28,16 @@ const Header = styled.div`
 
 const TitleInput = styled.input`
   width: 500px;
+  padding: 5px 10px;
 `;
 
 const UpdateBtn = styled.button`
-  border: none;
+  color: white;
+  background-color: ${(props) => props.theme.btnColor};
+  border: 1px solid gray;
   padding: 5px 10px;
   width: 60px;
+  border-radius: 3px;
   cursor: pointer;
 `;
 
@@ -37,6 +45,7 @@ function BoardUpdate() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const { id } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios({
@@ -46,7 +55,6 @@ function BoardUpdate() {
     }).then((result) => {
       if (result.status === 200) {
         setTitle(result.data[0].title);
-        console.log(result.data[0].content);
         setContent(result.data[0].content);
       }
     });
@@ -75,7 +83,6 @@ function BoardUpdate() {
 
   const updateHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(title, content);
     axios({
       url: "http://localhost:5000/board/update/" + id,
       method: "PUT",
@@ -88,8 +95,19 @@ function BoardUpdate() {
     })
       .then((result) => {
         if (result.status === 200) {
-          alert("수정되었습니다.");
-          window.open("/", "_self");
+          axios({
+            url: "http://localhost:5000/api/bookmark/" + id,
+            method: "PUT",
+            withCredentials: true,
+            data: {
+              title: title,
+            },
+          }).then((result) => {
+            if (result.status === 200) {
+              alert("수정되었습니다.");
+              navigate(-1);
+            }
+          });
         }
       })
       .catch((error) => {
@@ -188,14 +206,16 @@ function BoardUpdate() {
           ></TitleInput>{" "}
           <UpdateBtn>변경</UpdateBtn>
         </Header>
-        <ReactQuill
-          onChange={setContent}
-          modules={modules}
-          formats={formats}
-          value={content}
-          style={{ height: "400px" }}
-          placeholder="내용을 입력해주세요."
-        ></ReactQuill>
+        <div style={{ backgroundColor: "white", height: "442px" }}>
+          <ReactQuill
+            onChange={setContent}
+            modules={modules}
+            formats={formats}
+            value={content}
+            style={{ height: "400px" }}
+            placeholder="내용을 입력하세요."
+          ></ReactQuill>
+        </div>
       </form>
     </Wrapper>
   );

@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import {
   boardAtom,
@@ -20,6 +20,8 @@ const Wrapper = styled.div`
   width: 100%;
   display: flex;
   padding-top: 70px;
+  color: ${(props) => props.theme.textColor};
+  background-color: ${(props) => props.theme.bgColor};
 `;
 
 const BorderContent = styled.div`
@@ -38,14 +40,20 @@ const BoardMenu = styled.div`
 `;
 
 const RecentBtn = styled.button`
-  border: none;
+  border: 1px solid gray;
+  border-radius: 3px;
   margin-right: 15px;
   padding: 5px 10px;
+  background-color: ${(props) => props.theme.btnColor};
+  color: white;
 `;
 
 const RecommendBtn = styled.button`
-  border: none;
+  border: 1px solid gray;
+  border-radius: 3px;
   padding: 5px 10px;
+  background-color: ${(props) => props.theme.btnColor};
+  color: white;
 `;
 
 const SearchForm = styled.form``;
@@ -54,16 +62,22 @@ const SearchInput = styled.input`
 `;
 
 const WriteBtn = styled.button`
-  border: none;
+  border: 1px solid gray;
+  border-radius: 3px;
   padding: 5px 10px;
+  background-color: ${(props) => props.theme.btnColor};
+  color: white;
   cursor: pointer;
 `;
 
 const ListBtn = styled.button`
+  border: 1px solid gray;
   width: 60px;
-  border: none;
+  border-radius: 3px;
   margin-left: 15px;
   padding: 5px 10px;
+  background-color: ${(props) => props.theme.btnColor};
+  color: white;
   cursor: pointer;
 `;
 
@@ -71,7 +85,7 @@ const BoardContent = styled.div`
   width: 100%;
   margin-bottom: 10px;
   & > div:first-child {
-    border-top: 2px solid black;
+    border-top: 2px solid ${(props) => props.theme.borderColor};
   }
 `;
 
@@ -113,7 +127,7 @@ const BoardHeader = styled.div`
 const BoardList = styled.div`
   width: 100%;
   height: 50px;
-  border-bottom: 1px solid gray;
+  border-bottom: 1px solid ${(props) => props.theme.borderColor};
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -124,7 +138,7 @@ const BoardList = styled.div`
   }
 
   &:hover {
-    background-color: whitesmoke;
+    background-color: ${(props) => props.theme.accentColor};
   }
 `;
 
@@ -187,11 +201,10 @@ const PrevBtn = styled.button`
   height: 23px;
   margin-right: 10px;
   background-color: white;
-  border: 1px solid white;
+  border: none;
   border-radius: 3px;
-  &:hover {
-    background-color: #d3d3d3;
-  }
+  background-color: ${(props) => props.theme.bgColor};
+  fill: ${(props) => props.theme.textColor};
 `;
 
 const NextBtn = styled.button`
@@ -200,11 +213,10 @@ const NextBtn = styled.button`
   height: 23px;
   margin-left: 10px;
   background-color: white;
-  border: 1px solid white;
+  border: none;
   border-radius: 3px;
-  &:hover {
-    background-color: #d3d3d3;
-  }
+  background-color: ${(props) => props.theme.bgColor};
+  fill: ${(props) => props.theme.textColor};
 `;
 
 function Board() {

@@ -32,6 +32,11 @@ export const isDarkAtom = atom({
   default: false,
 });
 
+export const isHeaderAtom = atom({
+  key: "isHeader",
+  default: false,
+});
+
 export const loginAtom = atom({
   //atom은 고유한 key와 default 값을 요구
   key: "isLogin",

@@ -1,14 +1,15 @@
-import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 
 const PageBtn = styled.button<IPage>`
-  background-color: ${(prop) => (prop.pageNumber == prop.currentPage ? "gray" : "white")};
+  background-color: ${(prop) =>
+    prop.pageNumber == prop.currentPage ? `${prop.theme.accentColor}` : `${prop.theme.bgColor}`};
   cursor: pointer;
-  border: 1px solid gray;
+  border: none;
   margin: 0 1px;
   border-radius: 3px;
+  color: ${(props) => props.theme.textColor};
   &:hover {
-    background-color: #d3d3d3;
+    background-color: ${(props) => props.theme.cardBgColor};
   }
 `;
 

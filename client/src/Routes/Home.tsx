@@ -1,10 +1,10 @@
 import axios from "axios";
-import { useEffect, useState, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
-import styled, { keyframes } from "styled-components";
-import { boardAtom, IUser, keywordAtom, loginAtom, userAtom } from "../atoms";
-import { motion, AnimatePresence } from "framer-motion";
+import styled from "styled-components";
+import { loginAtom, userAtom } from "../atoms";
+import { motion } from "framer-motion";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Mousewheel, Pagination } from "swiper";
 import "swiper/css";
@@ -85,13 +85,13 @@ const Wrapper = styled(motion.div)`
   }
 `;
 
-const SideBar = styled(motion.div)<ISide>`
+const SideBar = styled(motion.div)`
   width: 200px;
   position: fixed;
   display: flex;
   background-color: rgba(0, 0, 0, 0.7);
   color: white;
-  top: 60px;
+  top: 50px;
   height: 650px;
   left: -200px;
   z-index: 3;
@@ -170,17 +170,12 @@ const sideBarVariants = {
   },
 };
 
-interface ISide {
-  count: number;
-  open: boolean;
-}
 const menuList = ["홈페이지 소개", "컨텐츠 소개", "기술"];
 
 function Home() {
-  const [isLogin, setIsLogin] = useRecoilState(loginAtom);
-  const [user, setUser] = useRecoilState(userAtom);
-  const [count, setCount] = useState(0);
-  const [sideOpen, setSideOpen] = useState(true);
+  const [isLogin, setIsLogin] = useRecoilState(loginAtom); // 로그인 유무를 나타내는 boolean 값
+  const [user, setUser] = useRecoilState(userAtom); // 로그인 한 유저의 정보
+  const [sideOpen, setSideOpen] = useState(true); // 사이드 메뉴 유무를 나타내는 boolean 값
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -206,13 +201,7 @@ function Home() {
 
   return (
     <Wrapper variants={wrapVariants} animate="active">
-      <SideBar
-        variants={sideBarVariants}
-        initial="normal"
-        animate={sideOpen ? "open" : "close"}
-        open={sideOpen}
-        count={count}
-      >
+      <SideBar variants={sideBarVariants} initial="normal" animate={sideOpen ? "open" : "close"}>
         <div>고투스</div>
         <div>
           <HomeBtn onClick={() => navigate("/board/1")}>커뮤니티 바로가기</HomeBtn>

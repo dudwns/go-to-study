@@ -1,10 +1,10 @@
 import { useRecoilState, useRecoilValue } from "recoil";
-import { IBoard, userAtom, bookmarkAtom } from "../atoms";
+import { IBoard, isDarkAtom, userAtom } from "../atoms";
 import styled from "styled-components";
 import Bookmark from "../Components/Bookmark";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const Wrapper = styled.div`
   height: 100vh;
@@ -12,7 +12,8 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   padding-top: 70px;
-
+  background-color: ${(props) => props.theme.bgColor};
+  color: ${(props) => props.theme.textColor};
   & > div {
     display: flex;
   }
@@ -42,29 +43,34 @@ const BoardContainer = styled.div`
   display: flex;
   flex-direction: column;
   padding: 0 20px;
+  background-color: ${(props) => props.theme.bgColor};
 `;
 
 const BoardHeader = styled.div`
-  border: 1px solid black;
+  border: 1px solid ${(props) => props.theme.borderColor};
+  border-bottom: none;
   padding: 10px;
   & ul {
     display: flex;
     justify-content: space-between;
   }
+  background-color: ${(props) => props.theme.bgColor};
 `;
 
 const BoardContent = styled.div`
-  border: 1px solid black;
+  border: 1px solid ${(props) => props.theme.borderColor};
   padding: 10px;
   height: 600px;
   margin-bottom: 70px;
   position: relative;
+  background-color: ${(props) => props.theme.bgColor};
 `;
 
 const BoardTitle = styled.div`
   font-size: 25px;
   font-weight: 800;
   margin-bottom: 50px;
+  background-color: ${(props) => props.theme.bgColor};
 `;
 
 const RecommendBtn = styled.button`
@@ -79,7 +85,12 @@ const RecommendBtn = styled.button`
   left: 0;
   right: 0;
   margin: 0 auto;
+  border-radius: 5px;
   cursor: pointer;
+  background-color: ${(props) => props.theme.bgColor};
+  border-color: ${(props) => props.theme.borderColor};
+  color: ${(props) => props.theme.textColor};
+
   & svg {
     width: 25px;
     fill: white;
@@ -106,14 +117,17 @@ const List = styled.div`
   display: flex;
   justify-content: flex-end;
   margin-bottom: 15px;
+  background-color: ${(props) => props.theme.bgColor};
 `;
 
 const UpdateBtn = styled.button`
   border: none;
   padding: 5px 10px;
   width: 60px;
+  border-radius: 3px;
   cursor: pointer;
   background-color: #376ed4;
+  color: white;
 `;
 
 const RemoveBtn = styled.button`
@@ -121,16 +135,21 @@ const RemoveBtn = styled.button`
   padding: 5px 10px;
   width: 60px;
   margin-left: 15px;
+  border-radius: 3px;
   cursor: pointer;
   background-color: #dd0f0f;
+  color: white;
 `;
 
 const ListBtn = styled.button`
-  border: none;
+  border: 1px solid gray;
   padding: 5px 10px;
   width: 60px;
   margin-left: 15px;
+  border-radius: 3px;
+  color: white;
   cursor: pointer;
+  background-color: ${(props) => props.theme.btnColor};
 `;
 
 const CommentForm = styled.form`
@@ -139,33 +158,38 @@ const CommentForm = styled.form`
 `;
 const CommentInput = styled.input`
   border: none;
-  border-bottom: 1px solid gray;
+  border-bottom: 1px solid ${(props) => props.theme.borderColor};
   margin-right: 10px;
   padding: 5px;
   width: 80%;
-
+  background-color: ${(props) => props.theme.bgColor};
   &:focus {
     outline: none;
   }
 `;
 
 const CommentBtn = styled.button`
-  border: none;
+  border: 1px solid gray;
   padding: 5px 10px;
+  border-radius: 3px;
   cursor: pointer;
+  background-color: ${(props) => props.theme.btnColor};
+  color: white;
 `;
 
 const CommentItems = styled.ul`
   padding: 0 20px;
   width: 80%;
   padding-bottom: 50px;
+  background-color: ${(props) => props.theme.bgColor};
 `;
 
 const CommentItem = styled.li`
   margin-top: 20px;
   margin-bottom: 10px;
   position: relative;
-  border-bottom: 1px solid gray;
+  border-bottom: 1px solid ${(props) => props.theme.borderColor};
+  background-color: ${(props) => props.theme.bgColor};
 
   & > div:first-child {
     font-size: 13px;
@@ -222,6 +246,7 @@ const ReplyBtn = styled.span`
 const TarshSvg = styled.svg`
   width: 15px;
   cursor: pointer;
+  fill: ${(props) => props.theme.textColor};
 `;
 
 const ReplyList = styled.div`
@@ -236,7 +261,7 @@ const ReplyItems = styled.ul`
 const ReplyItem = styled.li`
   margin: 20px 0;
   position: relative;
-  border-bottom: 1px solid gray;
+  border-bottom: 1px solid ${(props) => props.theme.borderColor};
 
   &:first-child {
     margin-top: 10px;
@@ -277,28 +302,39 @@ const ReplyForm = styled.form`
 
   & > button:nth-child(2) {
     position: absolute;
-    border: none;
+    border: 1px solid gray;
     margin-left: 10px;
+    padding: 3px 5px;
     top: 22px;
     right: 45px;
+    border-radius: 3px;
+    background-color: ${(props) => props.theme.btnColor};
+    z-index: 3;
     cursor: pointer;
+    color: white;
   }
 
   & > button:nth-child(3) {
     position: absolute;
-    border: none;
+    border: 1px solid gray;
     margin-left: 10px;
+    padding: 3px 5px;
     top: 22px;
     right: 0;
+    border-radius: 3px;
+    background-color: ${(props) => props.theme.btnColor};
+    z-index: 3;
     cursor: pointer;
+    color: white;
   }
 `;
 
 const ReplyInput = styled.input`
   border: none;
   width: 100%;
-  border-bottom: 1px solid gray;
-
+  border-bottom: 1px solid ${(props) => props.theme.borderColor};
+  background-color: ${(props) => props.theme.bgColor};
+  color: ${(props) => props.theme.textColor};
   &:focus {
     outline: none;
   }
@@ -306,7 +342,6 @@ const ReplyInput = styled.input`
 
 const ReplyToggle = styled.span`
   display: flex;
-
   align-items: center;
   cursor: pointer;
   font-size: 12px;
@@ -315,6 +350,7 @@ const ReplyToggle = styled.span`
     width: 10px;
     pointer-events: none;
     margin-right: 7px;
+    fill: ${(props) => props.theme.textColor};
   }
 `;
 
@@ -349,8 +385,11 @@ function BoardDetail() {
   const [reply, setReply] = useState(""); // 대댓글 폼 변수
   const [replyreply, setReplyReply] = useState("");
   const [replyDatas, setReplyDatas] = useState<IComment[]>([]);
+  const [isDark, setIsDark] = useRecoilState(isDarkAtom);
   const { id } = useParams();
   const navigate = useNavigate();
+
+  const toggleDarkAtom = () => setIsDark((prev) => !prev);
 
   useEffect(() => {
     axios({
@@ -992,7 +1031,7 @@ function BoardDetail() {
                               {value.username === user.username ||
                               boardData[0].username === user.username ? (
                                 <TarshSvg
-                                  onClick={(e) => onTrashClickHandler(e, data.id)}
+                                  onClick={(e) => onTrashClickHandler(e, value.id)}
                                   xmlns="http://www.w3.org/2000/svg"
                                   viewBox="0 0 448 512"
                                 >

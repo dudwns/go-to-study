@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import axios from "axios";
 import { useRecoilValue } from "recoil";
 import { userAtom } from "../atoms";
+import { useNavigate } from "react-router-dom";
 
 const Wrapper = styled.div`
   height: 100vh;
@@ -13,6 +14,10 @@ const Wrapper = styled.div`
   padding-top: 120px;
   align-items: center;
   flex-direction: column;
+  background-color: ${(props) => props.theme.bgColor};
+  & .quill {
+    background-color: white;
+  }
 `;
 
 const Header = styled.div`
@@ -24,21 +29,26 @@ const Header = styled.div`
 
 const TitleInput = styled.input`
   width: 500px;
+  padding: 5px 10px;
 `;
 
 const InsertBtn = styled.button`
-  border: none;
+  color: white;
   padding: 5px 10px;
   width: 60px;
   top: 10px;
   right: 20px;
+  border-radius: 3px;
+  background-color: ${(props) => props.theme.btnColor};
+  border: 1px solid gray;
   cursor: pointer;
 `;
 
 function BoardWrite() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const userData = useRecoilValue(userAtom);
+  const user = useRecoilValue(userAtom);
+  const navigate = useNavigate();
 
   const imageHandler = () => {
     const input = document.createElement("input");
@@ -147,7 +157,7 @@ function BoardWrite() {
       method: "POST",
       withCredentials: true,
       data: {
-        userName: userData.username,
+        userName: user.username,
         title: title,
         content: content,
         image: "",
@@ -155,7 +165,7 @@ function BoardWrite() {
     })
       .then((result) => {
         if (result.status === 200) {
-          window.open("/", "_self");
+          navigate("/board/1");
         }
       })
       .catch((error) => {
@@ -172,17 +182,20 @@ function BoardWrite() {
             placeholder="제목을 입력하세요."
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-          ></TitleInput>{" "}
+          ></TitleInput>
           <InsertBtn>등록</InsertBtn>
         </Header>
-        <ReactQuill
-          onChange={setContent}
-          modules={modules}
-          formats={formats}
-          value={content}
-          style={{ height: "400px" }}
-          placeholder="내용을 입력해주세요."
-        ></ReactQuill>
+        <div style={{ backgroundColor: "white", height: "442px" }}>
+          <ReactQuill
+            className="quill"
+            onChange={setContent}
+            modules={modules}
+            formats={formats}
+            value={content}
+            style={{ height: "400px" }}
+            placeholder="내용을 입력하세요."
+          ></ReactQuill>
+        </div>
       </form>
     </Wrapper>
   );

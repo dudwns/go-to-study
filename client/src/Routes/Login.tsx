@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 const Wrraper = styled.div`
@@ -9,10 +9,12 @@ const Wrraper = styled.div`
   display: flex;
   padding-top: 70px;
   justify-content: center;
+  background-color: ${(props) => props.theme.bgColor};
+  color: ${(props) => props.theme.textColor};
 `;
 
 const Container = styled.div`
-  border: 1px solid black;
+  border: 1px solid ${(props) => props.theme.borderColor};
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -43,23 +45,27 @@ const LoginForm = styled.form`
 `;
 
 const LoginBtn = styled.button`
-  border: none;
   width: 100%;
   padding: 10px;
+  background-color: white;
+  border: 1px solid gray;
   cursor: pointer;
 `;
 
 const JoinText = styled.span`
   font-size: 12px;
+  color: ${(props) => props.theme.textColor};
 `;
 
 function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     login();
   };
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
 
   const login = () => {
     axios({
@@ -73,7 +79,7 @@ function Login() {
     })
       .then((result) => {
         if (result.status === 200) {
-          window.open("/", "_self");
+          navigate("/board/1");
         }
       })
       .catch((error) => {

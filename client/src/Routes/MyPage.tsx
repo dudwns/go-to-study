@@ -11,6 +11,8 @@ const Wrapper = styled.div`
   padding-top: 120px;
   align-items: center;
   flex-direction: column;
+  background-color: ${(props) => props.theme.bgColor};
+  color: ${(props) => props.theme.textColor};
 `;
 
 const Container = styled.div`
@@ -45,10 +47,12 @@ const Layout = styled.div`
 `;
 
 const RemoveBtn = styled.button`
-  border: none;
+  border: 1px solid gray;
   padding: 5px;
   cursor: pointer;
-  background-color: #dd0f0f;
+  background-color: ${(props) => props.theme.btnColor};
+  border-radius: 3px;
+  color: whitesmoke;
 `;
 
 function MyPage() {

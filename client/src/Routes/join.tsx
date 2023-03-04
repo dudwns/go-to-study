@@ -10,15 +10,17 @@ const Wrraper = styled.div`
   display: flex;
   padding-top: 70px;
   justify-content: center;
+  background-color: ${(props) => props.theme.bgColor};
+  color: ${(props) => props.theme.textColor};
 `;
 
 const Container = styled.div`
-  border: 1px solid black;
+  border: 1px solid ${(props) => props.theme.borderColor};
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 500px;
-  height: 550px;
+  width: 600px;
+  height: 800px;
 `;
 
 const Title = styled.h2`
@@ -28,19 +30,31 @@ const Title = styled.h2`
 `;
 
 const JoinForm = styled.form`
+  width: 300px;
+
   & > div {
     margin-bottom: 35px;
   }
 
   & > div > input {
     padding: 5px;
+    width: 100%;
+  }
+
+  & > div > div {
+    margin-bottom: 10px;
+  }
+
+  & > div > div > div {
+    margin-bottom: 10px;
   }
 `;
 
 const JoinBtn = styled.button`
-  border: none;
   width: 100%;
   padding: 10px;
+  background-color: white;
+  border: 1px solid gray;
   cursor: pointer;
 `;
 
@@ -77,18 +91,14 @@ function Join() {
         "content-type": "application/json", //꼭 지정해주어야 함
       },
     };
-    console.log(userName, name, email, password, gender, birthday);
     return axios.post(url, formData, config); //post형식으로 데이터를 보냄, (주소, 데이터, 설정)
   };
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    addCustomer().then((response) => {
-      console.log(response);
-      console.dir(response.data);
-    });
+    addCustomer();
     alert("가입이 완료되었습니다.");
-    navigate("/");
+    navigate("/login");
   };
 
   return (
@@ -97,7 +107,7 @@ function Join() {
         <Title>회원가입</Title>
         <JoinForm onSubmit={handleFormSubmit}>
           <div>
-            닉네임:{" "}
+            <div>닉네임</div>
             <input
               type="text"
               placeholder="닉네임을 입력하세요."
@@ -107,7 +117,7 @@ function Join() {
           </div>
 
           <div>
-            이름:{" "}
+            <div>이름</div>
             <input
               type="text"
               placeholder="이름을 입력하세요."
@@ -117,7 +127,7 @@ function Join() {
           </div>
 
           <div>
-            이메일:{" "}
+            <div>이메일</div>
             <input
               type="email"
               placeholder="이메일을 입력하세요."
@@ -127,7 +137,7 @@ function Join() {
           </div>
 
           <div>
-            비밀번호:{" "}
+            <div>비밀번호</div>
             <input
               type="password"
               placeholder="비밀번호를 입력하세요."
@@ -137,16 +147,19 @@ function Join() {
           </div>
 
           <div>
-            성별:
-            <input type="radio" name="gender" value="남" onClick={onCheckedHandler} />
-            남
-            <input type="radio" name="gender" value="여" onClick={onCheckedHandler} />여
+            <div>생년월일</div>
+            <input type="date" value={birthday} onChange={(e) => setBirthday(e.target.value)} />
           </div>
 
           <div>
-            생년월일:{" "}
-            <input type="date" value={birthday} onChange={(e) => setBirthday(e.target.value)} />
+            <div>
+              <div>성별</div>
+              <input type="radio" name="gender" value="남" onClick={onCheckedHandler} />
+              남
+              <input type="radio" name="gender" value="여" onClick={onCheckedHandler} />여
+            </div>
           </div>
+
           <JoinBtn type="submit">가입하기</JoinBtn>
         </JoinForm>
       </Container>

@@ -2,7 +2,6 @@ import styled from "styled-components";
 import { bookmarkAtom, IBookmark, userAtom } from "../atoms";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { useNavigate } from "react-router-dom";
-// import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 const Wrapper = styled.div`
   display: flex;
@@ -10,9 +9,11 @@ const Wrapper = styled.div`
   background-color: #d3d3d3;
   width: 18%;
   height: 500px;
-
   margin-top: 85px;
   padding: 10px 5px;
+  background-color: ${(props) => props.theme.bgColor};
+  border: 1px solid ${(props) => props.theme.borderColor};
+  border-radius: 5px;
 `;
 
 const BookmarkTitle = styled.span`
@@ -23,13 +24,14 @@ const BookmarkTitle = styled.span`
 const BookmarkList = styled.ul`
   font-size: 15px;
   & li {
-    border-bottom: 1px solid gray;
+    border-bottom: 1px solid ${(props) => props.theme.borderColor};
     margin: 0 30px;
-    padding: 10px 0;
+    padding: 10px 5px;
+    margin-bottom: 10px;
     cursor: pointer;
 
     &:hover {
-      background-color: #868585;
+      background-color: ${(props) => props.theme.accentColor};
     }
   }
   overflow-y: auto;
