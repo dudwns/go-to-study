@@ -83,7 +83,7 @@ const ThemeBtn = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
-  position: absolute;
+  position: fixed;
   bottom: 10px;
   right: 10px;
   z-index: 50;
