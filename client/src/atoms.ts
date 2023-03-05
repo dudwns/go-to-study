@@ -17,6 +17,7 @@ export interface IBoard {
   image: string;
   time: string;
   recommend: number;
+  replyCount: number;
 }
 
 export interface IBookmark {

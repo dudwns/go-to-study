@@ -148,8 +148,15 @@ const BoardName = styled.div`
 const BoardTitle = styled.div`
   width: 500px;
   text-align: center;
-  & > span {
+  & > span:first-child {
     cursor: pointer;
+    margin-right: 5px;
+  }
+
+  & > span:nth-child(2) {
+    cursor: pointer;
+    color: orange;
+    margin-right: 5px;
   }
 
   & > span:hover {
@@ -432,6 +439,7 @@ function Board() {
               <span id={String(item.id)} onClick={onTitleClickHandler}>
                 {item.title.length > 35 ? `${item.title.slice(0, 35)}...` : item.title}
               </span>
+              <span>{`[${item.replyCount}]`}</span>
             </BoardTitle>
             <BoardDate>{item.time}</BoardDate>
             <BoardRecomendation>{item.recommend}</BoardRecomendation>

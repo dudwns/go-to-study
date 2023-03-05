@@ -248,7 +248,7 @@ app.post("/api/board/page/:page", (req, res) => {
 
 // post 메소드로 "/api/board"에 접속을 한 경우 (게시글 등록)
 app.post("/api/board", (req, res) => {
-  let sql = "INSERT INTO BOARD VALUES (null, ?, ?, ?, ?, now(), 0, 0)";
+  let sql = "INSERT INTO BOARD VALUES (null, ?, ?, ?, ?, now(), 0, 0, 0)";
   let userName = req.body.userName;
   let title = req.body.title;
   let content = req.body.content;
@@ -291,7 +291,7 @@ app.delete("/api/customers/board/:username", (req, res) => {
 });
 
 // 게시글 수정
-app.put("/board/update/:id", (req, res) => {
+app.put("/api/board/update/:id", (req, res) => {
   let sql = "UPDATE BOARD SET title = ?, content = ? WHERE id = ?";
   let params = [req.body.title, req.body.content, req.params.id];
   connection.query(sql, params, (err, rows, fields) => {
@@ -300,6 +300,18 @@ app.put("/board/update/:id", (req, res) => {
     console.log(rows);
   });
 });
+
+// 댓글을 달았을 때 게시글 댓글 카운트 수정
+app.put("/api/board/reply/update", (req, res) => {
+  let sql = "UPDATE BOARD SET replyCount = ? WHERE id = ?";
+  let params = [req.body.replyCount, req.body.boardId];
+  connection.query(sql, params, (err, rows, fields) => {
+    res.send(rows);
+    console.log(err);
+    console.log(rows);
+  });
+});
+
 // -------------------------------------------------------------------------------------------- 북마크
 
 // bookmark 가져오기 (select)
@@ -437,7 +449,7 @@ app.get("/api/comment", (req, res) => {
 
 // post 메소드로 "/api/comment/insert"에 접속을 한 경우 (댓글 등록)
 app.post("/api/comment/insert", (req, res) => {
-  let sql = "INSERT INTO COMMENT VALUES (null, ?, ?, ?, now(), 0, null, null)";
+  let sql = "INSERT INTO COMMENT VALUES (null, ?, ?, ?, now(), 0, null, null, 0)";
   let boardId = req.body.boardId;
   let userName = req.body.userName;
   let comment = req.body.comment;
@@ -449,8 +461,8 @@ app.post("/api/comment/insert", (req, res) => {
 
 // 대댓글을 달았을 때 댓글 수정
 app.put("/api/comment/update/reply", (req, res) => {
-  let sql = "UPDATE COMMENT SET reply = 1 WHERE id = ?";
-  let params = [req.body.id];
+  let sql = "UPDATE COMMENT SET reply = 1, replyCount = ? WHERE id = ?";
+  let params = [req.body.replyCount, req.body.id];
   connection.query(sql, params, (err, rows, fields) => {
     res.send(rows);
   });
@@ -458,7 +470,7 @@ app.put("/api/comment/update/reply", (req, res) => {
 
 // post 메소드로 "/api/comment/reply/insert"에 접속을 한 경우 (대댓글 등록)
 app.post("/api/comment/reply/insert", (req, res) => {
-  let sql = "INSERT INTO COMMENT VALUES (null, ?, ?, ?, now(), 0, ?, null)";
+  let sql = "INSERT INTO COMMENT VALUES (null, ?, ?, ?, now(), 0, ?, null, 0)";
   let boardId = req.body.boardId;
   let userName = req.body.userName;
   let reply = req.body.reply;

@@ -203,7 +203,7 @@ const CommentItem = styled.li`
 
   & > div:nth-child(2) {
     font-size: 12px;
-    margin-bottom: 3px;
+    margin-bottom: 12px;
   }
 
   & > div:nth-child(3) {
@@ -279,7 +279,7 @@ const ReplyItem = styled.li`
 
   & > div:nth-child(2) {
     font-size: 12px;
-    margin-bottom: 3px;
+    margin-bottom: 12px;
   }
 
   & > div:nth-child(3) {
@@ -363,6 +363,7 @@ interface IComment {
   up: number;
   group: number;
   reply: number;
+  replyCount: number;
 }
 
 interface ILIKE {
@@ -622,22 +623,51 @@ function BoardDetail() {
           })
           .then(() => {
             axios({
+              url: "http://localhost:5000/api/board/reply/update",
+              method: "PUT",
+              withCredentials: true,
+              data: {
+                boardId: boardData[0].id,
+                replyCount: boardData[0].replyCount + 1,
+              },
+            });
+          })
+          .then(() => {
+            axios({
               url: "http://localhost:5000/api/comment/",
               method: "GET",
               withCredentials: true,
-            }).then((result) => {
-              if (result.status === 200) {
-                const data = result.data.filter(
-                  (data: IComment) => data.boardId === boardData[0].id
-                );
-                setBoardComment(data); // 클릭한 게시글의 댓글
+            })
+              .then(() => {
+                axios({
+                  url: "http://localhost:5000/api/board/" + id,
+                  method: "GET",
+                  withCredentials: true,
+                }).then((result) => {
+                  if (result.status === 200) {
+                    setBoardData(result.data); // 클릭한 게시글의 데이터
+                  }
+                });
+              })
+              .then(() => {
+                axios({
+                  url: "http://localhost:5000/api/comment/",
+                  method: "GET",
+                  withCredentials: true,
+                }).then((result) => {
+                  if (result.status === 200) {
+                    const data = result.data.filter(
+                      (data: IComment) => data.boardId === boardData[0].id
+                    );
+                    setBoardComment(data); // 클릭한 게시글의 댓글
 
-                const replyData = result.data.filter(
-                  (data: IComment) => data.boardId === boardData[0].id && data.group
-                );
-                setReplyDatas(replyData);
-              }
-            });
+                    const replyData = result.data.filter(
+                      (data: IComment) => data.boardId === boardData[0].id && data.group
+                    );
+                    setReplyDatas(replyData);
+                  }
+                });
+              });
           });
       } else {
         alert("내용을 입력하세요.");
@@ -772,6 +802,7 @@ function BoardDetail() {
     e.target.nextSibling.classList.toggle("block");
     e.target.nextSibling.children[0].focus();
     e.target.parentElement.parentElement.parentElement.classList.toggle("bottom");
+    setReply("");
 
     if (!isReply) {
       setReplyReply("");
@@ -785,7 +816,7 @@ function BoardDetail() {
     e.target.parentElement.parentElement.parentElement.parentElement.classList.toggle("bottom");
   };
 
-  const onReplySubmit = (e: any, group: number, isReply: boolean) => {
+  const onReplySubmit = (e: any, group: number, replyCount: number, isReply: boolean) => {
     e.preventDefault();
     if (user.username) {
       // 로그인을 했을 때
@@ -806,6 +837,7 @@ function BoardDetail() {
           withCredentials: true,
           data: {
             id: group,
+            replyCount: replyCount + 1,
           },
         })
           .then((result) => {
@@ -844,6 +876,8 @@ function BoardDetail() {
     e.target.nextSibling.classList.toggle("block");
     e.target.childNodes[0].classList.toggle("cancel");
   };
+
+  const onReplyCount = () => {};
 
   return (
     <>
@@ -954,7 +988,9 @@ function BoardDetail() {
                             required
                           ></ReplyInput>
                           <button onClick={onCencleClick}>취소</button>
-                          <button onClick={(e) => onReplySubmit(e, data.id, true)}>답글</button>
+                          <button onClick={(e) => onReplySubmit(e, data.id, data.replyCount, true)}>
+                            답글
+                          </button>
                         </ReplyForm>
                       </div>
                       {data.username === user.username ||
@@ -976,7 +1012,7 @@ function BoardDetail() {
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
                         <path d="M169.4 342.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 274.7 54.6 137.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z" />
                       </svg>
-                      답글 열기
+                      답글 {data.replyCount}개
                     </ReplyToggle>
                   )}
                   <ReplyList>
@@ -1023,7 +1059,11 @@ function BoardDetail() {
                                     required
                                   ></ReplyInput>
                                   <button onClick={onCencleClick}>취소</button>
-                                  <button onClick={(e) => onReplySubmit(e, value.group, false)}>
+                                  <button
+                                    onClick={(e) =>
+                                      onReplySubmit(e, value.group, data.replyCount, false)
+                                    }
+                                  >
                                     답글
                                   </button>
                                 </ReplyForm>
