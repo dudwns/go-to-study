@@ -20,6 +20,7 @@ const Container = styled.div`
   align-items: center;
   width: 500px;
   height: 350px;
+  border-radius: 5px;
 `;
 
 const Title = styled.h2`

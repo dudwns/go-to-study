@@ -21,19 +21,19 @@ const Wrapper = styled(motion.div)`
   flex-direction: column;
   position: relative;
   background-color: rgba(255, 255, 255, 1);
-  &::after {
+  /* &::after {
     width: 100%;
     height: 100%;
     content: "";
     background-image: //linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)),
       url(${process.env.PUBLIC_URL + "/images/background.jpg"});
-    background-size: cover;
+    background-size: auto;
     position: fixed;
     top: 0;
     left: 0;
     z-index: -1;
     opacity: 0.7;
-  }
+  } */
 
   .swiper {
     width: 100%;
@@ -92,7 +92,7 @@ const SideBar = styled(motion.div)`
   background-color: rgba(0, 0, 0, 0.7);
   color: white;
   top: 50px;
-  height: 650px;
+  height: 550px;
   left: -200px;
   z-index: 3;
   flex-direction: column;
@@ -133,17 +133,9 @@ const SideBarBtn = styled.button`
   }
 `;
 
-const HomeBtn = styled.button`
-  border: none;
-  width: 150px;
-  padding: 7px;
-  border-radius: 20px;
-  cursor: pointer;
-`;
-
 const PagiDiv = styled(motion.div)`
   position: absolute;
-  top: 500px;
+  top: 400px;
   left: 7px;
   width: 100%;
 `;
@@ -151,8 +143,8 @@ const PagiDiv = styled(motion.div)`
 //---------------------------------------------------------------Variants
 const wrapVariants = {
   active: {
-    backgroundColor: "rgba(255, 255, 255, 0)",
-    transition: { duration: 1 },
+    backgroundColor: "rgba(220, 216, 214, 1)",
+    transition: { duration: 0.5 },
   },
 };
 
@@ -170,7 +162,7 @@ const sideBarVariants = {
   },
 };
 
-const menuList = ["홈페이지 소개", "컨텐츠 소개", "기술"];
+const menuList = ["메인 화면", "컨텐츠 소개", "기술"];
 
 function Home() {
   const [isLogin, setIsLogin] = useRecoilState(loginAtom); // 로그인 유무를 나타내는 boolean 값
@@ -203,9 +195,6 @@ function Home() {
     <Wrapper variants={wrapVariants} animate="active">
       <SideBar variants={sideBarVariants} initial="normal" animate={sideOpen ? "open" : "close"}>
         <div>고투스</div>
-        <div>
-          <HomeBtn onClick={() => navigate("/board/1")}>커뮤니티 바로가기</HomeBtn>
-        </div>
         <SideBarBtn onClick={() => setSideOpen((current) => !current)}>
           {sideOpen ? (
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512">

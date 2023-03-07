@@ -154,7 +154,6 @@ const BoardTitle = styled.div`
   }
 
   & > span:nth-child(2) {
-    cursor: pointer;
     color: orange;
     margin-right: 5px;
   }

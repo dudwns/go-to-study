@@ -6,25 +6,33 @@ import "swiper/css/navigation";
 import { Navigation, Mousewheel, Keyboard } from "swiper";
 
 const Wrapper = styled.div`
-  width: 1500px;
+  width: 100%;
   display: flex;
   position: absolute;
   left: 0;
-  right: 0;
-  margin: 0 auto;
+  top: 0;
+
+  padding-left: 12%;
+  padding-right: 12%;
+
   .swiper {
-    width: 100%;
   }
   .swiper-slide {
-    text-align: center;
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-direction: column;
 
     & img {
-      width: 1000px;
+      width: 100%;
     }
+  }
+
+  .swiper-button-prev {
+    left: 0;
+  }
+
+  .swiper-button-next {
+    right: 0;
   }
 
   .swiper-button-prev,
@@ -35,6 +43,31 @@ const Wrapper = styled.div`
   .swiper-button-disabled {
     display: none;
   }
+`;
+
+const SwiperContent = styled.div`
+  display: flex;
+
+  align-items: center;
+  width: 90%;
+`;
+
+const Title = styled.div`
+  font-size: 3vw;
+  margin-bottom: 3vh;
+  font-weight: 800;
+  text-align: left;
+`;
+
+const Description = styled.div`
+  margin-left: 5vw;
+  min-width: 270px;
+  height: 150px;
+  text-align: left;
+  font-size: 1.2vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 const ScrollBtn = styled(motion.button)`
@@ -68,19 +101,46 @@ function Content() {
         className="mySwiper"
       >
         <SwiperSlide>
-          <div>타이틀</div>
-          <img src="/images/example.png"></img>
-          <div>설명</div>
+          <SwiperContent>
+            <div>
+              <Title>커뮤니티</Title>
+              <img src="/images/data1.png"></img>
+            </div>
+            <Description>
+              고투스 커뮤니티를 이용하여
+              <br />
+              사람들과 정보를 공유하고
+              <br />
+              함께 공부해보세요.
+            </Description>
+          </SwiperContent>
         </SwiperSlide>
         <SwiperSlide>
-          <div>타이틀</div>
-          <img src="/images/example.png"></img>
-          <div>설명</div>
+          <SwiperContent>
+            <div>
+              <Title>즐겨찾기</Title>
+              <img src="/images/data2.png"></img>
+            </div>
+            <Description>
+              커뮤니티를 이용하다가
+              <br />
+              마음에 드는 글이 있으면
+              <br />
+              즐겨찾기에 추가해보세요.
+            </Description>
+          </SwiperContent>
         </SwiperSlide>
         <SwiperSlide>
-          <div>타이틀</div>
-          <img src="/images/example.png"></img>
-          <div>설명</div>
+          <SwiperContent>
+            <div>
+              <Title>다크모드 지원</Title>
+              <img src="/images/data3.png"></img>
+            </div>
+            <Description>
+              다크모드로 변경하여
+              <br /> 눈의 피로도를 낮춰보세요.
+            </Description>
+          </SwiperContent>
         </SwiperSlide>
       </Swiper>
       <ScrollBtn>

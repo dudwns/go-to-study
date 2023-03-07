@@ -84,7 +84,7 @@ function BoardUpdate() {
   const updateHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     axios({
-      url: "http://localhost:5000/board/update/" + id,
+      url: "http://localhost:5000/api/board/update/" + id,
       method: "PUT",
       withCredentials: true,
       data: {

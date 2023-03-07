@@ -55,7 +55,7 @@ function Bookmark() {
             bookmark.map((data: IBookmark, index: number) =>
               data.userId === user.id ? (
                 <li key={index} onClick={() => onListClick(data.boardId)}>
-                  {data.title.length > 20 ? `${data.title.slice(0, 20)}...` : data.title}
+                  {data.title.length > 19 ? `${data.title.slice(0, 19)}...` : data.title}
                 </li>
               ) : (
                 ""

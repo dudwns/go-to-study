@@ -1,34 +1,40 @@
 import styled, { keyframes } from "styled-components";
-import { motion } from "framer-motion";
+import { motion, useAnimation } from "framer-motion";
+import { useEffect, useState } from "react";
+import { TimerOptions } from "timers";
+
+const IntroDiv = styled(motion.div)`
+  border: 1px solid black;
+`;
 
 const Wrapper = styled.div`
   width: 100%;
   height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   position: relative;
 `;
 
 const Content = styled.div`
-  height: 700px;
+  padding-top: 100px;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
 `;
 
 const Text1 = styled(motion.div)`
-  font-size: 70px;
+  font-size: 4vw;
+  margin-bottom: 10px;
 `;
 const Text2 = styled(motion.div)`
-  font-size: 50px;
-  margin-bottom: 100px;
+  font-size: 2vw;
+  margin-bottom: 70px;
 `;
 
 const CircleContent = styled(motion.div)`
   display: flex;
-  width: 1400px;
-  height: 500px;
+  width: 75%;
   justify-content: space-around;
   opacity: 0;
 `;
@@ -44,9 +50,19 @@ const Circle1 = styled(motion.div)`
   border-radius: 150px;
   border: none;
   background-color: whitesmoke;
+  @media screen and (max-width: 1300px) {
+    width: 200px;
+    height: 200px;
+    font-size: 10px;
+  }
+
   & > img {
     position: absolute;
     width: 300px;
+
+    @media screen and (max-width: 1300px) {
+      width: 200px;
+    }
   }
 `;
 const Circle2 = styled(motion.div)`
@@ -60,9 +76,18 @@ const Circle2 = styled(motion.div)`
   border-radius: 150px;
   border: none;
   background-color: whitesmoke;
+  @media screen and (max-width: 1300px) {
+    width: 200px;
+    height: 200px;
+    font-size: 10px;
+  }
+
   & > img {
     position: absolute;
     width: 300px;
+    @media screen and (max-width: 1300px) {
+      width: 200px;
+    }
   }
 `;
 
@@ -77,9 +102,18 @@ const Circle3 = styled(motion.div)`
   border-radius: 150px;
   border: none;
   background-color: whitesmoke;
+  @media screen and (max-width: 1300px) {
+    width: 200px;
+    height: 200px;
+    font-size: 10px;
+  }
+
   & > img {
     position: absolute;
     width: 300px;
+    @media screen and (max-width: 1300px) {
+      width: 200px;
+    }
   }
 `;
 
@@ -156,10 +190,45 @@ const characterVariants = {
   },
 };
 
+const introduce = "고투스에 오신것을 환영합니다!";
+
 function Homepage() {
+  const [text, setText] = useState("");
+  const [count, setCount] = useState(0);
+  const contentAni = useAnimation();
+
+  // useEffect(() => {
+  //   let interval: any;
+  //   const divBoxAni = async () => {
+  //     await contentAni.start({
+  //       width: window.innerWidth > 1000 ? "50%" : window.innerWidth > 700 ? "70%" : "90%",
+  //       transition: { duration: 0.5, type: "linear" },
+  //     });
+  //     await contentAni.start({ height: "16vw", transition: { duration: 0.3, type: "linear" } });
+  //     interval = setInterval(() => {
+  //       setText((prev) => prev + introduce[count]);
+  //       setCount((prev) => prev + 1);
+  //     }, 100);
+  //   };
+
+  //   if (count == 0) {
+  //     divBoxAni();
+  //   } else {
+  //   }
+
+  //   if (text.length === introduce.length) {
+  //     clearInterval(interval);
+  //   }
+
+  //   return () => {
+  //     clearInterval(interval);
+  //   };
+  // });
+
   return (
     <Wrapper>
       <Content>
+        {/* <IntroDiv animate={contentAni}>{text}</IntroDiv> */}
         <Text1 variants={textVariants} initial="normal" animate="active">
           Go to Study!
         </Text1>
