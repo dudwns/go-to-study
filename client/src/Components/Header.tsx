@@ -23,8 +23,11 @@ const Title = styled.h1`
   font-size: 20px;
   margin-left: 20px;
   font-weight: 600;
-  color: white;
   cursor: pointer;
+
+  & > a {
+    color: white;
+  }
 `;
 
 const Items = styled.ul`
@@ -35,7 +38,10 @@ const Item = styled.li`
   margin: 0 10px;
   cursor: pointer;
   font-weight: 600;
-  color: white;
+
+  & > a {
+    color: white;
+  }
 `;
 
 interface IValue {
@@ -48,12 +54,11 @@ const UserItems = styled.ul<IValue>`
 
 const UserItem = styled.li`
   margin: 0 10px;
-  cursor: pointer;
   font-weight: 600;
-  color: white;
 
-  &:first-child {
-    cursor: default;
+  & > a {
+    color: white;
+    cursor: pointer;
   }
 `;
 
@@ -153,16 +158,18 @@ function Header() {
         )}
       </ThemeBtn>
       <Nav variants={navVariants} initial="top" animate={navAnimation}>
-        <Link to="/">
-          <Title>고투스</Title>
-        </Link>
+        <Title>
+          <Link to="/">고투스 </Link>
+        </Title>
+
         <Items>
-          <Link to="/board/1">
-            <Item>게시판</Item>
-          </Link>
-          <Link to="/todo">
-            <Item>할 일</Item>
-          </Link>
+          <Item>
+            <Link to="/board/1">게시판</Link>
+          </Item>
+
+          <Item>
+            <Link to="/todo">할 일</Link>
+          </Item>
         </Items>
         <UserItems value={isLogin}>
           {isLogin ? (
@@ -175,12 +182,13 @@ function Header() {
             </>
           ) : (
             <>
-              <Link to="/join">
-                <UserItem>회원가입</UserItem>
-              </Link>
-              <Link to="/login">
-                <UserItem>로그인</UserItem>
-              </Link>
+              <UserItem>
+                <Link to="/join">회원가입</Link>
+              </UserItem>
+
+              <UserItem>
+                <Link to="/login">로그인</Link>
+              </UserItem>
             </>
           )}
         </UserItems>

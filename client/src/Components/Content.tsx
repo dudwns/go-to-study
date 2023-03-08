@@ -64,10 +64,20 @@ const Description = styled.div`
   min-width: 270px;
   height: 150px;
   text-align: left;
-  font-size: 1.2vw;
+  /* font-size: 1.2vw; */
+  font-size: 21px;
+  line-height: 1.3;
   display: flex;
   align-items: center;
   justify-content: center;
+
+  @media screen and (max-width: 1300px) {
+    font-size: 18px;
+  }
+
+  @media screen and (max-width: 800px) {
+    font-size: 15px;
+  }
 `;
 
 const ScrollBtn = styled(motion.button)`

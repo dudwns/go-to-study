@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import { loginAtom, userAtom } from "../atoms";
-import { motion } from "framer-motion";
+import { motion, useAnimation } from "framer-motion";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Mousewheel, Pagination } from "swiper";
 import "swiper/css";
@@ -12,6 +12,7 @@ import "swiper/css/pagination";
 
 import Homepage from "../Components/Homepage";
 import Content from "../Components/Content";
+import Stack from "../Components/Stack";
 
 const Wrapper = styled(motion.div)`
   overflow-y: hidden;
@@ -103,6 +104,9 @@ const SideBar = styled(motion.div)`
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    @media screen and (max-height: 600px) {
+      display: none;
+    }
   }
   & > div:nth-child(2) {
     border-bottom: 1px solid gray;
@@ -111,6 +115,12 @@ const SideBar = styled(motion.div)`
     flex-direction: column;
     justify-content: center;
     align-items: center;
+  }
+  @media screen and (max-height: 600px) {
+    height: 450px;
+  }
+  @media screen and (max-height: 500px) {
+    display: none;
   }
 `;
 
@@ -138,6 +148,9 @@ const PagiDiv = styled(motion.div)`
   top: 400px;
   left: 7px;
   width: 100%;
+  @media screen and (max-height: 600px) {
+    top: 300px;
+  }
 `;
 
 //---------------------------------------------------------------Variants
@@ -232,7 +245,9 @@ function Home() {
         <SwiperSlide>
           <Content />
         </SwiperSlide>
-        <SwiperSlide>Content3</SwiperSlide>
+        <SwiperSlide>
+          <Stack />
+        </SwiperSlide>
       </Swiper>
     </Wrapper>
   );

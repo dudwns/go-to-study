@@ -14,6 +14,7 @@ const Wrapper = styled.div`
   background-color: ${(props) => props.theme.bgColor};
   border: 1px solid ${(props) => props.theme.borderColor};
   border-radius: 5px;
+  min-width: 200px;
 `;
 
 const BookmarkTitle = styled.span`
@@ -29,7 +30,6 @@ const BookmarkList = styled.ul`
     padding: 10px 5px;
     margin-bottom: 10px;
     cursor: pointer;
-
     &:hover {
       background-color: ${(props) => props.theme.accentColor};
     }

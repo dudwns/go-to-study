@@ -18,6 +18,7 @@ import Pagination from "../Components/Pagination";
 const Wrapper = styled.div`
   height: 100vh;
   width: 100%;
+  min-width: 1080px;
   display: flex;
   padding-top: 70px;
   color: ${(props) => props.theme.textColor};
@@ -29,6 +30,7 @@ const BorderContent = styled.div`
   display: flex;
   flex-direction: column;
   padding: 0 20px;
+  min-width: 720px;
 `;
 
 const BoardMenu = styled.div`
@@ -59,6 +61,10 @@ const RecommendBtn = styled.button`
 const SearchForm = styled.form``;
 const SearchInput = styled.input`
   width: 400px;
+
+  @media screen and (max-width: 1200px) {
+    width: 300px;
+  }
 `;
 
 const WriteBtn = styled.button`
@@ -92,7 +98,7 @@ const BoardContent = styled.div`
 const BoardHeader = styled.div`
   display: flex;
   justify-content: space-between;
-  height: 50px;
+  min-height: 50px;
   align-items: center;
   padding: 0 20px;
 
@@ -104,6 +110,9 @@ const BoardHeader = styled.div`
     width: 500px;
     font-weight: 700;
     text-align: center;
+    @media screen and (max-width: 1200px) {
+      width: 400px;
+    }
   }
 
   & span:nth-child(3) {
@@ -116,6 +125,9 @@ const BoardHeader = styled.div`
     width: 40px;
     font-weight: 700;
     text-align: center;
+    @media screen and (max-width: 1200px) {
+      display: none;
+    }
   }
   & span:nth-child(5) {
     width: 70px;
@@ -161,6 +173,10 @@ const BoardTitle = styled.div`
   & > span:hover {
     text-decoration: underline;
   }
+
+  @media screen and (max-width: 1200px) {
+    width: 400px;
+  }
 `;
 const BoardDate = styled.div`
   width: 70px;
@@ -170,6 +186,10 @@ const BoardDate = styled.div`
 const BoardRecomendation = styled.div`
   width: 40px;
   text-align: center;
+
+  @media screen and (max-width: 1200px) {
+    display: none;
+  }
 `;
 
 const BoardBookmark = styled.div`
@@ -508,7 +528,7 @@ function Board() {
           </div>
         </BoardMenu>
         <BoardHeader>
-          <span>글쓴이</span>
+          <span>작성자</span>
           <span>제목</span>
           <span>등록일</span>
           <span>추천</span>

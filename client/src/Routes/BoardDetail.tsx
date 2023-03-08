@@ -9,6 +9,7 @@ import React, { useEffect, useState } from "react";
 const Wrapper = styled.div`
   height: 100vh;
   width: 100%;
+  min-width: 1080px;
   display: flex;
   flex-direction: column;
   padding-top: 70px;
@@ -50,7 +51,9 @@ const BoardWrapper = styled.div`
   border: 1px solid ${(props) => props.theme.borderColor};
   border-radius: 5px;
   margin-bottom: 70px;
+  height: 540px;
   overflow: hidden;
+  position: relative;
 `;
 
 const BoardHeader = styled.div`
@@ -59,21 +62,30 @@ const BoardHeader = styled.div`
   & ul {
     display: flex;
     justify-content: space-between;
+    font-weight: 800;
+
+    & > div > li:first-child {
+      width: 250px;
+      text-align: center;
+    }
   }
   background-color: ${(props) => props.theme.bgColor};
 `;
 
 const BoardContent = styled.div`
+  width: 100%;
   padding: 10px;
-  height: 600px;
-  position: relative;
+  height: 440px;
   background-color: ${(props) => props.theme.bgColor};
+  padding: 30px 70px 70px 70px;
+  overflow-y: scroll;
 `;
 
 const BoardTitle = styled.div`
   font-size: 25px;
   font-weight: 800;
   margin-bottom: 50px;
+  word-break: break-all;
   background-color: ${(props) => props.theme.bgColor};
 `;
 
@@ -85,7 +97,7 @@ const RecommendBtn = styled.button`
   display: flex;
   justify-content: space-evenly;
   align-items: center;
-  bottom: 30px;
+  bottom: 20px;
   left: 0;
   right: 0;
   margin: 0 auto;
@@ -125,17 +137,20 @@ const List = styled.div`
 `;
 
 const UpdateBtn = styled.button`
-  border: none;
+  border: 1px solid gray;
   padding: 5px 10px;
   width: 60px;
   border-radius: 3px;
   cursor: pointer;
-  background-color: #376ed4;
+  background-color: ${(props) => props.theme.btnColor};
   color: white;
+  position: absolute;
+  right: 90px;
+  bottom: 20px;
 `;
 
 const RemoveBtn = styled.button`
-  border: none;
+  border: 1px solid black;
   padding: 5px 10px;
   width: 60px;
   margin-left: 15px;
@@ -143,6 +158,9 @@ const RemoveBtn = styled.button`
   cursor: pointer;
   background-color: #dd0f0f;
   color: white;
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
 `;
 
 const ListBtn = styled.button`
@@ -895,18 +913,16 @@ function BoardDetail() {
         <div>
           <BoardContainer>
             <List>
-              <UpdateBtn onClick={updateBoard}>수정</UpdateBtn>
-              <RemoveBtn onClick={deletedBoard}>삭제</RemoveBtn>
               <ListBtn onClick={() => navigate(-1)}>목록</ListBtn>
             </List>
             <BoardWrapper>
               <BoardHeader>
                 <ul>
                   <div>
-                    <li>{boardData[0]?.username}</li>
+                    <li>작성자: {boardData[0]?.username}</li>
                   </div>
                   <div>
-                    <li>{boardData[0]?.time}</li>
+                    <li>등록일: {boardData[0]?.time}</li>
                   </div>
                   <div>
                     <li>추천: {boardData[0]?.recommend}</li>
@@ -937,6 +953,8 @@ function BoardDetail() {
                   </RecommendSvg>
                   <span>{boardData[0]?.recommend}</span>
                 </RecommendBtn>
+                <UpdateBtn onClick={updateBoard}>수정</UpdateBtn>
+                <RemoveBtn onClick={deletedBoard}>삭제</RemoveBtn>
               </BoardContent>
             </BoardWrapper>
           </BoardContainer>
@@ -980,7 +998,6 @@ function BoardDetail() {
                           <path d="M313.4 32.9c26 5.2 42.9 30.5 37.7 56.5l-2.3 11.4c-5.3 26.7-15.1 52.1-28.8 75.2H464c26.5 0 48 21.5 48 48c0 18.5-10.5 34.6-25.9 42.6C497 275.4 504 288.9 504 304c0 23.4-16.8 42.9-38.9 47.1c4.4 7.3 6.9 15.8 6.9 24.9c0 21.3-13.9 39.4-33.1 45.6c.7 3.3 1.1 6.8 1.1 10.4c0 26.5-21.5 48-48 48H294.5c-19 0-37.5-5.6-53.3-16.1l-38.5-25.7C176 420.4 160 390.4 160 358.3V320 272 247.1c0-29.2 13.3-56.7 36-75l7.4-5.9c26.5-21.2 44.6-51 51.2-84.2l2.3-11.4c5.2-26 30.5-42.9 56.5-37.7zM32 192H96c17.7 0 32 14.3 32 32V448c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32V224c0-17.7 14.3-32 32-32z" />
                         </UpBtn>
                       </span>
-
                       <UpCount>{data.up}</UpCount>
                     </div>
                     <div>{data.comment}</div>
