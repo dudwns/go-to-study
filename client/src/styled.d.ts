@@ -8,5 +8,6 @@ declare module "styled-components" {
     cardBgColor: string;
     borderColor: string;
     btnColor: string;
+    introColor: string;
   }
 }

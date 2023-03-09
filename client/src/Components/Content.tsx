@@ -11,11 +11,13 @@ const Wrapper = styled.div`
   position: absolute;
   left: 0;
   top: 0;
+  color: ${(props) => props.theme.textColor};
 
   padding-left: 12%;
   padding-right: 12%;
 
   .swiper {
+    width: 1400px;
   }
   .swiper-slide {
     display: flex;
@@ -24,6 +26,7 @@ const Wrapper = styled.div`
 
     & img {
       width: 100%;
+      margin-left: 30px;
     }
   }
 
@@ -37,17 +40,15 @@ const Wrapper = styled.div`
 
   .swiper-button-prev,
   .swiper-button-next {
-    color: black;
+    color: ${(props) => props.theme.textColor};
   }
 
   .swiper-button-disabled {
-    display: none;
   }
 `;
 
 const SwiperContent = styled.div`
   display: flex;
-
   align-items: center;
   width: 90%;
 `;
@@ -57,6 +58,7 @@ const Title = styled.div`
   margin-bottom: 3vh;
   font-weight: 800;
   text-align: left;
+  margin-left: 30px;
 `;
 
 const Description = styled.div`
@@ -113,7 +115,7 @@ function Content() {
         <SwiperSlide>
           <SwiperContent>
             <div>
-              <Title>커뮤니티</Title>
+              <Title>커뮤니케이션</Title>
               <img src="/images/data1.png"></img>
             </div>
             <Description>
@@ -143,7 +145,7 @@ function Content() {
         <SwiperSlide>
           <SwiperContent>
             <div>
-              <Title>다크모드 지원</Title>
+              <Title>테마 선택</Title>
               <img src="/images/data3.png"></img>
             </div>
             <Description>

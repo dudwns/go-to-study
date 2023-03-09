@@ -1,9 +1,9 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import styled from "styled-components";
-import { loginAtom, userAtom } from "../atoms";
+import { isDarkAtom, isSideAtom, loginAtom, userAtom } from "../atoms";
 import { motion, useAnimation } from "framer-motion";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Mousewheel, Pagination } from "swiper";
@@ -155,10 +155,10 @@ const PagiDiv = styled(motion.div)`
 
 //---------------------------------------------------------------Variants
 const wrapVariants = {
-  active: {
-    backgroundColor: "rgba(220, 216, 214, 1)",
-    transition: { duration: 0.5 },
-  },
+  active: (isDark: boolean) => ({
+    backgroundColor: isDark ? "rgba(53, 54, 58, 1)" : "rgba(220, 216, 214, 1)",
+    transition: { duration: 0.1 },
+  }),
 };
 
 const sideBarVariants = {
@@ -180,10 +180,12 @@ const menuList = ["메인 화면", "컨텐츠 소개", "기술"];
 function Home() {
   const [isLogin, setIsLogin] = useRecoilState(loginAtom); // 로그인 유무를 나타내는 boolean 값
   const [user, setUser] = useRecoilState(userAtom); // 로그인 한 유저의 정보
-  const [sideOpen, setSideOpen] = useState(true); // 사이드 메뉴 유무를 나타내는 boolean 값
+  const [sideOpen, setSideOpen] = useRecoilState(isSideAtom); // 사이드 메뉴 유무를 나타내는 boolean 값
+  const [isDark, setIsDark] = useRecoilState(isDarkAtom);
   const navigate = useNavigate();
 
   useEffect(() => {
+    setSideOpen(false);
     try {
       axios({
         url: "http://localhost:5000/login/success",
@@ -205,7 +207,7 @@ function Home() {
   }, []);
 
   return (
-    <Wrapper variants={wrapVariants} animate="active">
+    <Wrapper variants={wrapVariants} custom={isDark} animate="active">
       <SideBar variants={sideBarVariants} initial="normal" animate={sideOpen ? "open" : "close"}>
         <div>고투스</div>
         <SideBarBtn onClick={() => setSideOpen((current) => !current)}>

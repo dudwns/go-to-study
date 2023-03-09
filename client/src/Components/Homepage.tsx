@@ -2,9 +2,12 @@ import styled, { keyframes } from "styled-components";
 import { motion, useAnimation } from "framer-motion";
 import { useEffect, useState } from "react";
 import { TimerOptions } from "timers";
+import { useRecoilState } from "recoil";
+import { isSideAtom } from "../atoms";
 
 const IntroDiv = styled(motion.div)`
-  border: 1px solid black;
+  border: 1px solid ${(props) => props.theme.introColor};
+  color: ${(props) => props.theme.textColor};
   position: absolute;
   left: 50%;
   font-size: 2.6vw;
@@ -36,6 +39,7 @@ const Content = styled(motion.div)`
 `;
 
 const Text1 = styled(motion.div)`
+  color: ${(props) => props.theme.textColor};
   font-size: 4vw;
   opacity: 0;
   position: absolute;
@@ -44,6 +48,7 @@ const Text1 = styled(motion.div)`
   transform: translateX(-50%) translateY(-50%);
 `;
 const Text2 = styled(motion.div)`
+  color: ${(props) => props.theme.textColor};
   font-size: 2vw;
   opacity: 0;
   position: absolute;
@@ -71,7 +76,7 @@ const Circle1 = styled(motion.div)`
   align-items: center;
   border-radius: 150px;
   border: none;
-  background-color: whitesmoke;
+
   @media screen and (max-width: 1300px) {
     width: 200px;
     height: 200px;
@@ -98,7 +103,7 @@ const Circle2 = styled(motion.div)`
   align-items: center;
   border-radius: 150px;
   border: none;
-  background-color: whitesmoke;
+
   @media screen and (max-width: 1300px) {
     width: 200px;
     height: 200px;
@@ -125,7 +130,7 @@ const Circle3 = styled(motion.div)`
   align-items: center;
   border-radius: 150px;
   border: none;
-  background-color: whitesmoke;
+
   @media screen and (max-width: 1300px) {
     width: 200px;
     height: 200px;
@@ -167,14 +172,16 @@ const ScrollBtn = styled(motion.button)`
   margin: 0 auto;
   background-color: inherit;
   border: none;
+  color: ${(props) => props.theme.textColor};
 `;
 const ScrollSvg = styled(motion.svg)`
   width: 10px;
-  fill: black;
+  fill: ${(props) => props.theme.textColor};
 `;
 
 const AngleSvg = styled(motion.svg)`
   width: 10px;
+  fill: ${(props) => props.theme.textColor};
 `;
 
 const textVariants = {
@@ -217,10 +224,11 @@ const characterVariants = {
 const introduce = "고투스에 오신것을 환영합니다!";
 
 function Homepage() {
+  const [sideOpen, setSideOpen] = useRecoilState(isSideAtom); // 사이드 메뉴 유무를 나타내는 boolean 값
   const [text, setText] = useState("");
   const [count, setCount] = useState(0);
   const introAni = useAnimation();
-  const secondAni = useAnimation();
+  const wrapAni = useAnimation();
   const titleAni = useAnimation();
   const textAni = useAnimation();
   const contentAni = useAnimation();
@@ -228,82 +236,44 @@ function Homepage() {
   const circle2Ani = useAnimation();
   const circle3Ani = useAnimation();
 
-  // useEffect(() => {
-  //   let interval: any;
-  //   const divBoxAni = async () => {
-  //     await introAni.start({
-  //       width: window.innerWidth > 1000 ? "50%" : window.innerWidth > 700 ? "70%" : "90%",
-  //       transition: { duration: 0.5, type: "linear" },
-  //     });
-  //     await introAni.start({ height: "16vw", transition: { duration: 0.3, type: "linear" } });
-  //     setText((prev) => prev + introduce[count]);
-  //     setCount((prev) => prev + 1);
-  //   };
+  useEffect(() => {
+    let interval: any;
+    const divBoxAni = async () => {
+      await introAni.start({
+        width: window.innerWidth > 1000 ? "50%" : window.innerWidth > 700 ? "70%" : "90%",
+        transition: { duration: 0.5, type: "linear" },
+      });
+      await introAni.start({ height: "16vw", transition: { duration: 0.3, type: "linear" } });
+      setText((prev) => prev + introduce[count]);
+      setCount((prev) => prev + 1);
+    };
 
-  //   if (count == 0) {
-  //     divBoxAni();
-  //   } else {
-  //     interval = setInterval(() => {
-  //       setText((prev) => prev + introduce[count]);
-  //       setCount((prev) => prev + 1);
-  //     }, 100);
-  //   }
+    if (count == 0) {
+      divBoxAni();
+    } else {
+      interval = setInterval(() => {
+        setText((prev) => prev + introduce[count]);
+        setCount((prev) => prev + 1);
+      }, 100);
+    }
 
-  //   if (text.length === introduce.length) {
-  //     clearInterval(interval);
-  //     introAni.start({ height: "0px", transition: { delay: 1 } }).then(() =>
-  //       introAni
-  //         .start({ width: "0px", transition: { type: "linear" } })
-  //         .then(() => introAni.start({ display: "none" }))
-  //         .then(() => secondAni.start({ opacity: 1, y: 0 }))
-  //         .then(() =>
-  //           titleAni.start({
-  //             left: "50%",
-  //             opacity: 1,
-  //             transition: { duration: 0.5, type: "spring" },
-  //           })
-  //         )
-  //         .then(() =>
-  //           textAni.start({
-  //             left: "50%",
-  //             opacity: 1,
-  //             transition: { duration: 0.5, type: "spring" },
-  //           })
-  //         )
-  //         .then(() =>
-  //           circle1Ani.start({
-  //             opacity: 1,
-  //             transition: { duration: 0.5 },
-  //           })
-  //         )
-  //         .then(() =>
-  //           circle2Ani.start({
-  //             opacity: 1,
-  //             transition: { duration: 0.5, type: "spring" },
-  //           })
-  //         )
-  //         .then(() =>
-  //           circle3Ani.start({
-  //             opacity: 1,
-  //             transition: { duration: 0.5, type: "spring" },
-  //           })
-  //         )
-  //         .then(() =>
-  //           contentAni.start({
-  //             y: [0, 50, 0],
-  //             transition: { duration: 3, repeat: Infinity, type: "spring" },
-  //           })
-  //         )
-  //     );
-  //   }
+    if (text.length === introduce.length) {
+      clearInterval(interval);
+      introAni.start({ height: "0px", transition: { delay: 1 } }).then(() =>
+        introAni
+          .start({ width: "0px", transition: { type: "linear" } })
+          .then(() => introAni.start({ display: "none" }))
+          .then(() => setSideOpen(true))
+      );
+    }
 
-  //   return () => {
-  //     clearInterval(interval);
-  //   };
-  // });
+    return () => {
+      clearInterval(interval);
+    };
+  });
 
   useEffect(() => {
-    secondAni
+    wrapAni
       .start({ opacity: 1, y: 0 })
       .then(() =>
         titleAni.start({
@@ -347,12 +317,13 @@ function Homepage() {
 
   return (
     <>
-      {/* <IntroDiv animate={introAni}>{text}</IntroDiv> */}
-      <Wrapper animate={secondAni}>
+      <IntroDiv animate={introAni}>{text}</IntroDiv>
+      <Wrapper animate={wrapAni}>
         <Content>
           <Text1 animate={titleAni}>Go to Study!</Text1>
           <Text2 animate={textAni}>고투스에 오신것을 환영합니다!</Text2>
-          <CircleContent animate={contentAni}>
+
+          {/* <CircleContent animate={contentAni}>
             <Circle1 animate={circle1Ani}>
               <img src="/images/circle.png" alt="" />
               혼자 공부하면 외롭고 지치지 않으신가요?
@@ -372,7 +343,7 @@ function Homepage() {
               <br />
               <br /> 매일 공부 시간을 기록하고 목표 시간을 달성해보세요!
             </Circle3>
-          </CircleContent>
+          </CircleContent> */}
         </Content>
         {/* <Character
         variants={characterVariants}
