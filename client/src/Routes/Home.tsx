@@ -22,19 +22,19 @@ const Wrapper = styled(motion.div)`
   flex-direction: column;
   position: relative;
   background-color: rgba(255, 255, 255, 1);
-  /* &::after {
+  &::after {
     width: 100%;
     height: 100%;
     content: "";
     background-image: //linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)),
-      url(${process.env.PUBLIC_URL + "/images/background.jpg"});
-    background-size: auto;
+      url(${process.env.PUBLIC_URL + "/images/background1.jpg"});
+    background-size: cover;
     position: fixed;
     top: 0;
     left: 0;
     z-index: -1;
     opacity: 0.7;
-  } */
+  }
 
   .swiper {
     width: 100%;
@@ -156,7 +156,8 @@ const PagiDiv = styled(motion.div)`
 //---------------------------------------------------------------Variants
 const wrapVariants = {
   active: (isDark: boolean) => ({
-    backgroundColor: isDark ? "rgba(53, 54, 58, 1)" : "rgba(220, 216, 214, 1)",
+    // backgroundColor: isDark ? "rgba(53, 54, 58, 1)" : "rgba(220, 216, 214, 1)",
+    backgroundColor: isDark ? "rgba(53, 54, 58, 1)" : "rgba(255, 255, 255, 0)",
     transition: { duration: 0.1 },
   }),
 };

@@ -61,11 +61,14 @@ const CircleContent = styled(motion.div)`
   display: flex;
   width: 75%;
   justify-content: space-around;
-  margin-top: 15%;
+  opacity: 0;
+  position: absolute;
+  left: 50%;
+  top: 55%;
+  transform: translateX(-50%) translateY(-50%);
 `;
 
 const Circle1 = styled(motion.div)`
-  opacity: 0;
   width: 300px;
   height: 300px;
   padding: 40px;
@@ -93,7 +96,6 @@ const Circle1 = styled(motion.div)`
   }
 `;
 const Circle2 = styled(motion.div)`
-  opacity: 0;
   width: 300px;
   height: 300px;
   padding: 40px;
@@ -120,7 +122,6 @@ const Circle2 = styled(motion.div)`
 `;
 
 const Circle3 = styled(motion.div)`
-  opacity: 0;
   width: 300px;
   height: 300px;
   padding: 40px;
@@ -232,9 +233,7 @@ function Homepage() {
   const titleAni = useAnimation();
   const textAni = useAnimation();
   const contentAni = useAnimation();
-  const circle1Ani = useAnimation();
-  const circle2Ani = useAnimation();
-  const circle3Ani = useAnimation();
+  const circleAni = useAnimation();
 
   useEffect(() => {
     let interval: any;
@@ -264,6 +263,13 @@ function Homepage() {
           .start({ width: "0px", transition: { type: "linear" } })
           .then(() => introAni.start({ display: "none" }))
           .then(() => setSideOpen(true))
+          .then(() =>
+            circleAni.start({
+              opacity: 1,
+              top: "50%",
+              transition: { duration: 0.5 },
+            })
+          )
       );
     }
 
@@ -288,30 +294,6 @@ function Homepage() {
           opacity: 1,
           transition: { duration: 0.5, type: "spring" },
         })
-      )
-      .then(() =>
-        circle1Ani.start({
-          opacity: 1,
-          transition: { duration: 0.5 },
-        })
-      )
-      .then(() =>
-        circle2Ani.start({
-          opacity: 1,
-          transition: { duration: 0.5, type: "spring" },
-        })
-      )
-      .then(() =>
-        circle3Ani.start({
-          opacity: 1,
-          transition: { duration: 0.5, type: "spring" },
-        })
-      )
-      .then(() =>
-        contentAni.start({
-          y: [0, 50, 0],
-          transition: { duration: 3, repeat: Infinity, type: "spring" },
-        })
       );
   });
 
@@ -322,28 +304,27 @@ function Homepage() {
         <Content>
           <Text1 animate={titleAni}>Go to Study!</Text1>
           <Text2 animate={textAni}>고투스에 오신것을 환영합니다!</Text2>
-
-          {/* <CircleContent animate={contentAni}>
-            <Circle1 animate={circle1Ani}>
+          <CircleContent animate={circleAni}>
+            <Circle1>
               <img src="/images/circle.png" alt="" />
               혼자 공부하면 외롭고 지치지 않으신가요?
               <br />
               <br /> 고투스 커뮤니티를 이용하여 정보를 공유하고 사람들과 함께 공부해보세요!
             </Circle1>
 
-            <Circle2 animate={circle2Ani}>
+            <Circle2>
               <img src="/images/circle.png" alt="" />
               계획을 세우고 일정을 정리하고 싶은데 메모할 곳이 없으신가요?
               <br />
               <br /> 고투스에서 일정을 세워보고 정리해보세요!
             </Circle2>
-            <Circle3 animate={circle3Ani}>
+            <Circle3>
               <img src="/images/circle.png" alt="" />
               매일 집중이 안되고 시간만 흘러가서 공부의 효율이 떨어지시나요?
               <br />
               <br /> 매일 공부 시간을 기록하고 목표 시간을 달성해보세요!
             </Circle3>
-          </CircleContent> */}
+          </CircleContent>
         </Content>
         {/* <Character
         variants={characterVariants}
