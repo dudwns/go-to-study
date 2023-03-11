@@ -5,10 +5,11 @@ import { default as FormData } from "form-data";
 import { useNavigate } from "react-router-dom";
 
 const Wrraper = styled.div`
-  height: 100vh;
+  height: 100%;
   width: 100%;
   display: flex;
   padding-top: 70px;
+  padding-bottom: 50px;
   justify-content: center;
   background-color: ${(props) => props.theme.bgColor};
   color: ${(props) => props.theme.textColor};
@@ -22,6 +23,7 @@ const Container = styled.div`
   width: 600px;
   height: 800px;
   border-radius: 5px;
+  margin: 0 30px;
 `;
 
 const Title = styled.h2`

@@ -16,11 +16,12 @@ import Bookmark from "../Components/Bookmark";
 import Pagination from "../Components/Pagination";
 
 const Wrapper = styled.div`
-  height: 100vh;
+  height: 100%;
   width: 100%;
   min-width: 1080px;
   display: flex;
   padding-top: 70px;
+  margin-bottom: 50px;
   color: ${(props) => props.theme.textColor};
   background-color: ${(props) => props.theme.bgColor};
 `;

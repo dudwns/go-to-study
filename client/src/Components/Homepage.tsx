@@ -1,9 +1,6 @@
 import styled, { keyframes } from "styled-components";
 import { motion, useAnimation } from "framer-motion";
 import { useEffect, useState } from "react";
-import { TimerOptions } from "timers";
-import { useRecoilState } from "recoil";
-import { isSideAtom } from "../atoms";
 
 const IntroDiv = styled(motion.div)`
   border: 1px solid ${(props) => props.theme.introColor};
@@ -52,8 +49,8 @@ const Text2 = styled(motion.div)`
   font-size: 2vw;
   opacity: 0;
   position: absolute;
+  top: 26%;
   left: 30%;
-  top: 25%;
   transform: translateX(-50%) translateY(-50%);
 `;
 
@@ -64,8 +61,38 @@ const CircleContent = styled(motion.div)`
   opacity: 0;
   position: absolute;
   left: 50%;
-  top: 55%;
+  top: 60%;
   transform: translateX(-50%) translateY(-50%);
+`;
+
+const OneCircle = styled(motion.div)`
+  width: 300px;
+  height: 300px;
+  padding: 40px;
+  background-color: inherit;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 150px;
+  font-size: 12px;
+  color: ${(props) => props.theme.textColor};
+  & > img {
+    position: absolute;
+    width: 500px;
+
+    @media screen and (max-height: 600px) {
+      width: 350px;
+    }
+  }
+  @media screen and (min-width: 860px) {
+    display: none;
+  }
+
+  @media screen and (max-height: 600px) {
+    width: 200px;
+    height: 200px;
+    font-size: 10px;
+  }
 `;
 
 const Circle1 = styled(motion.div)`
@@ -85,12 +112,22 @@ const Circle1 = styled(motion.div)`
     height: 200px;
     font-size: 10px;
   }
-
+  @media screen and (max-height: 600px) {
+    width: 200px;
+    height: 200px;
+    font-size: 10px;
+  }
+  @media screen and (max-width: 859px) {
+    display: none;
+  }
   & > img {
     position: absolute;
     width: 300px;
 
     @media screen and (max-width: 1300px) {
+      width: 200px;
+    }
+    @media screen and (max-height: 600px) {
       width: 200px;
     }
   }
@@ -111,11 +148,22 @@ const Circle2 = styled(motion.div)`
     height: 200px;
     font-size: 10px;
   }
+  @media screen and (max-width: 859px) {
+    display: none;
+  }
+  @media screen and (max-height: 600px) {
+    width: 200px;
+    height: 200px;
+    font-size: 10px;
+  }
 
   & > img {
     position: absolute;
     width: 300px;
     @media screen and (max-width: 1300px) {
+      width: 200px;
+    }
+    @media screen and (max-height: 600px) {
       width: 200px;
     }
   }
@@ -137,11 +185,24 @@ const Circle3 = styled(motion.div)`
     height: 200px;
     font-size: 10px;
   }
+  @media screen and (max-width: 859px) {
+    display: none;
+  }
+
+  @media screen and (max-height: 600px) {
+    width: 200px;
+    height: 200px;
+    font-size: 10px;
+  }
 
   & > img {
     position: absolute;
     width: 300px;
     @media screen and (max-width: 1300px) {
+      width: 200px;
+    }
+
+    @media screen and (max-height: 600px) {
       width: 200px;
     }
   }
@@ -225,7 +286,6 @@ const characterVariants = {
 const introduce = "고투스에 오신것을 환영합니다!";
 
 function Homepage() {
-  const [sideOpen, setSideOpen] = useRecoilState(isSideAtom); // 사이드 메뉴 유무를 나타내는 boolean 값
   const [text, setText] = useState("");
   const [count, setCount] = useState(0);
   const introAni = useAnimation();
@@ -262,11 +322,10 @@ function Homepage() {
         introAni
           .start({ width: "0px", transition: { type: "linear" } })
           .then(() => introAni.start({ display: "none" }))
-          .then(() => setSideOpen(true))
           .then(() =>
             circleAni.start({
               opacity: 1,
-              top: "50%",
+              top: "55%",
               transition: { duration: 0.5 },
             })
           )
@@ -305,6 +364,10 @@ function Homepage() {
           <Text1 animate={titleAni}>Go to Study!</Text1>
           <Text2 animate={textAni}>고투스에 오신것을 환영합니다!</Text2>
           <CircleContent animate={circleAni}>
+            <OneCircle>
+              <img src="/images/circle2.png" />
+              고투스 커뮤니티를 이용하여 정보를 공유하고 사람들과 함께 공부해보세요!
+            </OneCircle>
             <Circle1>
               <img src="/images/circle.png" alt="" />
               혼자 공부하면 외롭고 지치지 않으신가요?

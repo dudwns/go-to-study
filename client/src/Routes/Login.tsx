@@ -4,10 +4,11 @@ import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 const Wrraper = styled.div`
-  height: 100vh;
+  height: 100%;
   width: 100%;
   display: flex;
   padding-top: 70px;
+  padding-bottom: 50px;
   justify-content: center;
   background-color: ${(props) => props.theme.bgColor};
   color: ${(props) => props.theme.textColor};
@@ -21,6 +22,7 @@ const Container = styled.div`
   width: 500px;
   height: 350px;
   border-radius: 5px;
+  margin: 0 30px;
 `;
 
 const Title = styled.h2`

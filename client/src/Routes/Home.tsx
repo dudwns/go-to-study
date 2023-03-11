@@ -1,10 +1,10 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useRecoilState } from "recoil";
 import styled from "styled-components";
-import { isDarkAtom, isSideAtom, loginAtom, userAtom } from "../atoms";
-import { motion, useAnimation } from "framer-motion";
+import { isDarkAtom, loginAtom, userAtom } from "../atoms";
+import { motion } from "framer-motion";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Mousewheel, Pagination } from "swiper";
 import "swiper/css";
@@ -85,12 +85,15 @@ const Wrapper = styled(motion.div)`
     transition: all 0.5 ease-in-out;
   }
 `;
+export interface IDark {
+  isDark: boolean;
+}
 
-const SideBar = styled(motion.div)`
+const SideBar = styled(motion.div)<IDark>`
   width: 200px;
   position: fixed;
   display: flex;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0.6);
   color: white;
   top: 50px;
   height: 550px;
@@ -124,8 +127,8 @@ const SideBar = styled(motion.div)`
   }
 `;
 
-const SideBarBtn = styled.button`
-  background-color: rgba(0, 0, 0, 0.7);
+const SideBarBtn = styled.button<IDark>`
+  background-color: rgba(0, 0, 0, 0.6);
   border: none;
   border-left: 1px solid gray;
   position: absolute;
@@ -157,7 +160,7 @@ const PagiDiv = styled(motion.div)`
 const wrapVariants = {
   active: (isDark: boolean) => ({
     // backgroundColor: isDark ? "rgba(53, 54, 58, 1)" : "rgba(220, 216, 214, 1)",
-    backgroundColor: isDark ? "rgba(53, 54, 58, 1)" : "rgba(255, 255, 255, 0)",
+    backgroundColor: isDark ? "rgba(0, 0, 0, 0.5)" : "rgba(255, 255, 255, 0)",
     transition: { duration: 0.1 },
   }),
 };
@@ -181,12 +184,11 @@ const menuList = ["메인 화면", "컨텐츠 소개", "기술"];
 function Home() {
   const [isLogin, setIsLogin] = useRecoilState(loginAtom); // 로그인 유무를 나타내는 boolean 값
   const [user, setUser] = useRecoilState(userAtom); // 로그인 한 유저의 정보
-  const [sideOpen, setSideOpen] = useRecoilState(isSideAtom); // 사이드 메뉴 유무를 나타내는 boolean 값
+  const [sideOpen, setSideOpen] = useState(false); // 사이드 메뉴 유무를 나타내는 boolean 값
   const [isDark, setIsDark] = useRecoilState(isDarkAtom);
   const navigate = useNavigate();
 
   useEffect(() => {
-    setSideOpen(false);
     try {
       axios({
         url: "http://localhost:5000/login/success",
@@ -209,9 +211,14 @@ function Home() {
 
   return (
     <Wrapper variants={wrapVariants} custom={isDark} animate="active">
-      <SideBar variants={sideBarVariants} initial="normal" animate={sideOpen ? "open" : "close"}>
+      <SideBar
+        isDark={isDark}
+        variants={sideBarVariants}
+        initial="normal"
+        animate={sideOpen ? "open" : "close"}
+      >
         <div>고투스</div>
-        <SideBarBtn onClick={() => setSideOpen((current) => !current)}>
+        <SideBarBtn isDark onClick={() => setSideOpen((current) => !current)}>
           {sideOpen ? (
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512">
               <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z" />

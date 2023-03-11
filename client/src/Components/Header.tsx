@@ -13,7 +13,7 @@ const Nav = styled(motion.div)`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0.6);
   border-bottom: 1px solid gray;
   z-index: 10;
   color: white;

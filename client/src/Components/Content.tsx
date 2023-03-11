@@ -8,16 +8,10 @@ import { Navigation, Mousewheel, Keyboard } from "swiper";
 const Wrapper = styled.div`
   width: 100%;
   display: flex;
-  position: absolute;
-  left: 0;
-  top: 0;
   color: ${(props) => props.theme.textColor};
 
-  padding-left: 12%;
-  padding-right: 12%;
-
   .swiper {
-    width: 1400px;
+    width: 95% !important;
   }
   .swiper-slide {
     display: flex;
@@ -25,8 +19,7 @@ const Wrapper = styled.div`
     align-items: center;
 
     & img {
-      width: 100%;
-      margin-left: 30px;
+      width: 90%;
     }
   }
 
@@ -50,7 +43,12 @@ const Wrapper = styled.div`
 const SwiperContent = styled.div`
   display: flex;
   align-items: center;
+  justify-content: center;
   width: 90%;
+
+  @media screen and (max-width: 1000px) {
+    flex-direction: column;
+  }
 `;
 
 const Title = styled.div`
@@ -58,27 +56,31 @@ const Title = styled.div`
   margin-bottom: 3vh;
   font-weight: 800;
   text-align: left;
-  margin-left: 30px;
+  margin-left: 2.5vw;
+
+  @media screen and (max-width: 1000px) {
+    text-align: center;
+  }
 `;
 
 const Description = styled.div`
-  margin-left: 5vw;
-  min-width: 270px;
   height: 150px;
   text-align: left;
   /* font-size: 1.2vw; */
-  font-size: 21px;
+  font-size: 1vw;
   line-height: 1.3;
   display: flex;
   align-items: center;
   justify-content: center;
-
+  white-space: nowrap;
   @media screen and (max-width: 1300px) {
-    font-size: 18px;
+    font-size: 15px;
   }
 
-  @media screen and (max-width: 800px) {
-    font-size: 15px;
+  @media screen and (max-width: 1000px) {
+    font-size: 11px;
+    margin-top: 20px;
+    align-items: flex-start;
   }
 `;
 
@@ -121,9 +123,7 @@ function Content() {
             <Description>
               고투스 커뮤니티를 이용하여
               <br />
-              사람들과 정보를 공유하고
-              <br />
-              함께 공부해보세요.
+              사람들과 정보를 공유하고 함께 공부해보세요.
             </Description>
           </SwiperContent>
         </SwiperSlide>
@@ -134,11 +134,9 @@ function Content() {
               <img src="/images/data2.png"></img>
             </div>
             <Description>
-              커뮤니티를 이용하다가
+              커뮤니티를 이용하다가 마음에 드는
               <br />
-              마음에 드는 글이 있으면
-              <br />
-              즐겨찾기에 추가해보세요.
+              글이 있으면 즐겨찾기에 추가해보세요.
             </Description>
           </SwiperContent>
         </SwiperSlide>
@@ -150,7 +148,8 @@ function Content() {
             </div>
             <Description>
               다크모드로 변경하여
-              <br /> 눈의 피로도를 낮춰보세요.
+              <br />
+              눈의 피로도를 낮춰보세요.
             </Description>
           </SwiperContent>
         </SwiperSlide>
