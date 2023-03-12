@@ -19,28 +19,39 @@ const Nav = styled(motion.div)`
   color: white;
 `;
 
-const Title = styled.h1`
-  font-size: 20px;
-  margin-left: 20px;
-  font-weight: 600;
-  cursor: pointer;
-
-  & > a {
-    color: white;
+const MenuBtn = styled.div`
+  margin-left: 10px;
+  width: 17px;
+  & svg {
+    fill: white;
+    cursor: pointer;
   }
 `;
 
-const Items = styled.ul`
-  display: flex;
-`;
+const Menu = styled(motion.div)`
+  position: absolute;
+  top: 49px;
+  left: 0;
+  width: 100%;
+  height: 0;
+  overflow: hidden;
+  background-color: rgba(0, 0, 0, 0.6);
 
-const Item = styled.li`
-  margin: 0 10px;
-  cursor: pointer;
-  font-weight: 600;
+  & li {
+    font-size: 13px;
+    width: 100%;
+    text-align: center;
+    padding: 10px 0;
+    border-bottom: 1px solid white;
+    cursor: pointer;
 
-  & > a {
-    color: white;
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.2);
+    }
+  }
+
+  & li:first-child {
+    border-top: 1px solid white;
   }
 `;
 
@@ -50,15 +61,27 @@ interface IValue {
 
 const UserItems = styled.ul<IValue>`
   display: flex;
+  align-items: center;
+  margin-right: 10px;
 `;
 
 const UserItem = styled.li`
+  font-size: 15px;
   margin: 0 10px;
-  font-weight: 600;
-
+  @media screen and (max-width: 900px) {
+    font-size: 12px;
+  }
   & > a {
     color: white;
     cursor: pointer;
+  }
+`;
+
+const UserName = styled.span`
+  font-size: 17px;
+  font-weight: 600;
+  @media screen and (max-width: 900px) {
+    font-size: 14px;
   }
 `;
 
@@ -69,6 +92,12 @@ const MyBtn = styled.button`
   border-radius: 3px;
   background-color: inherit;
   color: white;
+  @media screen and (max-width: 900px) {
+    font-size: 12px;
+  }
+  @media screen and (max-width: 600px) {
+    display: none;
+  }
 `;
 
 const LogoutBtn = styled.button`
@@ -79,6 +108,12 @@ const LogoutBtn = styled.button`
   border-radius: 3px;
   background-color: inherit;
   color: white;
+  @media screen and (max-width: 900px) {
+    font-size: 12px;
+  }
+  @media screen and (max-width: 600px) {
+    display: none;
+  }
 `;
 
 const ThemeBtn = styled.button`
@@ -106,7 +141,19 @@ const navVariants = {
   },
 };
 
+const topVariants = {
+  bottom: {
+    height: "148px",
+    transition: { type: "tween" },
+  },
+  top: {
+    height: 0,
+    transition: { type: "tween" },
+  },
+};
+
 function Header() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const isLogin = useRecoilValue(loginAtom); // 로그인 유무를 나타내는 boolean 값
   const user = useRecoilValue(userAtom); // 로그인 한 유저의 정보
   const id = user.id;
@@ -158,27 +205,38 @@ function Header() {
         )}
       </ThemeBtn>
       <Nav variants={navVariants} initial="top" animate={navAnimation}>
-        <Title>
-          <Link to="/">고투스 </Link>
-        </Title>
+        <MenuBtn onClick={() => setIsMenuOpen((prev) => !prev)}>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+            <path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z" />
+          </svg>
+          <Menu variants={topVariants} animate={isMenuOpen ? "bottom" : "top"}>
+            <ul>
+              <li onClick={() => navigate("/")}>홈페이지</li>
+              <li onClick={() => navigate("/board/1")}>커뮤니티</li>
+              {isLogin ? (
+                <li onClick={myPage}>마이 페이지</li>
+              ) : (
+                <li onClick={() => navigate("/join")}>회원가입</li>
+              )}
+              {isLogin ? (
+                <li onClick={logout}>로그아웃</li>
+              ) : (
+                <li onClick={() => navigate("/login")}>로그인</li>
+              )}
+            </ul>
+          </Menu>
+        </MenuBtn>
 
-        <Items>
-          <Item>
-            <Link to="/board/1">게시판</Link>
-          </Item>
-
-          <Item>
-            <Link to="/todo">할 일</Link>
-          </Item>
-        </Items>
         <UserItems value={isLogin}>
           {isLogin ? (
             <>
-              <UserItem> {user.name}님이 로그인했습니다.</UserItem>
               <UserItem>
+                <UserName>{user.name}</UserName> 님이 로그인했습니다.
+              </UserItem>
+              {/* <UserItem>
                 <MyBtn onClick={myPage}>마이 페이지</MyBtn>
                 <LogoutBtn onClick={logout}>로그아웃</LogoutBtn>
-              </UserItem>
+              </UserItem> */}
             </>
           ) : (
             <>
