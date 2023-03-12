@@ -225,7 +225,7 @@ app.delete("/api/customers/:id", (req, res) => {
 
 // -------------------------------------------------------------------------------------------- 게시판
 
-// 모든 게시글 가져오기 (select)
+// 모든 게시글 가져오기 (최근 순)
 app.get("/api/board", (req, res) => {
   let sql = "SELECT * FROM BOARD WHERE isDeleted = 0";
   connection.query(sql, (err, rows, fileds) => {
@@ -233,14 +233,9 @@ app.get("/api/board", (req, res) => {
   });
 });
 
-// 게시글을 10개씩 잘라서 가져오기
-app.post("/api/board/page/:page", (req, res) => {
-  let page = req.params.page;
-  let boardLen = req.body.boardLen;
-  let firstValue = boardLen - page * 10 < 0 ? 0 : boardLen - page * 10;
-  let secondValue = boardLen - page * 10 < 0 ? boardLen - (page - 1) * 10 : 10;
-
-  let sql = `SELECT * FROM BOARD WHERE isDeleted = 0 LIMIT ${firstValue}, ${secondValue}`;
+// 모든 게시글 가져오기 (추천 순)
+app.get("/api/recommend/board", (req, res) => {
+  let sql = "SELECT * FROM BOARD WHERE isDeleted = 0 ORDER BY recommend , time";
   connection.query(sql, (err, rows, fileds) => {
     res.send(rows);
   });

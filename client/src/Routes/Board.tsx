@@ -18,7 +18,6 @@ import Pagination from "../Components/Pagination";
 const Wrapper = styled.div`
   height: 100%;
   width: 100%;
-  min-width: 1080px;
   display: flex;
   padding-top: 70px;
   margin-bottom: 50px;
@@ -31,7 +30,10 @@ const BorderContent = styled.div`
   display: flex;
   flex-direction: column;
   padding: 0 20px;
-  min-width: 720px;
+
+  @media screen and (max-width: 770px) {
+    width: 100%;
+  }
 `;
 
 const BoardMenu = styled.div`
@@ -49,6 +51,17 @@ const RecentBtn = styled.button`
   padding: 5px 10px;
   background-color: ${(props) => props.theme.btnColor};
   color: white;
+  cursor: pointer;
+  @media screen and (max-width: 1300px) {
+    width: 55px;
+    font-size: 10px;
+  }
+
+  @media screen and (max-width: 600px) {
+    width: 45px;
+    font-size: 7px;
+    padding: 3px 0;
+  }
 `;
 
 const RecommendBtn = styled.button`
@@ -57,14 +70,32 @@ const RecommendBtn = styled.button`
   padding: 5px 10px;
   background-color: ${(props) => props.theme.btnColor};
   color: white;
+  cursor: pointer;
+  @media screen and (max-width: 1300px) {
+    width: 55px;
+    font-size: 10px;
+  }
+  @media screen and (max-width: 600px) {
+    width: 45px;
+    font-size: 7px;
+    padding: 3px 0;
+  }
 `;
 
 const SearchForm = styled.form``;
 const SearchInput = styled.input`
   width: 400px;
+  font-size: 11px;
+  border-radius: 3px;
+  border: 1px solid black;
+  padding: 2px;
 
   @media screen and (max-width: 1200px) {
     width: 300px;
+  }
+
+  @media screen and (max-width: 860px) {
+    width: 200px;
   }
 `;
 
@@ -75,6 +106,15 @@ const WriteBtn = styled.button`
   background-color: ${(props) => props.theme.btnColor};
   color: white;
   cursor: pointer;
+  @media screen and (max-width: 1300px) {
+    width: 55px;
+    font-size: 10px;
+  }
+  @media screen and (max-width: 600px) {
+    width: 45px;
+    font-size: 7px;
+    padding: 3px 0;
+  }
 `;
 
 const ListBtn = styled.button`
@@ -86,6 +126,15 @@ const ListBtn = styled.button`
   background-color: ${(props) => props.theme.btnColor};
   color: white;
   cursor: pointer;
+  @media screen and (max-width: 1300px) {
+    width: 55px;
+    font-size: 10px;
+  }
+  @media screen and (max-width: 600px) {
+    width: 45px;
+    font-size: 7px;
+    padding: 3px 0;
+  }
 `;
 
 const BoardContent = styled.div`
@@ -102,10 +151,15 @@ const BoardHeader = styled.div`
   min-height: 50px;
   align-items: center;
   padding: 0 20px;
-
+  @media screen and (max-width: 920px) {
+    font-size: 13px;
+  }
   & span:nth-child(1) {
     width: 100px;
     font-weight: 700;
+    @media screen and (max-width: 600px) {
+      font-size: 12px;
+    }
   }
   & span:nth-child(2) {
     width: 500px;
@@ -113,6 +167,10 @@ const BoardHeader = styled.div`
     text-align: center;
     @media screen and (max-width: 1200px) {
       width: 400px;
+      flex-shrink: 4;
+    }
+    @media screen and (max-width: 600px) {
+      font-size: 12px;
     }
   }
 
@@ -120,6 +178,9 @@ const BoardHeader = styled.div`
     width: 70px;
     font-weight: 700;
     text-align: center;
+    @media screen and (max-width: 600px) {
+      font-size: 12px;
+    }
   }
 
   & span:nth-child(4) {
@@ -134,6 +195,10 @@ const BoardHeader = styled.div`
     width: 70px;
     font-weight: 700;
     text-align: center;
+    @media screen and (max-width: 600px) {
+      font-size: 12px;
+      width: 60px;
+    }
   }
 `;
 
@@ -157,13 +222,28 @@ const BoardList = styled.div`
 
 const BoardName = styled.div`
   width: 100px;
+  @media screen and (max-width: 920px) {
+    font-size: 11px;
+  }
 `;
 const BoardTitle = styled.div`
   width: 500px;
   text-align: center;
+
   & > span:first-child {
     cursor: pointer;
     margin-right: 5px;
+  }
+  @media screen and (max-width: 1200px) {
+    width: 400px;
+  }
+  @media screen and (max-width: 920px) {
+    font-size: 11px;
+
+    flex-shrink: 4;
+  }
+  @media screen and (max-width: 600px) {
+    margin-right: 10px;
   }
 
   & > span:nth-child(2) {
@@ -174,14 +254,13 @@ const BoardTitle = styled.div`
   & > span:hover {
     text-decoration: underline;
   }
-
-  @media screen and (max-width: 1200px) {
-    width: 400px;
-  }
 `;
 const BoardDate = styled.div`
   width: 70px;
   text-align: center;
+  @media screen and (max-width: 920px) {
+    font-size: 11px;
+  }
 `;
 
 const BoardRecomendation = styled.div`
@@ -207,10 +286,17 @@ const BoardBookmark = styled.div`
     & > path {
       pointer-events: none;
     }
+
+    @media screen and (max-width: 920px) {
+      width: 15px;
+    }
   }
 
   & .bookmark {
     fill: yellow;
+  }
+  @media screen and (max-width: 600px) {
+    width: 60px;
   }
 `;
 
@@ -337,26 +423,11 @@ function Board() {
 
   // 게시글을 10개씩 잘라서 가져옴
   useEffect(() => {
-    try {
-      axios({
-        url: "http://localhost:5000/api/board/page/" + page,
-        method: "POST",
-        withCredentials: true,
-        data: {
-          boardLen: board.length,
-        },
-      })
-        .then((result) => {
-          if (result.data) {
-            setSelectBoard(result.data);
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    } catch (error) {
-      console.log(error);
-    }
+    let boardLen = board.length;
+    let firstValue = boardLen - Number(page) * 10 < 0 ? 0 : boardLen - (Number(page) - 1) * 10 - 10;
+    let secondValue = boardLen - (Number(page) - 1) * 10;
+    let data = board.slice(firstValue, secondValue);
+    setSelectBoard(data);
   }, [board, page]);
 
   const onTitleClickHandler = (e: React.MouseEvent<HTMLSpanElement>) => {
@@ -506,13 +577,59 @@ function Board() {
     }
   };
 
+  const onRecentClick = () => {
+    try {
+      axios({
+        url: "http://localhost:5000/api/board",
+        method: "GET",
+        withCredentials: true,
+      })
+        .then((result) => {
+          if (result.data) {
+            setBoard(result.data);
+            setPageNumber(Math.ceil(result.data.length / 10));
+          }
+        })
+        .then(() => {})
+        .catch((error) => {
+          console.log(error);
+        });
+    } catch (error) {
+      console.log(error);
+    }
+    navigate("/board/1");
+  };
+
+  const onRecommendClick = () => {
+    try {
+      axios({
+        url: "http://localhost:5000/api/recommend/board",
+        method: "GET",
+        withCredentials: true,
+      })
+        .then((result) => {
+          if (result.data) {
+            setBoard(result.data);
+            setPageNumber(Math.ceil(result.data.length / 10));
+          }
+        })
+        .then(() => {})
+        .catch((error) => {
+          console.log(error);
+        });
+    } catch (error) {
+      console.log(error);
+    }
+    navigate("/board/1");
+  };
+
   return (
     <Wrapper>
       <BorderContent>
         <BoardMenu>
           <div>
-            <RecentBtn>최근 순</RecentBtn>
-            <RecommendBtn>추천 순</RecommendBtn>
+            <RecentBtn onClick={onRecentClick}>최근 순</RecentBtn>
+            <RecommendBtn onClick={onRecommendClick}>추천 순</RecommendBtn>
           </div>
 
           <SearchForm>
@@ -521,6 +638,8 @@ function Board() {
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
               placeholder="검색 할 내용을 입력하세요."
+              onFocus={(e) => (e.target.placeholder = "")}
+              onBlur={(e) => (e.target.placeholder = "검색 할 내용을 입력하세요.")}
             ></SearchInput>
           </SearchForm>
           <div>
