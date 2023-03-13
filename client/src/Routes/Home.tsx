@@ -1,6 +1,5 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import { isDarkAtom, loginAtom, userAtom } from "../atoms";
@@ -100,6 +99,9 @@ const SideBar = styled(motion.div)<IDark>`
   left: -200px;
   z-index: 3;
   flex-direction: column;
+  @media screen and (max-width: 1200px) {
+    display: none;
+  }
   & > div:nth-child(1) {
     border-bottom: 1px solid gray;
     height: 100px;
@@ -186,7 +188,12 @@ function Home() {
   const [user, setUser] = useRecoilState(userAtom); // 로그인 한 유저의 정보
   const [sideOpen, setSideOpen] = useState(false); // 사이드 메뉴 유무를 나타내는 boolean 값
   const [isDark, setIsDark] = useRecoilState(isDarkAtom);
-  const navigate = useNavigate();
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setSideOpen(true);
+    }, 4000);
+  }, []);
 
   useEffect(() => {
     try {

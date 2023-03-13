@@ -4,7 +4,7 @@ import axios from "axios";
 import { default as FormData } from "form-data";
 import { useNavigate } from "react-router-dom";
 
-const Wrraper = styled.div`
+const Wrapper = styled.div`
   height: 100%;
   width: 100%;
   display: flex;
@@ -105,7 +105,7 @@ function Join() {
   };
 
   return (
-    <Wrraper>
+    <Wrapper>
       <Container>
         <Title>회원가입</Title>
         <JoinForm onSubmit={handleFormSubmit}>
@@ -166,7 +166,7 @@ function Join() {
           <JoinBtn type="submit">가입하기</JoinBtn>
         </JoinForm>
       </Container>
-    </Wrraper>
+    </Wrapper>
   );
 }
 export default Join;

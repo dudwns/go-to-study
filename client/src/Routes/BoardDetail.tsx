@@ -9,7 +9,6 @@ import React, { useEffect, useState } from "react";
 const Wrapper = styled.div`
   height: 100vh;
   width: 100%;
-  min-width: 1080px;
   display: flex;
   flex-direction: column;
   padding-top: 70px;
@@ -45,6 +44,9 @@ const BoardContainer = styled.div`
   flex-direction: column;
   padding: 0 20px;
   background-color: ${(props) => props.theme.bgColor};
+  @media screen and (max-width: 770px) {
+    width: 100%;
+  }
 `;
 
 const BoardWrapper = styled.div`
@@ -65,8 +67,24 @@ const BoardHeader = styled.div`
     font-weight: 800;
 
     & > div > li:first-child {
-      width: 250px;
       text-align: center;
+      @media screen and (max-width: 1050px) {
+        font-size: 14px;
+      }
+    }
+
+    & > div:first-child {
+      margin-left: 30px;
+      @media screen and (max-width: 600px) {
+        margin-left: 5px;
+      }
+    }
+
+    & > div:last-child {
+      margin-right: 30px;
+      @media screen and (max-width: 600px) {
+        margin-right: 5px;
+      }
     }
   }
   background-color: ${(props) => props.theme.bgColor};
@@ -145,8 +163,19 @@ const UpdateBtn = styled.button`
   background-color: ${(props) => props.theme.btnColor};
   color: white;
   position: absolute;
-  right: 90px;
+  right: 85px;
   bottom: 20px;
+
+  @media screen and (max-width: 1300px) {
+    width: 55px;
+    font-size: 11px;
+    right: 80px;
+  }
+  @media screen and (max-width: 600px) {
+    width: 45px;
+    padding: 3px 0;
+    right: 70px;
+  }
 `;
 
 const RemoveBtn = styled.button`
@@ -161,6 +190,15 @@ const RemoveBtn = styled.button`
   position: absolute;
   right: 20px;
   bottom: 20px;
+
+  @media screen and (max-width: 1300px) {
+    width: 55px;
+    font-size: 11px;
+  }
+  @media screen and (max-width: 600px) {
+    width: 45px;
+    padding: 3px 0;
+  }
 `;
 
 const ListBtn = styled.button`
@@ -172,13 +210,24 @@ const ListBtn = styled.button`
   color: white;
   cursor: pointer;
   background-color: ${(props) => props.theme.btnColor};
+
+  @media screen and (max-width: 1300px) {
+    width: 55px;
+    font-size: 11px;
+  }
+  @media screen and (max-width: 600px) {
+    width: 45px;
+    padding: 3px 0;
+  }
 `;
 
 const CommentForm = styled.form`
   padding: 0 20px;
   margin-bottom: 30px;
   position: relative;
-  width: 80%;
+  @media screen and (max-width: 770px) {
+    width: 100%;
+  }
 `;
 const CommentInput = styled.input`
   border: none;
@@ -203,6 +252,14 @@ const CommentBtn = styled.button`
   cursor: pointer;
   background-color: ${(props) => props.theme.btnColor};
   color: white;
+  @media screen and (max-width: 1300px) {
+    width: 55px;
+    font-size: 11px;
+  }
+  @media screen and (max-width: 600px) {
+    width: 45px;
+    padding: 3px 0;
+  }
 `;
 
 const CommentItems = styled.ul`
@@ -210,6 +267,9 @@ const CommentItems = styled.ul`
   width: 80%;
   padding-bottom: 50px;
   background-color: ${(props) => props.theme.bgColor};
+  @media screen and (max-width: 770px) {
+    width: 100%;
+  }
 `;
 
 const CommentItem = styled.li`
@@ -331,22 +391,26 @@ const ReplyForm = styled.form`
   & > button:nth-child(2) {
     position: absolute;
     border: 1px solid gray;
-    margin-left: 10px;
-    padding: 3px 5px;
+    padding: 3px 7px;
     top: 22px;
-    right: 45px;
+    right: 50px;
     border-radius: 3px;
     background-color: ${(props) => props.theme.btnColor};
     z-index: 3;
     cursor: pointer;
     color: white;
+
+    @media screen and (max-width: 1300px) {
+      font-size: 11px;
+      width: 45px;
+      padding: 3px 0;
+    }
   }
 
   & > button:nth-child(3) {
     position: absolute;
     border: 1px solid gray;
-    margin-left: 10px;
-    padding: 3px 5px;
+    padding: 3px 7px;
     top: 22px;
     right: 0;
     border-radius: 3px;
@@ -354,6 +418,11 @@ const ReplyForm = styled.form`
     z-index: 3;
     cursor: pointer;
     color: white;
+    @media screen and (max-width: 1300px) {
+      font-size: 11px;
+      width: 45px;
+      padding: 3px 0;
+    }
   }
 `;
 

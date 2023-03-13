@@ -55,11 +55,21 @@ const Menu = styled(motion.div)`
   }
 `;
 
-interface IValue {
-  value: boolean;
-}
+const MenuItems = styled.ul`
+  display: flex;
+`;
 
-const UserItems = styled.ul<IValue>`
+const MenuItem = styled.li`
+  font-size: 15px;
+  margin: 0 10px;
+  color: white;
+  cursor: pointer;
+  @media screen and (max-width: 900px) {
+    font-size: 12px;
+  }
+`;
+
+const UserItems = styled.ul`
   display: flex;
   align-items: center;
   margin-right: 10px;
@@ -68,12 +78,10 @@ const UserItems = styled.ul<IValue>`
 const UserItem = styled.li`
   font-size: 15px;
   margin: 0 10px;
+  color: white;
+  cursor: pointer;
   @media screen and (max-width: 900px) {
     font-size: 12px;
-  }
-  & > a {
-    color: white;
-    cursor: pointer;
   }
 `;
 
@@ -82,37 +90,6 @@ const UserName = styled.span`
   font-weight: 600;
   @media screen and (max-width: 900px) {
     font-size: 14px;
-  }
-`;
-
-const MyBtn = styled.button`
-  cursor: pointer;
-  border: none;
-  padding: 1px 5px;
-  border-radius: 3px;
-  background-color: inherit;
-  color: white;
-  @media screen and (max-width: 900px) {
-    font-size: 12px;
-  }
-  @media screen and (max-width: 600px) {
-    display: none;
-  }
-`;
-
-const LogoutBtn = styled.button`
-  cursor: pointer;
-  border: none;
-  padding: 1px 5px;
-  margin-left: 15px;
-  border-radius: 3px;
-  background-color: inherit;
-  color: white;
-  @media screen and (max-width: 900px) {
-    font-size: 12px;
-  }
-  @media screen and (max-width: 600px) {
-    display: none;
   }
 `;
 
@@ -209,6 +186,7 @@ function Header() {
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
             <path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z" />
           </svg>
+
           <Menu variants={topVariants} animate={isMenuOpen ? "bottom" : "top"}>
             <ul>
               <li onClick={() => navigate("/")}>홈페이지</li>
@@ -226,27 +204,21 @@ function Header() {
             </ul>
           </Menu>
         </MenuBtn>
-
-        <UserItems value={isLogin}>
+        <MenuItems>
+          <MenuItem onClick={() => navigate("/")}>홈페이지</MenuItem>
+          <MenuItem onClick={() => navigate("/board/1")}>커뮤니티</MenuItem>
+        </MenuItems>
+        <UserItems>
           {isLogin ? (
             <>
               <UserItem>
                 <UserName>{user.name}</UserName> 님이 로그인했습니다.
               </UserItem>
-              {/* <UserItem>
-                <MyBtn onClick={myPage}>마이 페이지</MyBtn>
-                <LogoutBtn onClick={logout}>로그아웃</LogoutBtn>
-              </UserItem> */}
             </>
           ) : (
             <>
-              <UserItem>
-                <Link to="/join">회원가입</Link>
-              </UserItem>
-
-              <UserItem>
-                <Link to="/login">로그인</Link>
-              </UserItem>
+              <UserItem onClick={() => navigate("/join")}>회원가입</UserItem>
+              <UserItem onClick={() => navigate("/login")}>로그인</UserItem>
             </>
           )}
         </UserItems>

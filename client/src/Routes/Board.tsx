@@ -45,6 +45,8 @@ const BoardMenu = styled.div`
 `;
 
 const RecentBtn = styled.button`
+  width: 60px;
+  font-size: 11px;
   border: 1px solid gray;
   border-radius: 3px;
   margin-right: 15px;
@@ -65,12 +67,15 @@ const RecentBtn = styled.button`
 `;
 
 const RecommendBtn = styled.button`
+  width: 60px;
+  font-size: 11px;
   border: 1px solid gray;
   border-radius: 3px;
   padding: 5px 10px;
   background-color: ${(props) => props.theme.btnColor};
   color: white;
   cursor: pointer;
+
   @media screen and (max-width: 1300px) {
     width: 55px;
     font-size: 10px;
@@ -100,6 +105,8 @@ const SearchInput = styled.input`
 `;
 
 const WriteBtn = styled.button`
+  width: 60px;
+  font-size: 11px;
   border: 1px solid gray;
   border-radius: 3px;
   padding: 5px 10px;
@@ -118,6 +125,8 @@ const WriteBtn = styled.button`
 `;
 
 const ListBtn = styled.button`
+  width: 60px;
+  font-size: 11px;
   border: 1px solid gray;
   width: 60px;
   border-radius: 3px;
@@ -150,13 +159,15 @@ const BoardHeader = styled.div`
   justify-content: space-between;
   min-height: 50px;
   align-items: center;
-  padding: 0 20px;
-  @media screen and (max-width: 920px) {
+  padding: 0 10px;
+
+  @media screen and (max-width: 1300px) {
     font-size: 13px;
   }
   & span:nth-child(1) {
     width: 100px;
     font-weight: 700;
+    text-align: left;
     @media screen and (max-width: 600px) {
       font-size: 12px;
     }
@@ -165,9 +176,9 @@ const BoardHeader = styled.div`
     width: 500px;
     font-weight: 700;
     text-align: center;
-    @media screen and (max-width: 1200px) {
+    flex-shrink: 5;
+    @media screen and (max-width: 1300px) {
       width: 400px;
-      flex-shrink: 4;
     }
     @media screen and (max-width: 600px) {
       font-size: 12px;
@@ -184,14 +195,6 @@ const BoardHeader = styled.div`
   }
 
   & span:nth-child(4) {
-    width: 40px;
-    font-weight: 700;
-    text-align: center;
-    @media screen and (max-width: 1200px) {
-      display: none;
-    }
-  }
-  & span:nth-child(5) {
     width: 70px;
     font-weight: 700;
     text-align: center;
@@ -199,6 +202,12 @@ const BoardHeader = styled.div`
       font-size: 12px;
       width: 60px;
     }
+  }
+
+  & span:nth-child(5) {
+    width: 40px;
+    font-weight: 700;
+    text-align: center;
   }
 `;
 
@@ -209,7 +218,7 @@ const BoardList = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 20px;
+  padding: 0 10px;
   font-size: 13px;
   &:first-child {
     border-top: 1px solid gray;
@@ -222,26 +231,23 @@ const BoardList = styled.div`
 
 const BoardName = styled.div`
   width: 100px;
-  @media screen and (max-width: 920px) {
+  @media screen and (max-width: 1300px) {
     font-size: 11px;
   }
 `;
 const BoardTitle = styled.div`
   width: 500px;
   text-align: center;
-
+  flex-shrink: 5;
   & > span:first-child {
     cursor: pointer;
     margin-right: 5px;
   }
-  @media screen and (max-width: 1200px) {
+  @media screen and (max-width: 1300px) {
     width: 400px;
-  }
-  @media screen and (max-width: 920px) {
     font-size: 11px;
-
-    flex-shrink: 4;
   }
+
   @media screen and (max-width: 600px) {
     margin-right: 10px;
   }
@@ -258,17 +264,8 @@ const BoardTitle = styled.div`
 const BoardDate = styled.div`
   width: 70px;
   text-align: center;
-  @media screen and (max-width: 920px) {
+  @media screen and (max-width: 1300px) {
     font-size: 11px;
-  }
-`;
-
-const BoardRecomendation = styled.div`
-  width: 40px;
-  text-align: center;
-
-  @media screen and (max-width: 1200px) {
-    display: none;
   }
 `;
 
@@ -287,7 +284,7 @@ const BoardBookmark = styled.div`
       pointer-events: none;
     }
 
-    @media screen and (max-width: 920px) {
+    @media screen and (max-width: 1300px) {
       width: 15px;
     }
   }
@@ -302,6 +299,10 @@ const BoardBookmark = styled.div`
 
 const BookmarkSvg = styled.svg``;
 
+const BoardRecomendation = styled.div`
+  width: 40px;
+  text-align: center;
+`;
 const PageNumbers = styled.ul`
   display: flex;
   justify-content: center;
@@ -528,12 +529,11 @@ function Board() {
             <BoardName>{item.username}</BoardName>
             <BoardTitle>
               <span id={String(item.id)} onClick={onTitleClickHandler}>
-                {item.title.length > 35 ? `${item.title.slice(0, 35)}...` : item.title}
+                {item.title.length > 30 ? `${item.title.slice(0, 30)}...` : item.title}
               </span>
               <span>{`[${item.replyCount}]`}</span>
             </BoardTitle>
             <BoardDate>{item.time}</BoardDate>
-            <BoardRecomendation>{item.recommend}</BoardRecomendation>
             <BoardBookmark>
               <BookmarkSvg
                 className={(() => {
@@ -551,6 +551,7 @@ function Board() {
                 <path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z" />
               </BookmarkSvg>
             </BoardBookmark>
+            <BoardRecomendation>{item.recommend}</BoardRecomendation>
           </BoardList>
         );
       });
@@ -651,8 +652,8 @@ function Board() {
           <span>작성자</span>
           <span>제목</span>
           <span>등록일</span>
-          <span>추천</span>
           <span>즐겨찾기</span>
+          <span>추천</span>
         </BoardHeader>
         <BoardContent>{searchComponent(selectBoard)}</BoardContent>
         <PageNumbers>

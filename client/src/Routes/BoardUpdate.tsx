@@ -7,15 +7,36 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
 
 const Wrapper = styled.div`
-  height: 100vh;
+  height: 100%;
   width: 100%;
   display: flex;
   padding-top: 120px;
   align-items: center;
   flex-direction: column;
+  padding-bottom: 50px;
   background-color: ${(props) => props.theme.bgColor};
   & .quill {
     background-color: white;
+
+    @media screen and (max-width: 700px) {
+      width: 500px;
+    }
+    @media screen and (max-width: 550px) {
+      width: 400px;
+    }
+  }
+`;
+
+const ReactQuillDiv = styled.div`
+  background-color: white;
+  height: 442px;
+
+  @media screen and (max-width: 700px) {
+    width: 500px;
+    height: 466px;
+  }
+  @media screen and (max-width: 550px) {
+    width: 400px;
   }
 `;
 
@@ -29,6 +50,16 @@ const Header = styled.div`
 const TitleInput = styled.input`
   width: 500px;
   padding: 5px 10px;
+
+  @media screen and (max-width: 700px) {
+    width: 400px;
+    padding: 1px 3px;
+  }
+
+  @media screen and (max-width: 550px) {
+    width: 300px;
+    padding: 1px 3px;
+  }
 `;
 
 const UpdateBtn = styled.button`
@@ -39,6 +70,12 @@ const UpdateBtn = styled.button`
   width: 60px;
   border-radius: 3px;
   cursor: pointer;
+
+  @media screen and (max-width: 700px) {
+    font-size: 11px;
+    width: 45px;
+    padding: 3px 0;
+  }
 `;
 
 function BoardUpdate() {
@@ -206,7 +243,7 @@ function BoardUpdate() {
           ></TitleInput>{" "}
           <UpdateBtn>변경</UpdateBtn>
         </Header>
-        <div style={{ backgroundColor: "white", height: "442px" }}>
+        <ReactQuillDiv>
           <ReactQuill
             onChange={setContent}
             modules={modules}
@@ -215,7 +252,7 @@ function BoardUpdate() {
             style={{ height: "400px" }}
             placeholder="내용을 입력하세요."
           ></ReactQuill>
-        </div>
+        </ReactQuillDiv>
       </form>
     </Wrapper>
   );

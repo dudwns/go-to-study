@@ -3,13 +3,14 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
-const Wrraper = styled.div`
-  height: 100%;
+const Wrapper = styled.div`
+  height: 100vh;
   width: 100%;
   display: flex;
   padding-top: 70px;
   padding-bottom: 50px;
   justify-content: center;
+  align-items: center;
   background-color: ${(props) => props.theme.bgColor};
   color: ${(props) => props.theme.textColor};
 `;
@@ -91,7 +92,7 @@ function Login() {
   };
 
   return (
-    <Wrraper>
+    <Wrapper>
       <Container>
         <Title>로그인</Title>
         <LoginForm onSubmit={handleFormSubmit}>
@@ -117,7 +118,7 @@ function Login() {
           <JoinText>회원가입</JoinText>
         </Link>
       </Container>
-    </Wrraper>
+    </Wrapper>
   );
 }
 

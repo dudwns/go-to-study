@@ -8,15 +8,36 @@ import { userAtom } from "../atoms";
 import { useNavigate } from "react-router-dom";
 
 const Wrapper = styled.div`
-  height: 100vh;
+  height: 100%;
   width: 100%;
   display: flex;
   padding-top: 120px;
   align-items: center;
   flex-direction: column;
+  padding-bottom: 50px;
   background-color: ${(props) => props.theme.bgColor};
   & .quill {
     background-color: white;
+
+    @media screen and (max-width: 700px) {
+      width: 500px;
+    }
+    @media screen and (max-width: 550px) {
+      width: 400px;
+    }
+  }
+`;
+
+const ReactQuillDiv = styled.div`
+  background-color: white;
+  height: 442px;
+
+  @media screen and (max-width: 700px) {
+    width: 500px;
+    height: 466px;
+  }
+  @media screen and (max-width: 550px) {
+    width: 400px;
   }
 `;
 
@@ -30,6 +51,16 @@ const Header = styled.div`
 const TitleInput = styled.input`
   width: 500px;
   padding: 5px 10px;
+
+  @media screen and (max-width: 700px) {
+    width: 400px;
+    padding: 1px 3px;
+  }
+
+  @media screen and (max-width: 550px) {
+    width: 300px;
+    padding: 1px 3px;
+  }
 `;
 
 const InsertBtn = styled.button`
@@ -42,6 +73,12 @@ const InsertBtn = styled.button`
   background-color: ${(props) => props.theme.btnColor};
   border: 1px solid gray;
   cursor: pointer;
+
+  @media screen and (max-width: 700px) {
+    font-size: 11px;
+    width: 45px;
+    padding: 3px 0;
+  }
 `;
 
 function BoardWrite() {
@@ -185,7 +222,7 @@ function BoardWrite() {
           ></TitleInput>
           <InsertBtn>등록</InsertBtn>
         </Header>
-        <div style={{ backgroundColor: "white", height: "442px" }}>
+        <ReactQuillDiv>
           <ReactQuill
             className="quill"
             onChange={setContent}
@@ -195,7 +232,7 @@ function BoardWrite() {
             style={{ height: "400px" }}
             placeholder="내용을 입력하세요."
           ></ReactQuill>
-        </div>
+        </ReactQuillDiv>
       </form>
     </Wrapper>
   );

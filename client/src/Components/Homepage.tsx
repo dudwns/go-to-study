@@ -275,14 +275,6 @@ const circleVariants = {
   },
 };
 
-const characterVariants = {
-  normal: { rotate: -15 },
-  active: {
-    transition: { repeat: Infinity, duration: 1, type: "tween" },
-    rotate: [-15, 15, -15],
-  },
-};
-
 const introduce = "고투스에 오신것을 환영합니다!";
 
 function Homepage() {
@@ -389,11 +381,6 @@ function Homepage() {
             </Circle3>
           </CircleContent>
         </Content>
-        {/* <Character
-        variants={characterVariants}
-        animate="active"
-        src="/images/character.png"
-      ></Character> */}
         <ScrollBtn>
           <div>
             <ScrollSvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">

@@ -14,24 +14,46 @@ const Wrapper = styled.div`
   background-color: ${(props) => props.theme.bgColor};
   border: 1px solid ${(props) => props.theme.borderColor};
   border-radius: 5px;
-  min-width: 200px;
+  min-width: 150px;
+  margin-right: 30px;
+  @media screen and (max-width: 770px) {
+    display: none;
+  }
 `;
 
 const BookmarkTitle = styled.span`
   text-align: center;
   margin-bottom: 10px;
+  @media screen and (max-width: 1250px) {
+    font-size: 15px;
+    margin: 0 15px;
+
+    margin-bottom: 15px;
+  }
+
+  @media screen and (max-width: 930px) {
+    font-size: 14px;
+  }
 `;
 
 const BookmarkList = styled.ul`
-  font-size: 15px;
   & li {
+    font-size: 14px;
     border-bottom: 1px solid ${(props) => props.theme.borderColor};
     margin: 0 30px;
-    padding: 10px 5px;
+    padding: 10px 0;
     margin-bottom: 10px;
     cursor: pointer;
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
     &:hover {
       background-color: ${(props) => props.theme.accentColor};
+    }
+    @media screen and (max-width: 1250px) {
+      font-size: 12px;
+      margin: 0 15px;
     }
   }
   overflow-y: auto;
@@ -55,7 +77,7 @@ function Bookmark() {
             bookmark.map((data: IBookmark, index: number) =>
               data.userId === user.id ? (
                 <li key={index} onClick={() => onListClick(data.boardId)}>
-                  {data.title.length > 19 ? `${data.title.slice(0, 19)}...` : data.title}
+                  {data.title}
                 </li>
               ) : (
                 ""
