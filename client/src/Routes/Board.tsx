@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import {
@@ -87,13 +87,27 @@ const RecommendBtn = styled.button`
   }
 `;
 
-const SearchForm = styled.form``;
+const SearchForm = styled.form`
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  & svg {
+    height: 100%;
+    padding: 3px;
+    position: absolute;
+    top: 0;
+    left: 5px;
+  }
+`;
 const SearchInput = styled.input`
   width: 400px;
+
   font-size: 11px;
   border-radius: 3px;
   border: 1px solid black;
   padding: 2px;
+  padding-left: 25px;
 
   @media screen and (max-width: 1200px) {
     width: 300px;
@@ -341,6 +355,7 @@ function Board() {
   const [selectBoard, setSelectBoard] = useState<IBoard[]>([]); // 10개씩 자른 board 정보
   const [pageNumber, setPageNumber] = useState(0); // 페이지 쪽수
   const [bookmark, setBookmark] = useRecoilState(bookmarkAtom); // 전체 북마크 정보
+  const [isKeyword, setIsKeyword] = useState(false);
   const { page } = useParams();
   const navigate = useNavigate();
 
@@ -515,10 +530,10 @@ function Board() {
       newData = data.filter((item: IBoard) => {
         return item.username.indexOf(keyword) > -1 || item.title.indexOf(keyword) > -1;
       });
-    } else {
-      newData = board.filter((item: IBoard) => {
-        return item.username.indexOf(keyword) > -1 || item.title.indexOf(keyword) > -1;
-      });
+      // } else {
+      //   newData = board.filter((item: IBoard) => {
+      //     return item.username.indexOf(keyword) > -1 || item.title.indexOf(keyword) > -1;
+      //   });
     }
     return newData
       .slice(0)
@@ -559,7 +574,7 @@ function Board() {
 
   const pageClicked = (e: React.MouseEvent<HTMLLIElement>) => {
     const page = (e.target as HTMLButtonElement).innerText;
-    navigate("/board/" + page);
+    navigate(`/board/${page}?keyword=${keyword}`);
   };
 
   const prevClicked = () => {
@@ -579,9 +594,15 @@ function Board() {
   };
 
   const onRecentClick = () => {
+    let urlStr = "";
     try {
+      if (isKeyword) {
+        urlStr = `http://localhost:5000/api/search?keyword=${keyword}`;
+      } else {
+        urlStr = "http://localhost:5000/api/board";
+      }
       axios({
-        url: "http://localhost:5000/api/board",
+        url: urlStr,
         method: "GET",
         withCredentials: true,
       })
@@ -602,9 +623,15 @@ function Board() {
   };
 
   const onRecommendClick = () => {
+    let urlStr = "";
     try {
+      if (isKeyword) {
+        urlStr = `http://localhost:5000/api/search/recommend?keyword=${keyword}`;
+      } else {
+        urlStr = "http://localhost:5000/api/recommend/board";
+      }
       axios({
-        url: "http://localhost:5000/api/recommend/board",
+        url: urlStr,
         method: "GET",
         withCredentials: true,
       })
@@ -621,7 +648,32 @@ function Board() {
     } catch (error) {
       console.log(error);
     }
-    navigate("/board/1");
+    navigate(`/board/1?keyword=${keyword}`);
+  };
+
+  const onSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    navigate(`/board/1?keyword=${keyword}`);
+    setIsKeyword(true);
+    try {
+      axios({
+        url: `http://localhost:5000/api/search?keyword=${keyword}`,
+        method: "GET",
+        withCredentials: true,
+      })
+        .then((result) => {
+          if (result.data) {
+            setBoard(result.data);
+            setPageNumber(Math.ceil(result.data.length / 10));
+            console.log("sss" + result.data);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -633,15 +685,19 @@ function Board() {
             <RecommendBtn onClick={onRecommendClick}>추천 순</RecommendBtn>
           </div>
 
-          <SearchForm>
+          <SearchForm onSubmit={onSearchSubmit}>
             <SearchInput
               type="text"
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
               placeholder="검색 할 내용을 입력하세요."
+              name="keyword"
               onFocus={(e) => (e.target.placeholder = "")}
               onBlur={(e) => (e.target.placeholder = "검색 할 내용을 입력하세요.")}
-            ></SearchInput>
+            />
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+              <path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" />
+            </svg>
           </SearchForm>
           <div>
             <WriteBtn onClick={onWriteHandler}>글 쓰기</WriteBtn>

@@ -241,6 +241,29 @@ app.get("/api/recommend/board", (req, res) => {
   });
 });
 
+// 검색한 게시글 가져오기 (최근 순)
+app.get("/api/search", (req, res) => {
+  let sql = "SELECT * FROM BOARD WHERE (title LIKE ? OR username LIKE ?) AND isDeleted = 0";
+  let keyword = "%" + req.query.keyword + "%";
+  console.log(req.query.keywords);
+  let params = [keyword, keyword];
+  connection.query(sql, params, (err, rows, fileds) => {
+    res.send(rows);
+  });
+});
+
+// 검색한 게시글 가져오기 (추천 순)
+app.get("/api/search/recommend", (req, res) => {
+  let sql =
+    "SELECT * FROM BOARD WHERE (title LIKE ? OR username LIKE ?) AND isDeleted = 0 ORDER BY recommend, time;";
+  let keyword = "%" + req.query.keyword + "%";
+  console.log(req.query.keywords);
+  let params = [keyword, keyword];
+  connection.query(sql, params, (err, rows, fileds) => {
+    res.send(rows);
+  });
+});
+
 // post 메소드로 "/api/board"에 접속을 한 경우 (게시글 등록)
 app.post("/api/board", (req, res) => {
   let sql = "INSERT INTO BOARD VALUES (null, ?, ?, ?, ?, now(), 0, 0, 0)";
