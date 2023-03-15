@@ -241,24 +241,41 @@ app.get("/api/recommend/board", (req, res) => {
   });
 });
 
-// 검색한 게시글 가져오기 (최근 순)
+// 제목으로 검색한 게시글 가져오기 (최근 순)
 app.get("/api/search", (req, res) => {
-  let sql = "SELECT * FROM BOARD WHERE (title LIKE ? OR username LIKE ?) AND isDeleted = 0";
+  let sql = "SELECT * FROM BOARD WHERE title LIKE ? AND isDeleted = 0";
   let keyword = "%" + req.query.keyword + "%";
-  console.log(req.query.keywords);
-  let params = [keyword, keyword];
+  let params = [keyword];
   connection.query(sql, params, (err, rows, fileds) => {
     res.send(rows);
   });
 });
 
-// 검색한 게시글 가져오기 (추천 순)
+// 제목으로 검색한 게시글 가져오기 (추천 순)
 app.get("/api/search/recommend", (req, res) => {
-  let sql =
-    "SELECT * FROM BOARD WHERE (title LIKE ? OR username LIKE ?) AND isDeleted = 0 ORDER BY recommend, time;";
+  let sql = "SELECT * FROM BOARD WHERE title LIKE ? AND isDeleted = 0 ORDER BY recommend, time;";
   let keyword = "%" + req.query.keyword + "%";
-  console.log(req.query.keywords);
-  let params = [keyword, keyword];
+  let params = [keyword];
+  connection.query(sql, params, (err, rows, fileds) => {
+    res.send(rows);
+  });
+});
+
+// 작성자로 검색한 게시글 가져오기 (최근 순)
+app.get("/api/search/username", (req, res) => {
+  let sql = "SELECT * FROM BOARD WHERE username LIKE ? AND isDeleted = 0";
+  let keyword = "%" + req.query.keyword + "%";
+  let params = [keyword];
+  connection.query(sql, params, (err, rows, fileds) => {
+    res.send(rows);
+  });
+});
+
+// 작성자로 검색한 게시글 가져오기 (추천 순)
+app.get("/api/search/recommend/username", (req, res) => {
+  let sql = "SELECT * FROM BOARD WHERE username LIKE ? AND isDeleted = 0 ORDER BY recommend, time;";
+  let keyword = "%" + req.query.keyword + "%";
+  let params = [keyword];
   connection.query(sql, params, (err, rows, fileds) => {
     res.send(rows);
   });

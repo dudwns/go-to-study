@@ -3,15 +3,7 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import styled from "styled-components";
-import {
-  boardAtom,
-  bookmarkAtom,
-  IBoard,
-  IBookmark,
-  keywordAtom,
-  loginAtom,
-  userAtom,
-} from "../atoms";
+import { boardAtom, bookmarkAtom, IBoard, IBookmark, loginAtom, userAtom } from "../atoms";
 import Bookmark from "../Components/Bookmark";
 import Pagination from "../Components/Pagination";
 
@@ -44,77 +36,45 @@ const BoardMenu = styled.div`
   align-items: center;
 `;
 
-const RecentBtn = styled.button`
-  width: 60px;
-  font-size: 11px;
-  border: 1px solid gray;
-  border-radius: 3px;
-  margin-right: 15px;
-  padding: 5px 10px;
-  background-color: ${(props) => props.theme.btnColor};
-  color: white;
-  cursor: pointer;
-  @media screen and (max-width: 1300px) {
-    width: 55px;
-    font-size: 10px;
-  }
-
-  @media screen and (max-width: 600px) {
-    width: 45px;
-    font-size: 7px;
-    padding: 3px 0;
-  }
-`;
-
-const RecommendBtn = styled.button`
-  width: 60px;
-  font-size: 11px;
-  border: 1px solid gray;
-  border-radius: 3px;
-  padding: 5px 10px;
-  background-color: ${(props) => props.theme.btnColor};
-  color: white;
-  cursor: pointer;
-
-  @media screen and (max-width: 1300px) {
-    width: 55px;
-    font-size: 10px;
-  }
-  @media screen and (max-width: 600px) {
-    width: 45px;
-    font-size: 7px;
-    padding: 3px 0;
-  }
-`;
-
 const SearchForm = styled.form`
   position: relative;
   display: flex;
   align-items: center;
+  & select {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 18px;
+    font-size: 11px;
+    border-color: black;
+
+    @media screen and (max-width: 860px) {
+    }
+  }
 
   & svg {
     height: 100%;
     padding: 3px;
     position: absolute;
     top: 0;
-    left: 5px;
+    right: 5px;
   }
 `;
 const SearchInput = styled.input`
   width: 400px;
-
   font-size: 11px;
   border-radius: 3px;
   border: 1px solid black;
   padding: 2px;
-  padding-left: 25px;
+  padding-left: 62px;
+  padding-right: 30px;
 
   @media screen and (max-width: 1200px) {
     width: 300px;
   }
 
-  @media screen and (max-width: 860px) {
-    width: 200px;
+  @media screen and (max-width: 550px) {
+    width: 250px;
   }
 `;
 
@@ -157,14 +117,6 @@ const ListBtn = styled.button`
     width: 45px;
     font-size: 7px;
     padding: 3px 0;
-  }
-`;
-
-const BoardContent = styled.div`
-  width: 100%;
-  margin-bottom: 10px;
-  & > div:first-child {
-    border-top: 2px solid ${(props) => props.theme.borderColor};
   }
 `;
 
@@ -222,6 +174,15 @@ const BoardHeader = styled.div`
     width: 40px;
     font-weight: 700;
     text-align: center;
+  }
+`;
+
+const BoardContent = styled.div`
+  width: 100%;
+  margin-bottom: 10px;
+
+  & > div:first-child {
+    border-top: 2px solid ${(props) => props.theme.borderColor};
   }
 `;
 
@@ -347,11 +308,14 @@ const NextBtn = styled.button`
   fill: ${(props) => props.theme.textColor};
 `;
 
+let order = "최근 순";
+let searchStandard = "제목";
+let keyword = "";
+
 function Board() {
   const [isLogin, setIsLogin] = useRecoilState(loginAtom); // 로그인 유무를 나타내는 boolean 값
   const [user, setUser] = useRecoilState(userAtom); // 로그인 한 유저의 정보
   const [board, setBoard] = useRecoilState(boardAtom); // 전체 board 정보
-  const [keyword, setKeyword] = useRecoilState(keywordAtom); // 유저가 검색한 키워드
   const [selectBoard, setSelectBoard] = useState<IBoard[]>([]); // 10개씩 자른 board 정보
   const [pageNumber, setPageNumber] = useState(0); // 페이지 쪽수
   const [bookmark, setBookmark] = useRecoilState(bookmarkAtom); // 전체 북마크 정보
@@ -525,16 +489,6 @@ function Board() {
 
   const searchComponent = (data: IBoard[]) => {
     let newData = data;
-
-    if (keyword === "") {
-      newData = data.filter((item: IBoard) => {
-        return item.username.indexOf(keyword) > -1 || item.title.indexOf(keyword) > -1;
-      });
-      // } else {
-      //   newData = board.filter((item: IBoard) => {
-      //     return item.username.indexOf(keyword) > -1 || item.title.indexOf(keyword) > -1;
-      //   });
-    }
     return newData
       .slice(0)
       .reverse()
@@ -597,7 +551,10 @@ function Board() {
     let urlStr = "";
     try {
       if (isKeyword) {
-        urlStr = `http://localhost:5000/api/search?keyword=${keyword}`;
+        if (searchStandard === "제목")
+          urlStr = `http://localhost:5000/api/search?keyword=${keyword}`;
+        else if (searchStandard === "작성자")
+          urlStr = `http://localhost:5000/api/search/username?keyword=${keyword}`;
       } else {
         urlStr = "http://localhost:5000/api/board";
       }
@@ -619,14 +576,17 @@ function Board() {
     } catch (error) {
       console.log(error);
     }
-    navigate("/board/1");
+    navigate(`/board/1?keyword=${keyword}`);
   };
 
   const onRecommendClick = () => {
     let urlStr = "";
     try {
       if (isKeyword) {
-        urlStr = `http://localhost:5000/api/search/recommend?keyword=${keyword}`;
+        if (searchStandard === "제목")
+          urlStr = `http://localhost:5000/api/search/recommend?keyword=${keyword}`;
+        else if (searchStandard === "작성자")
+          urlStr = `http://localhost:5000/api/search/recommend/username?keyword=${keyword}`;
       } else {
         urlStr = "http://localhost:5000/api/recommend/board";
       }
@@ -651,47 +611,74 @@ function Board() {
     navigate(`/board/1?keyword=${keyword}`);
   };
 
-  const onSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    navigate(`/board/1?keyword=${keyword}`);
-    setIsKeyword(true);
-    try {
-      axios({
-        url: `http://localhost:5000/api/search?keyword=${keyword}`,
-        method: "GET",
-        withCredentials: true,
-      })
-        .then((result) => {
-          if (result.data) {
-            setBoard(result.data);
-            setPageNumber(Math.ceil(result.data.length / 10));
-            console.log("sss" + result.data);
+  const onSearchSubmit = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    let key = e.key || e.keyCode;
+    if (key == "Enter" || key === 13) {
+      keyword = e.currentTarget.value;
+      navigate(`/board/1?keyword=${keyword}`);
+      setIsKeyword(true);
+      let urlStr = "";
+      try {
+        if (order === "최근 순") {
+          if (searchStandard === "제목") {
+            urlStr = `http://localhost:5000/api/search?keyword=${keyword}`;
+          } else if (searchStandard === "작성자") {
+            urlStr = `http://localhost:5000/api/search/username?keyword=${keyword}`;
           }
+        } else if (order === "추천 순") {
+          if (searchStandard === "제목") {
+            urlStr = `http://localhost:5000/api/search/recommend?keyword=${keyword}`;
+          } else if (searchStandard === "작성자") {
+            urlStr = `http://localhost:5000/api/search/recommend/username?keyword=${keyword}`;
+          }
+        }
+        axios({
+          url: urlStr,
+          method: "GET",
+          withCredentials: true,
         })
-        .catch((error) => {
-          console.log(error);
-        });
-    } catch (error) {
-      console.log(error);
+          .then((result) => {
+            if (result.data) {
+              setBoard(result.data);
+              setPageNumber(Math.ceil(result.data.length / 10));
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } catch (error) {
+        console.log(error);
+      }
     }
+  };
+
+  const onOrderChange = (e: any) => {
+    order = e.target.value;
+    if (e.target.value === "최근 순") onRecentClick();
+    else if (e.target.value === "추천 순") onRecommendClick();
   };
 
   return (
     <Wrapper>
       <BorderContent>
         <BoardMenu>
-          <div>
-            <RecentBtn onClick={onRecentClick}>최근 순</RecentBtn>
-            <RecommendBtn onClick={onRecommendClick}>추천 순</RecommendBtn>
-          </div>
-
-          <SearchForm onSubmit={onSearchSubmit}>
+          <select onChange={onOrderChange}>
+            <option value="최근 순">최근 순</option>
+            <option value="추천 순">추천 순</option>
+          </select>
+          <SearchForm
+            onSubmit={(e) => {
+              e.preventDefault();
+            }}
+          >
+            <select onChange={(e) => (searchStandard = e.target.value)}>
+              <option value="제목">제목</option>
+              <option value="작성자">작성자</option>
+            </select>
             <SearchInput
               type="text"
-              value={keyword}
-              onChange={(e) => setKeyword(e.target.value)}
+              onKeyDown={onSearchSubmit}
               placeholder="검색 할 내용을 입력하세요."
-              name="keyword"
               onFocus={(e) => (e.target.placeholder = "")}
               onBlur={(e) => (e.target.placeholder = "검색 할 내용을 입력하세요.")}
             />
@@ -701,7 +688,7 @@ function Board() {
           </SearchForm>
           <div>
             <WriteBtn onClick={onWriteHandler}>글 쓰기</WriteBtn>
-            <ListBtn onClick={() => navigate("/board/1")}>목록</ListBtn>
+            <ListBtn onClick={() => navigate(`/board/1?keyword=${keyword}`)}>목록</ListBtn>
           </div>
         </BoardMenu>
         <BoardHeader>
