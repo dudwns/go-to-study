@@ -528,7 +528,8 @@ function Board() {
 
   const pageClicked = (e: React.MouseEvent<HTMLLIElement>) => {
     const page = (e.target as HTMLButtonElement).innerText;
-    navigate(`/board/${page}?keyword=${keyword}`);
+    if (keyword) navigate(`/board/${page}?keyword=${keyword}`);
+    else navigate(`/board/${page}`);
   };
 
   const prevClicked = () => {
@@ -688,7 +689,14 @@ function Board() {
           </SearchForm>
           <div>
             <WriteBtn onClick={onWriteHandler}>글 쓰기</WriteBtn>
-            <ListBtn onClick={() => navigate(`/board/1?keyword=${keyword}`)}>목록</ListBtn>
+            <ListBtn
+              onClick={() => {
+                if (keyword) navigate(`/board/1?keyword=${keyword}`);
+                else navigate(`/board/1`);
+              }}
+            >
+              목록
+            </ListBtn>
           </div>
         </BoardMenu>
         <BoardHeader>

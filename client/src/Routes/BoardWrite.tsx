@@ -217,6 +217,8 @@ function BoardWrite() {
           <TitleInput
             type="text"
             placeholder="제목을 입력하세요."
+            onFocus={(e) => (e.target.placeholder = "")}
+            onBlur={(e) => (e.target.placeholder = "제목을 입력하세요.")}
             value={title}
             onChange={(e) => setTitle(e.target.value)}
           ></TitleInput>

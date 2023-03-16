@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import { isDarkAtom, loginAtom, userAtom } from "../atoms";
-import { motion } from "framer-motion";
+import { motion, useAnimation } from "framer-motion";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Mousewheel, Pagination } from "swiper";
 import "swiper/css";
@@ -129,8 +129,8 @@ const SideBar = styled(motion.div)<IDark>`
   }
 `;
 
-const SideBarBtn = styled.button<IDark>`
-  background-color: rgba(0, 0, 0, 0.6);
+const SideBarBtn = styled(motion.button)<IDark>`
+  background-color: ${(props) => (props.isDark ? "rgba(0, 0, 0, 0.6)" : "rgba(0, 0, 0, 0.6)")};
   border: none;
   border-left: 1px solid gray;
   position: absolute;
@@ -138,6 +138,7 @@ const SideBarBtn = styled.button<IDark>`
   width: 45px;
   height: 45px;
   right: -45px;
+  display: none;
   cursor: pointer;
   & > svg {
     width: 12px;
@@ -187,12 +188,15 @@ function Home() {
   const [isLogin, setIsLogin] = useRecoilState(loginAtom); // 로그인 유무를 나타내는 boolean 값
   const [user, setUser] = useRecoilState(userAtom); // 로그인 한 유저의 정보
   const [sideOpen, setSideOpen] = useState(false); // 사이드 메뉴 유무를 나타내는 boolean 값
-  const [isDark, setIsDark] = useRecoilState(isDarkAtom);
+  const [isDark, setisDark] = useRecoilState(isDarkAtom);
+  const sideAni = useAnimation();
 
   useEffect(() => {
     const timeout = setTimeout(() => {
       setSideOpen(true);
     }, 4000);
+
+    sideAni.start({ display: "block", transition: { delay: 4, duration: 0.5 } });
   }, []);
 
   useEffect(() => {
@@ -225,7 +229,7 @@ function Home() {
         animate={sideOpen ? "open" : "close"}
       >
         <div>고투스</div>
-        <SideBarBtn isDark onClick={() => setSideOpen((current) => !current)}>
+        <SideBarBtn isDark onClick={() => setSideOpen((current) => !current)} animate={sideAni}>
           {sideOpen ? (
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512">
               <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z" />

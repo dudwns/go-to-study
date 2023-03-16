@@ -86,6 +86,10 @@ const UserItem = styled.li`
 `;
 
 const UserName = styled.span`
+  cursor: default;
+`;
+
+const Name = styled.span`
   font-size: 17px;
   font-weight: 600;
   @media screen and (max-width: 900px) {
@@ -137,8 +141,8 @@ function Header() {
   const navigate = useNavigate();
   const navAnimation = useAnimation();
   const { scrollY } = useScroll(); //scrollY는 픽셀 단위
-  const [isDark, setIsDark] = useRecoilState(isDarkAtom);
-  const toggleDarkAtom = () => setIsDark((prev) => !prev);
+  const [isDark, setisDark] = useRecoilState(isDarkAtom);
+  const toggleDarkAtom = () => setisDark((prev) => !prev);
   const isHeader = useRecoilValue(isHeaderAtom);
 
   const logout = () => {
@@ -207,12 +211,15 @@ function Header() {
         <MenuItems>
           <MenuItem onClick={() => navigate("/")}>홈페이지</MenuItem>
           <MenuItem onClick={() => navigate("/board/1")}>커뮤니티</MenuItem>
+          <MenuItem onClick={() => navigate(`${user.name}/bookmark`)}>즐겨찾기</MenuItem>
         </MenuItems>
         <UserItems>
           {isLogin ? (
             <>
               <UserItem>
-                <UserName>{user.name}</UserName> 님이 로그인했습니다.
+                <UserName>
+                  <Name>{user.name}</Name> 님이 로그인했습니다.
+                </UserName>
               </UserItem>
             </>
           ) : (
