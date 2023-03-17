@@ -96,8 +96,9 @@ function App() {
       <Router>
         <Header />
         <Routes>
-          <Route path={"/"} element={<Home />} />
-          <Route path={"/board/:page"} element={<Board />} />
+          <Route path={"/"} element={<Home />}></Route>
+          <Route path={"/board/:page"} element={<Board />}></Route>
+          <Route path={"/board/:page/bookmark/:userId"} element={<Board />}></Route>
           <Route path={"/join"} element={<Join />} />
           <Route path={"/login"} element={<Login />} />
           <Route path={"/mypage/:id"} element={<MyPage />} />

@@ -44,7 +44,7 @@ const BoardContainer = styled.div`
   flex-direction: column;
   padding: 0 20px;
   background-color: ${(props) => props.theme.bgColor};
-  @media screen and (max-width: 770px) {
+  @media screen and (max-width: 1050px) {
     width: 100%;
   }
 `;
@@ -225,7 +225,8 @@ const CommentForm = styled.form`
   padding: 0 20px;
   margin-bottom: 30px;
   position: relative;
-  @media screen and (max-width: 770px) {
+  width: 80%;
+  @media screen and (max-width: 1050px) {
     width: 100%;
   }
 `;
@@ -267,7 +268,7 @@ const CommentItems = styled.ul`
   width: 80%;
   padding-bottom: 50px;
   background-color: ${(props) => props.theme.bgColor};
-  @media screen and (max-width: 770px) {
+  @media screen and (max-width: 1050px) {
     width: 100%;
   }
 `;
@@ -974,8 +975,6 @@ function BoardDetail() {
     e.target.childNodes[0].classList.toggle("cancel");
   };
 
-  const onReplyCount = () => {};
-
   return (
     <>
       <Wrapper>
@@ -1083,6 +1082,10 @@ function BoardDetail() {
                             value={reply}
                             onChange={(e) => setReply(e.target.value)}
                             required
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter")
+                                onReplySubmit(e, data.id, data.replyCount, true);
+                            }}
                           ></ReplyInput>
                           <button onClick={onCencleClick}>취소</button>
                           <button onClick={(e) => onReplySubmit(e, data.id, data.replyCount, true)}>
@@ -1153,6 +1156,10 @@ function BoardDetail() {
                                     placeholder="답글 추가..."
                                     value={replyreply}
                                     onChange={(e) => setReplyReply(e.target.value)}
+                                    onKeyDown={(e) => {
+                                      if (e.key === "Enter")
+                                        onReplySubmit(e, data.id, data.replyCount, false);
+                                    }}
                                     required
                                   ></ReplyInput>
                                   <button onClick={onCencleClick}>취소</button>

@@ -7,19 +7,54 @@ import { Navigation, Mousewheel, Keyboard } from "swiper";
 
 const Wrapper = styled.div`
   width: 100%;
+  height: 100%;
   display: flex;
   color: ${(props) => props.theme.textColor};
 
+  @media screen and (max-width: 1000px) {
+    margin-top: 30px;
+  }
   .swiper {
+    min-height: 600px;
     width: 95% !important;
   }
   .swiper-slide {
     display: flex;
     justify-content: center;
     align-items: center;
+    overflow: hidden;
 
     & img {
-      width: 90%;
+      width: 900px;
+      margin-right: 50px;
+      border: 1px solid gray;
+
+      @media screen and (max-width: 1500px) {
+        width: 700px;
+      }
+      @media screen and (max-height: 800px) {
+        width: 600px;
+      }
+      @media screen and (max-width: 1220px) {
+        width: 600px;
+        margin-right: 40px;
+      }
+      @media screen and (max-width: 1120px) {
+        width: 500px;
+        margin-right: 30px;
+      }
+      @media screen and (max-width: 1000px) {
+        margin-right: 0;
+      }
+      @media screen and (max-width: 820px) {
+        width: 400px;
+      }
+      @media screen and (max-width: 620px) {
+        width: 350px;
+      }
+      @media screen and (max-width: 520px) {
+        width: 350px;
+      }
     }
   }
 
@@ -52,11 +87,15 @@ const SwiperContent = styled.div`
 `;
 
 const Title = styled.div`
-  font-size: 3vw;
-  margin-bottom: 3vh;
+  font-size: 40px;
+  margin-top: 30px;
+  margin-bottom: 30px;
   font-weight: 800;
   text-align: left;
-  margin-left: 2.5vw;
+
+  @media screen and (max-width: 1400px) {
+    font-size: 35px;
+  }
 
   @media screen and (max-width: 1000px) {
     text-align: center;
@@ -67,7 +106,7 @@ const Description = styled.div`
   height: 150px;
   text-align: left;
   /* font-size: 1.2vw; */
-  font-size: 1vw;
+  font-size: 17px;
   line-height: 1.3;
   display: flex;
   align-items: center;
@@ -87,20 +126,38 @@ const Description = styled.div`
 const ScrollBtn = styled(motion.button)`
   position: absolute;
   width: 50px;
-  bottom: 30px;
+  bottom: 10px;
   left: 0;
   right: 0;
   margin: 0 auto;
   background-color: inherit;
   border: none;
+  font-size: 11px;
+  color: ${(props) => props.theme.textColor};
+  @media screen and (max-width: 1400px) {
+    font-size: 11px;
+  }
+  @media screen and (max-height: 650px) {
+    display: none;
+  }
 `;
 const ScrollSvg = styled(motion.svg)`
-  width: 10px;
-  fill: black;
+  width: 9px;
+  fill: ${(props) => props.theme.textColor};
+
+  @media screen and (max-width: 1400px) {
+    width: 8px;
+  }
 `;
 
 const AngleSvg = styled(motion.svg)`
-  width: 10px;
+  width: 9px;
+  fill: ${(props) => props.theme.textColor};
+  display: block;
+  margin: 0 auto;
+  @media screen and (max-width: 1400px) {
+    width: 8px;
+  }
 `;
 
 function Content() {

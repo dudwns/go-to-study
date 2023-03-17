@@ -4,13 +4,13 @@ import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 const Wrapper = styled.div`
-  height: 100vh;
+  height: 100%;
+  min-height: 500px;
   width: 100%;
   display: flex;
   padding-top: 70px;
   padding-bottom: 50px;
   justify-content: center;
-  align-items: center;
   background-color: ${(props) => props.theme.bgColor};
   color: ${(props) => props.theme.textColor};
 `;

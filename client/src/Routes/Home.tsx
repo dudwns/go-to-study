@@ -8,10 +8,8 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Mousewheel, Pagination } from "swiper";
 import "swiper/css";
 import "swiper/css/pagination";
-
 import Homepage from "../Components/Homepage";
 import Content from "../Components/Content";
-import Stack from "../Components/Stack";
 
 const Wrapper = styled(motion.div)`
   overflow-y: hidden;
@@ -26,7 +24,7 @@ const Wrapper = styled(motion.div)`
     height: 100%;
     content: "";
     background-image: //linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)),
-      url(${process.env.PUBLIC_URL + "/images/background1.jpg"});
+      url(${process.env.PUBLIC_URL + "/images/background2.jpg"});
     background-size: cover;
     position: fixed;
     top: 0;
@@ -95,11 +93,15 @@ const SideBar = styled(motion.div)<IDark>`
   background-color: rgba(0, 0, 0, 0.6);
   color: white;
   top: 50px;
-  height: 550px;
+  height: 400px;
   left: -200px;
   z-index: 3;
   flex-direction: column;
   @media screen and (max-width: 1200px) {
+    display: none;
+  }
+
+  @media screen and (max-height: 650px) {
     display: none;
   }
   & > div:nth-child(1) {
@@ -109,9 +111,6 @@ const SideBar = styled(motion.div)<IDark>`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    @media screen and (max-height: 600px) {
-      display: none;
-    }
   }
   & > div:nth-child(2) {
     border-bottom: 1px solid gray;
@@ -120,12 +119,6 @@ const SideBar = styled(motion.div)<IDark>`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-  }
-  @media screen and (max-height: 600px) {
-    height: 450px;
-  }
-  @media screen and (max-height: 500px) {
-    display: none;
   }
 `;
 
@@ -151,7 +144,7 @@ const SideBarBtn = styled(motion.button)<IDark>`
 
 const PagiDiv = styled(motion.div)`
   position: absolute;
-  top: 400px;
+  top: 325px;
   left: 7px;
   width: 100%;
   @media screen and (max-height: 600px) {
@@ -163,7 +156,7 @@ const PagiDiv = styled(motion.div)`
 const wrapVariants = {
   active: (isDark: boolean) => ({
     // backgroundColor: isDark ? "rgba(53, 54, 58, 1)" : "rgba(220, 216, 214, 1)",
-    backgroundColor: isDark ? "rgba(0, 0, 0, 0.5)" : "rgba(255, 255, 255, 0)",
+    backgroundColor: isDark ? "rgb(53, 54, 58)" : "rgba(255, 255, 255, 0)",
     transition: { duration: 0.1 },
   }),
 };
@@ -182,7 +175,7 @@ const sideBarVariants = {
   },
 };
 
-const menuList = ["메인 화면", "컨텐츠 소개", "기술"];
+const menuList = ["메인 화면", "컨텐츠 소개"];
 
 function Home() {
   const [isLogin, setIsLogin] = useRecoilState(loginAtom); // 로그인 유무를 나타내는 boolean 값
@@ -244,6 +237,7 @@ function Home() {
           <div className="swiper-pagination"></div>
         </PagiDiv>
       </SideBar>
+
       <Swiper
         direction={"vertical"}
         speed={600}
@@ -265,9 +259,6 @@ function Home() {
         </SwiperSlide>
         <SwiperSlide>
           <Content />
-        </SwiperSlide>
-        <SwiperSlide>
-          <Stack />
         </SwiperSlide>
       </Swiper>
     </Wrapper>

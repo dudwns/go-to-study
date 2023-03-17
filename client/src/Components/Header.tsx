@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import styled from "styled-components";
 import { isDarkAtom, isHeaderAtom, loginAtom, userAtom } from "../atoms";
@@ -72,7 +72,7 @@ const MenuItem = styled.li`
 const UserItems = styled.ul`
   display: flex;
   align-items: center;
-  margin-right: 10px;
+  margin-right: 5px;
 `;
 
 const UserItem = styled.li`
@@ -82,6 +82,13 @@ const UserItem = styled.li`
   cursor: pointer;
   @media screen and (max-width: 900px) {
     font-size: 12px;
+  }
+`;
+
+const LogoutBtn = styled.span`
+  font-size: 12px;
+  @media screen and (max-width: 900px) {
+    font-size: 11px;
   }
 `;
 
@@ -211,7 +218,6 @@ function Header() {
         <MenuItems>
           <MenuItem onClick={() => navigate("/")}>홈페이지</MenuItem>
           <MenuItem onClick={() => navigate("/board/1")}>커뮤니티</MenuItem>
-          <MenuItem onClick={() => navigate(`${user.name}/bookmark`)}>즐겨찾기</MenuItem>
         </MenuItems>
         <UserItems>
           {isLogin ? (
@@ -220,6 +226,9 @@ function Header() {
                 <UserName>
                   <Name>{user.name}</Name> 님이 로그인했습니다.
                 </UserName>
+              </UserItem>
+              <UserItem>
+                <LogoutBtn onClick={logout}>로그아웃</LogoutBtn>
               </UserItem>
             </>
           ) : (

@@ -25,6 +25,7 @@ const Wrapper = styled(motion.div)`
   flex-direction: column;
   position: relative;
   opacity: 0;
+  min-height: 600px;
 `;
 
 const Content = styled(motion.div)`
@@ -69,7 +70,7 @@ const OneCircle = styled(motion.div)`
   width: 300px;
   height: 300px;
   padding: 40px;
-  background-color: inherit;
+  background-color: whitesmoke;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -78,10 +79,11 @@ const OneCircle = styled(motion.div)`
   color: ${(props) => props.theme.textColor};
   & > img {
     position: absolute;
-    width: 500px;
+    width: 300px;
 
     @media screen and (max-height: 600px) {
-      width: 350px;
+      width: 200px;
+      height: 200px;
     }
   }
   @media screen and (min-width: 860px) {
@@ -107,7 +109,7 @@ const Circle1 = styled(motion.div)`
   border-radius: 150px;
   border: none;
 
-  @media screen and (max-width: 1300px) {
+  @media screen and (max-width: 1400px) {
     width: 200px;
     height: 200px;
     font-size: 10px;
@@ -124,7 +126,7 @@ const Circle1 = styled(motion.div)`
     position: absolute;
     width: 300px;
 
-    @media screen and (max-width: 1300px) {
+    @media screen and (max-width: 1400px) {
       width: 200px;
     }
     @media screen and (max-height: 600px) {
@@ -143,7 +145,7 @@ const Circle2 = styled(motion.div)`
   border-radius: 150px;
   border: none;
 
-  @media screen and (max-width: 1300px) {
+  @media screen and (max-width: 1400px) {
     width: 200px;
     height: 200px;
     font-size: 10px;
@@ -160,7 +162,7 @@ const Circle2 = styled(motion.div)`
   & > img {
     position: absolute;
     width: 300px;
-    @media screen and (max-width: 1300px) {
+    @media screen and (max-width: 1400px) {
       width: 200px;
     }
     @media screen and (max-height: 600px) {
@@ -180,7 +182,7 @@ const Circle3 = styled(motion.div)`
   border-radius: 150px;
   border: none;
 
-  @media screen and (max-width: 1300px) {
+  @media screen and (max-width: 1400px) {
     width: 200px;
     height: 200px;
     font-size: 10px;
@@ -198,7 +200,7 @@ const Circle3 = styled(motion.div)`
   & > img {
     position: absolute;
     width: 300px;
-    @media screen and (max-width: 1300px) {
+    @media screen and (max-width: 1400px) {
       width: 200px;
     }
 
@@ -208,72 +210,42 @@ const Circle3 = styled(motion.div)`
   }
 `;
 
-const opacityAnimation = keyframes`
-from{
-opacity:0;
-}
-to{
-  opacity:1;
-}
-`;
-
-const Character = styled(motion.img)`
-  width: 200px;
-  position: absolute;
-  top: 100px;
-  right: 100px;
-  animation: ${opacityAnimation} 2s;
-`;
-
 const ScrollBtn = styled(motion.button)`
   position: absolute;
   width: 50px;
-  bottom: 30px;
+  bottom: 10px;
   left: 0;
   right: 0;
   margin: 0 auto;
   background-color: inherit;
   border: none;
+  font-size: 11px;
   color: ${(props) => props.theme.textColor};
+  @media screen and (max-width: 1400px) {
+    font-size: 11px;
+  }
+  @media screen and (max-height: 650px) {
+    display: none;
+  }
 `;
 const ScrollSvg = styled(motion.svg)`
-  width: 10px;
+  width: 9px;
   fill: ${(props) => props.theme.textColor};
+
+  @media screen and (max-width: 1400px) {
+    width: 8px;
+  }
 `;
 
 const AngleSvg = styled(motion.svg)`
-  width: 10px;
+  width: 9px;
   fill: ${(props) => props.theme.textColor};
+  display: block;
+  margin: 0 auto;
+  @media screen and (max-width: 1400px) {
+    width: 8px;
+  }
 `;
-
-const textVariants = {
-  normal: { scale: 0 },
-  active: {
-    scale: 1,
-    transition: { duration: 1, type: "spring" },
-  },
-};
-
-const circleContentVariants = {
-  normal: {},
-  active: { transition: { duration: 1 }, opacity: 1 },
-};
-
-const circleVariants = {
-  normal: {
-    x: 0,
-    y: 0,
-  },
-  active: {
-    y: [0, 50, 0],
-
-    transition: {
-      repeat: Infinity,
-      duration: 3,
-      type: "spring",
-    },
-  },
-};
 
 const introduce = "고투스에 오신것을 환영합니다!";
 
@@ -357,7 +329,7 @@ function Homepage() {
           <Text2 animate={textAni}>고투스에 오신것을 환영합니다!</Text2>
           <CircleContent animate={circleAni}>
             <OneCircle>
-              <img src="/images/circle2.png" />
+              <img src="/images/circle.png" />
               고투스 커뮤니티를 이용하여 정보를 공유하고 사람들과 함께 공부해보세요!
             </OneCircle>
             <Circle1>
