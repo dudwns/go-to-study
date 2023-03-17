@@ -1,6 +1,7 @@
 import axios from "axios";
+import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useMatch, useNavigate, useParams } from "react-router-dom";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import { boardAtom, bookmarkAtom, IBoard, IBookmark, loginAtom, userAtom } from "../atoms";
@@ -23,7 +24,7 @@ const BorderContent = styled.div`
   flex-direction: column;
   padding: 0 20px;
 
-  @media screen and (max-width: 770px) {
+  @media screen and (max-width: 1050px) {
     width: 100%;
   }
 `;
@@ -47,9 +48,6 @@ const SearchForm = styled.form`
     height: 18px;
     font-size: 11px;
     border-color: black;
-
-    @media screen and (max-width: 860px) {
-    }
   }
 
   & svg {
@@ -69,7 +67,7 @@ const SearchInput = styled.input`
   padding-left: 62px;
   padding-right: 30px;
 
-  @media screen and (max-width: 1200px) {
+  @media screen and (max-width: 800px) {
     width: 300px;
   }
 
@@ -102,9 +100,8 @@ const ListBtn = styled.button`
   width: 60px;
   font-size: 11px;
   border: 1px solid gray;
-  width: 60px;
   border-radius: 3px;
-  margin-left: 15px;
+  margin-left: 10px;
   padding: 5px 10px;
   background-color: ${(props) => props.theme.btnColor};
   color: white;
@@ -113,8 +110,36 @@ const ListBtn = styled.button`
     width: 55px;
     font-size: 10px;
   }
+
+  @media screen and (max-width: 1050px) {
+    display: none;
+  }
   @media screen and (max-width: 600px) {
     width: 45px;
+    font-size: 7px;
+    padding: 3px 0;
+  }
+`;
+
+const BookmarkBtn = styled.button`
+  width: 70px;
+  font-size: 11px;
+  border: 1px solid gray;
+  border-radius: 3px;
+  margin-left: 10px;
+  padding: 5px 10px;
+  background-color: ${(props) => props.theme.btnColor};
+  color: white;
+  cursor: pointer;
+  display: none;
+
+  @media screen and (max-width: 1050px) {
+    display: inline-block;
+    padding: 4px 10px;
+  }
+
+  @media screen and (max-width: 600px) {
+    width: 50px;
     font-size: 7px;
     padding: 3px 0;
   }
@@ -308,6 +333,91 @@ const NextBtn = styled.button`
   fill: ${(props) => props.theme.textColor};
 `;
 
+const Overlay = styled(motion.div)`
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.2);
+  opacity: 0;
+`;
+
+const BookmarkContainer = styled(motion.div)`
+  width: 300px;
+  height: 300px;
+  position: fixed;
+  top: 25%;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  background-color: ${(props) => props.theme.bgColor};
+  border: 1px solid ${(props) => props.theme.borderColor};
+  display: flex;
+  flex-direction: column;
+  padding: 10px 5px;
+  padding-bottom: 20px;
+  border-radius: 3px;
+`;
+
+const BookmarkTitle = styled.span`
+  text-align: center;
+  margin-bottom: 10px;
+  @media screen and (max-width: 1250px) {
+    font-size: 15px;
+    margin: 0 15px;
+
+    margin-bottom: 15px;
+  }
+
+  @media screen and (max-width: 930px) {
+    font-size: 14px;
+  }
+`;
+
+const BookmarkList = styled.ul`
+  & li {
+    font-size: 14px;
+    border-bottom: 1px solid ${(props) => props.theme.borderColor};
+    margin: 0 30px;
+    padding: 10px 0;
+    margin-bottom: 10px;
+    cursor: pointer;
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    &:hover {
+      background-color: ${(props) => props.theme.accentColor};
+    }
+    @media screen and (max-width: 1250px) {
+      font-size: 12px;
+      margin: 0 15px;
+    }
+  }
+  overflow-y: auto;
+`;
+
+const CloseBtn = styled.svg`
+  height: 12px;
+  position: absolute;
+  top: 11px;
+  right: 10px;
+  cursor: pointer;
+  fill: ${(props) => props.theme.textColor};
+
+  transition: fill 0.3s linear;
+  &:hover {
+    fill: ${(props) => props.theme.textColor};
+  }
+`;
+
+const NullText = styled.div`
+  text-align: center;
+  font-size: 16px;
+  color: gray;
+  margin-top: 90px;
+`;
+
 let order = "최근 순";
 let searchStandard = "제목";
 let keyword = "";
@@ -320,8 +430,22 @@ function Board() {
   const [pageNumber, setPageNumber] = useState(0); // 페이지 쪽수
   const [bookmark, setBookmark] = useRecoilState(bookmarkAtom); // 전체 북마크 정보
   const [isKeyword, setIsKeyword] = useState(false);
+  const bookmarkData: any[] = [];
   const { page } = useParams();
+  const bookmarkMatch = useMatch("/board/:page/bookmark/:userId");
   const navigate = useNavigate();
+
+  bookmark.map((data: IBookmark, index: number) => {
+    return data.userId === user.id ? bookmarkData.push(data) : "";
+  });
+
+  const onListClick = (boardId: number) => {
+    navigate("/board/detail/" + boardId);
+  };
+
+  const onOverlayClick = () => {
+    navigate(-1);
+  };
 
   const accessToken = () => {
     axios({
@@ -659,6 +783,10 @@ function Board() {
     else if (e.target.value === "추천 순") onRecommendClick();
   };
 
+  const onBookmarkBtnClick = () => {
+    navigate(`/board/${page}/bookmark/${user.id}`);
+  };
+
   return (
     <Wrapper>
       <BorderContent>
@@ -697,6 +825,7 @@ function Board() {
             >
               목록
             </ListBtn>
+            <BookmarkBtn onClick={onBookmarkBtnClick}>즐겨찾기</BookmarkBtn>
           </div>
         </BoardMenu>
         <BoardHeader>
@@ -734,6 +863,40 @@ function Board() {
         </button> */}
       </BorderContent>
       <Bookmark />
+      <AnimatePresence>
+        {bookmarkMatch ? (
+          <>
+            <Overlay animate={{ opacity: 1 }} exit={{ opacity: 0 }} />
+            <BookmarkContainer
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <CloseBtn
+                onClick={onOverlayClick}
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 384 512"
+              >
+                <path d="M376.6 84.5c11.3-13.6 9.5-33.8-4.1-45.1s-33.8-9.5-45.1 4.1L192 206 56.6 43.5C45.3 29.9 25.1 28.1 11.5 39.4S-3.9 70.9 7.4 84.5L150.3 256 7.4 427.5c-11.3 13.6-9.5 33.8 4.1 45.1s33.8 9.5 45.1-4.1L192 306 327.4 468.5c11.3 13.6 31.5 15.4 45.1 4.1s15.4-31.5 4.1-45.1L233.7 256 376.6 84.5z" />
+              </CloseBtn>
+              <BookmarkTitle>즐겨찾기 게시판</BookmarkTitle>
+              {bookmarkData.length !== 0 ? (
+                <BookmarkList>
+                  {bookmarkData.map((data: IBookmark, index: number) => (
+                    <li key={index} onClick={() => onListClick(data.boardId)}>
+                      {data.title}
+                    </li>
+                  ))}
+                </BookmarkList>
+              ) : (
+                <NullText>즐겨찾기 한 게시글이 없습니다.</NullText>
+              )}
+            </BookmarkContainer>
+          </>
+        ) : (
+          ""
+        )}
+      </AnimatePresence>
     </Wrapper>
   );
 }
