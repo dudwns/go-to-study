@@ -76,7 +76,7 @@ const OneCircle = styled(motion.div)`
   align-items: center;
   border-radius: 150px;
   font-size: 12px;
-  color: ${(props) => props.theme.textColor};
+  color: black;
   & > img {
     position: absolute;
     width: 300px;
