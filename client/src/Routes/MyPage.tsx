@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import { userAtom } from "../atoms";
@@ -46,6 +46,16 @@ const Layout = styled.div`
   }
 `;
 
+const UpdateBtn = styled.button`
+  border: 1px solid gray;
+  padding: 5px;
+  cursor: pointer;
+  background-color: ${(props) => props.theme.btnColor};
+  border-radius: 3px;
+  color: whitesmoke;
+  margin: 0 5px;
+`;
+
 const RemoveBtn = styled.button`
   border: 1px solid gray;
   padding: 5px;
@@ -53,12 +63,14 @@ const RemoveBtn = styled.button`
   background-color: ${(props) => props.theme.btnColor};
   border-radius: 3px;
   color: whitesmoke;
+  margin: 0 5px;
 `;
 
 function MyPage() {
   const { id } = useParams();
   const [user, setUser] = useRecoilState(userAtom);
-  console.log(user?.username);
+  const navigate = useNavigate();
+
   const deleteCustomer = () => {
     if (user?.username === "") {
       alert("로그인이 필요한 서비스입니다.");
@@ -96,6 +108,14 @@ function MyPage() {
       }
     }
   };
+
+  const updateCustomer = () => {
+    if (user?.username === "") {
+      alert("로그인이 필요한 서비스입니다.");
+    } else {
+      navigate(`/myPage/edit/${user?.id}`);
+    }
+  };
   return (
     <Wrapper>
       <Container>
@@ -113,7 +133,10 @@ function MyPage() {
           <div>가입 날짜</div>
           <div>{user?.createdDate}</div>
         </Layout>
-        <RemoveBtn onClick={deleteCustomer}>회원 탈퇴</RemoveBtn>
+        <div>
+          <UpdateBtn onClick={updateCustomer}>회원 수정</UpdateBtn>
+          <RemoveBtn onClick={deleteCustomer}>회원 탈퇴</RemoveBtn>
+        </div>
       </Container>
     </Wrapper>
   );
