@@ -127,41 +127,25 @@ function UserUpdate() {
           },
         }).then((result) => {
           if (result.status === 200) {
-            axios({
-              url: "http://localhost:5000/api/customers/edit/board/" + id,
-              method: "PUT",
-              withCredentials: true,
-              data: {
-                username: nickname,
-              },
-            }).then((result) => {
-              if (result.status === 200) {
-                axios({
-                  url: "http://localhost:5000/api/customers/edit/comment/" + id,
-                  method: "PUT",
-                  withCredentials: true,
-                  data: {
-                    username: nickname,
-                  },
-                }).then((result) => {
-                  if (result.status === 200) {
-                    axios({
-                      url: "http://localhost:5000/api/customers/edit/bookmark/" + id,
-                      method: "PUT",
-                      withCredentials: true,
-                      data: {
-                        username: nickname,
-                      },
-                    }).then((result) => {
-                      if (result.status === 200) {
-                        alert("수정되었습니다.");
-                        navigate(-1);
-                      }
-                    });
+            try {
+              axios({
+                url: "http://localhost:5000/login/success",
+                method: "GET",
+                withCredentials: true,
+              })
+                .then((result) => {
+                  if (result.data) {
+                    setUser(result.data);
+                    alert("수정이 완료되었습니다.");
+                    navigate(-1);
                   }
+                })
+                .catch((error) => {
+                  console.log(error);
                 });
-              }
-            });
+            } catch (error) {
+              console.log(error);
+            }
           }
         });
       } else {
@@ -195,7 +179,7 @@ function UserUpdate() {
         </Layout>
         <div>
           <UpdateBtn onClick={onUpdateClick}>수정</UpdateBtn>
-          <RemoveBtn>취소</RemoveBtn>
+          <RemoveBtn onClick={() => navigate(-1)}>취소</RemoveBtn>
         </div>
       </Container>
     </Wrapper>

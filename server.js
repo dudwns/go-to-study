@@ -214,7 +214,29 @@ app.post("/api/customers", (req, res) => {
   });
 });
 
-// delete 메소드로 "/api/customers"에 접속을 한 경우 (회원 탈퇴)
+// post 메소드로 /"api/customers/edit/:id에 접속을 한 경우 (닉네임 중복 검사)
+app.post("/api/customers/edit", (req, res) => {
+  let sql = "SELECT username FROM CUSTOMER WHERE username = ?";
+  let params = [req.body.username];
+  connection.query(sql, params, (err, rows, fields) => {
+    res.send(rows);
+    console.log(err);
+    console.log(rows);
+  });
+});
+
+// put 메소드로 /"api/customers/edit/:id에 접속을 한 경우 (회원 수정)
+app.put("/api/customers/edit/:id", (req, res) => {
+  let sql = "UPDATE CUSTOMER SET username = ? WHERE id = ?";
+  let params = [req.body.username, req.params.id];
+  connection.query(sql, params, (err, rows, fields) => {
+    res.send(rows);
+    console.log(err);
+    console.log(rows);
+  });
+});
+
+// delete 메소드로 "/api/customers/:id"에 접속을 한 경우 (회원 탈퇴)
 app.delete("/api/customers/:id", (req, res) => {
   let sql = "DELETE FROM CUSTOMER WHERE id = ?";
   let params = [req.params.id];
