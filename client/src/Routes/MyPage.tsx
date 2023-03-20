@@ -122,6 +122,8 @@ function MyPage() {
         <Header>프로필 정보</Header>
         <HeaderText>프로필 정보를 볼 수 있습니다.</HeaderText>
         <Layout>
+          <div>아이디</div>
+          <div>{user?.loginId}</div>
           <div>닉네임</div>
           <div>{user?.username}</div>
           <div>이름</div>
@@ -134,7 +136,7 @@ function MyPage() {
           <div>{user?.createdDate}</div>
         </Layout>
         <div>
-          <UpdateBtn onClick={updateCustomer}>회원 수정</UpdateBtn>
+          <UpdateBtn onClick={updateCustomer}>프로필 수정</UpdateBtn>
           <RemoveBtn onClick={deleteCustomer}>회원 탈퇴</RemoveBtn>
         </div>
       </Container>

@@ -48,35 +48,36 @@ const Layout = styled.div`
   }
 `;
 
-const UpdateBtn = styled.button`
-  border: 1px solid gray;
-  padding: 3px 5px;
-  cursor: pointer;
-  background-color: ${(props) => props.theme.btnColor};
-  border-radius: 3px;
-  color: whitesmoke;
-  margin: 0 5px;
-`;
-
-const RemoveBtn = styled.button`
-  border: 1px solid gray;
-  padding: 3px 5px;
-  cursor: pointer;
-  background-color: ${(props) => props.theme.btnColor};
-  border-radius: 3px;
-  color: whitesmoke;
-  margin: 0 5px;
-`;
-
 const ConfrimBtn = styled.button`
   position: absolute;
-  top: 4px;
-  right: 5px;
+  top: 3px;
+  right: 3px;
+  padding: 3px 7px;
   cursor: pointer;
   border: 1px solid gray;
   background-color: ${(props) => props.theme.btnColor};
   border-radius: 3px;
   color: whitesmoke;
+`;
+
+const UpdateBtn = styled.button`
+  border: 1px solid gray;
+  padding: 3px 10px;
+  cursor: pointer;
+  background-color: ${(props) => props.theme.btnColor};
+  border-radius: 3px;
+  color: whitesmoke;
+  margin: 0 5px;
+`;
+
+const CancelBtn = styled.button`
+  border: 1px solid gray;
+  padding: 3px 10px;
+  cursor: pointer;
+  background-color: ${(props) => props.theme.btnColor};
+  border-radius: 3px;
+  color: whitesmoke;
+  margin: 0 5px;
 `;
 
 function UserUpdate() {
@@ -95,21 +96,25 @@ function UserUpdate() {
     if (user?.username === "") {
       alert("로그인이 필요한 서비스입니다.");
     } else {
-      axios({
-        url: "http://localhost:5000/api/customers/edit",
-        method: "POST",
-        withCredentials: true,
-        data: {
-          username: nickname,
-        },
-      }).then((result) => {
-        if (result.data.length === 0) {
-          alert("사용 가능한 닉네임입니다.");
-          setConfirm(true);
-        } else {
-          alert("이미 존재하는 닉네임입니다.");
-        }
-      });
+      if (nickname.length < 2) {
+        alert("닉네임은 최소 2자 이상이어야 합니다.");
+      } else {
+        axios({
+          url: "http://localhost:5000/api/customers/edit",
+          method: "POST",
+          withCredentials: true,
+          data: {
+            username: nickname,
+          },
+        }).then((result) => {
+          if (result.data.length === 0) {
+            alert("사용 가능한 닉네임입니다.");
+            setConfirm(true);
+          } else {
+            alert("이미 존재하는 닉네임입니다.");
+          }
+        });
+      }
     }
   };
 
@@ -149,7 +154,7 @@ function UserUpdate() {
           }
         });
       } else {
-        alert("검사 버튼을 눌러주세요.");
+        alert("닉네임을 확인해 주세요.");
       }
     }
   };
@@ -164,10 +169,16 @@ function UserUpdate() {
           <input
             type="text"
             value={nickname}
+            placeholder="닉네임을 입력하세요. (2~6자)"
+            onFocus={(e) => (e.target.placeholder = "")}
+            onBlur={(e) => (e.target.placeholder = "닉네임을 입력하세요. (2~6자)")}
             onChange={(e) => {
               setNickname(e.target.value);
               setConfirm(false);
             }}
+            minLength={2}
+            maxLength={6}
+            required
           />
           <ConfrimBtn onClick={onConfirmClick}>확인</ConfrimBtn>
           <div>이름</div>
@@ -179,7 +190,7 @@ function UserUpdate() {
         </Layout>
         <div>
           <UpdateBtn onClick={onUpdateClick}>수정</UpdateBtn>
-          <RemoveBtn onClick={() => navigate(-1)}>취소</RemoveBtn>
+          <CancelBtn onClick={() => navigate(-1)}>취소</CancelBtn>
         </div>
       </Container>
     </Wrapper>
