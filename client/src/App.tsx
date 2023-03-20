@@ -15,6 +15,8 @@ import { isDarkAtom } from "./atoms";
 import { useRecoilValue } from "recoil";
 import { ThemeProvider, createGlobalStyle } from "styled-components";
 import UserUpdate from "./Routes/UserUpdate";
+import UserFind from "./Routes/UserFind";
+import UserPasswordFind from "./Routes/UserPasswordFind";
 
 interface IStyleProp {
   isDark: boolean;
@@ -102,6 +104,8 @@ function App() {
           <Route path={"/board/:page/bookmark/:userId"} element={<Board />}></Route>
           <Route path={"/join"} element={<Join />} />
           <Route path={"/login"} element={<Login />} />
+          <Route path={"/userFind"} element={<UserFind />} />
+          <Route path={"/userPasswordFind"} element={<UserPasswordFind />} />
           <Route path={"/mypage/:id"} element={<MyPage />} />
           <Route path={"/mypage/edit/:id"} element={<UserUpdate />} />
           <Route path={"/board/write"} element={<BoardWrite />} />

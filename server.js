@@ -42,10 +42,10 @@ app.post("/login", (req, res, next) => {
   connection.query("SELECT * FROM CUSTOMER", (err, rows, fields) => {
     const userDatabase = rows;
 
-    const { email, password } = req.body;
+    const { loginId, password } = req.body;
 
     const userInfo = userDatabase.filter((item) => {
-      return (item.email === email) & (item.password === password);
+      return (item.loginId === loginId) & (item.password === password);
     })[0];
 
     if (!userInfo) {
@@ -56,6 +56,7 @@ app.post("/login", (req, res, next) => {
         const accessToken = jwt.sign(
           {
             id: userInfo.id,
+            loginId: userInfo.loginId,
             username: userInfo.username,
             email: userInfo.email,
           },
@@ -70,6 +71,7 @@ app.post("/login", (req, res, next) => {
         const refreshToken = jwt.sign(
           {
             id: userInfo.id,
+            loginId: userInfo.loginId,
             username: userInfo.username,
             email: userInfo.email,
           },
@@ -107,7 +109,7 @@ app.get("/accesstoken", (req, res) => {
       const token = req.cookies.accessToken; //accessToken값 가져와서 저장
       const data = jwt.verify(token, process.env.ACCESS_SECRET); //토큰 값을 확인
       const userData = userDatabase.filter((item) => {
-        return item.email === data.email; //email값이 같은 것을 찾음
+        return item.loginId === data.loginId; //email값이 같은 것을 찾음
       })[0];
 
       const { password, ...others } = userData; //password는 숨겨야 하기 때문에 제외
@@ -128,15 +130,16 @@ app.get("/refreshtoken", (req, res) => {
       const token = req.cookies.refreshToken;
       const data = jwt.verify(token, process.env.REFRECH_SECRET);
       const userData = userDatabase.filter((item) => {
-        return item.email === data.email;
+        return item.loginId === data.loginId;
       })[0];
 
       // access Token 새로 발급
       const accessToken = jwt.sign(
         {
           id: userData.id,
+          loginId: userData.loginId,
           username: userData.username,
-          email: userData.email,
+          email: userInfo.email,
         },
         process.env.ACCESS_SECRET,
         {
@@ -167,7 +170,7 @@ app.get("/login/success", (req, res) => {
       const data = jwt.verify(token, process.env.ACCESS_SECRET);
 
       const userData = userDatabase.filter((item) => {
-        return item.email === data.email;
+        return item.loginId === data.loginId;
       })[0];
 
       res.status(200).json(userData);
@@ -198,15 +201,16 @@ app.get("/api/customers", (req, res) => {
 
 // post 메소드로 "/api/customers"에 접속을 한 경우 (회원 가입)
 app.post("/api/customers", (req, res) => {
-  let sql = "INSERT INTO CUSTOMER VALUES (null,?, ?, ?, ?, ?, ?, now())";
+  let sql = "INSERT INTO CUSTOMER VALUES (null,?,?, ?, ?, ?, ?, ?, now())";
 
   let userName = req.body.userName;
+  let loginId = req.body.loginId;
   let name = req.body.name;
   let email = req.body.email;
   let password = req.body.password;
   let gender = req.body.gender;
   let birthday = req.body.birthday;
-  let params = [userName, name, email, password, gender, birthday];
+  let params = [userName, loginId, name, email, password, gender, birthday];
   connection.query(sql, params, (err, rows, fields) => {
     res.send(rows);
     //console.log(`에러 내용 :${err}`); //오류가 나면 디버깅하는 방법
@@ -218,6 +222,17 @@ app.post("/api/customers", (req, res) => {
 app.post("/api/customers/edit", (req, res) => {
   let sql = "SELECT username FROM CUSTOMER WHERE username = ?";
   let params = [req.body.username];
+  connection.query(sql, params, (err, rows, fields) => {
+    res.send(rows);
+    console.log(err);
+    console.log(rows);
+  });
+});
+
+// post 메소드로 /"api/customers/edit/:id에 접속을 한 경우 (loginId) 중복 검사)
+app.post("/api/join/loginId", (req, res) => {
+  let sql = "SELECT loginId FROM CUSTOMER WHERE loginId = ?";
+  let params = [req.body.loginId];
   connection.query(sql, params, (err, rows, fields) => {
     res.send(rows);
     console.log(err);

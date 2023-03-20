@@ -2,9 +2,11 @@ import { atom } from "recoil";
 
 export interface IUser {
   id: number | undefined;
+  loginId: string;
   name: string;
   username: string;
   email: string;
+  password: number | undefined;
   birthday: string;
   createdDate: string;
 }
@@ -49,9 +51,11 @@ export const userAtom = atom<IUser>({
   key: "isUser",
   default: {
     id: undefined,
+    loginId: "",
     name: "",
     username: "",
     email: "",
+    password: undefined,
     birthday: "",
     createdDate: "",
   },

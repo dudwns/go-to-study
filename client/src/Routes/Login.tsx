@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 const Wrapper = styled.div`
@@ -54,15 +54,29 @@ const LoginBtn = styled.button`
   background-color: white;
   border: 1px solid gray;
   cursor: pointer;
+  margin-bottom: 20px;
 `;
 
-const JoinText = styled.span`
-  font-size: 12px;
-  color: ${(props) => props.theme.textColor};
+const MenuUl = styled.ul`
+  width: 300px;
+  display: flex;
+  justify-content: center;
+
+  & li {
+    font-size: 12px;
+    color: ${(props) => props.theme.textColor};
+    cursor: pointer;
+    border-right: 1px solid gray;
+    padding: 0 10px;
+
+    &:last-child {
+      border: ${(props) => props.theme.borderColor};
+    }
+  }
 `;
 
 function Login() {
-  const [email, setEmail] = useState("");
+  const [id, setId] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
@@ -77,7 +91,7 @@ function Login() {
       method: "POST",
       withCredentials: true,
       data: {
-        email: email,
+        loginId: id,
         password: password,
       },
     })
@@ -100,23 +114,29 @@ function Login() {
             <input
               type="text"
               placeholder="아이디"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onFocus={(e) => (e.target.placeholder = "")}
+              onBlur={(e) => (e.target.placeholder = "아이디")}
+              value={id}
+              onChange={(e) => setId(e.target.value)}
             ></input>
           </div>
           <div>
             <input
               type="password"
               placeholder="비밀번호"
+              onFocus={(e) => (e.target.placeholder = "")}
+              onBlur={(e) => (e.target.placeholder = "비밀번호")}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             ></input>
           </div>
           <LoginBtn>로그인</LoginBtn>
         </LoginForm>
-        <Link to="/join">
-          <JoinText>회원가입</JoinText>
-        </Link>
+        <MenuUl>
+          <li onClick={() => navigate("/join")}>회원가입</li>
+          <li onClick={() => navigate("/userFind")}>아이디 찾기</li>
+          <li onClick={() => navigate("/userPasswordFind")}>비밀번호 찾기</li>
+        </MenuUl>
       </Container>
     </Wrapper>
   );
