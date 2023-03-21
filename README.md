@@ -1,4 +1,4 @@
-# Go-To-Study (개인 프로젝트)
+# Go-To-Study (1인 프로젝트)
 
 ## 💻 프로젝트 소개
 
@@ -11,8 +11,11 @@
 ## ⚙️개발 환경
 
 Library: React(18.0.27)
+
 Framework: NodeJs Express(4.18.2)
+
 Database: Mysql(8.0.32)
+
 IDE: Visual Studio Code(1.76.2)
 
 ## 📌주요 기능
@@ -21,11 +24,11 @@ IDE: Visual Studio Code(1.76.2)
 
 - DB값 검증
 - JWT를 이용하여 Access Token & Refresh Token 발급
-- 유효 기간이 지남에 따라 Refresh Token으로 인해 Access Token 재발급
 
 회원가입
 
-- ID 중복 체크
+- DB값 검증
+- ID, 닉네임 중복 체크
 
 마이 페이지
 
@@ -39,3 +42,4 @@ IDE: Visual Studio Code(1.76.2)
 - 게시물 즐겨찾기 기능
 - 댓글 기능
 - 대댓글 기능
+- 정렬 기능 (최근 순, 추천 순)
