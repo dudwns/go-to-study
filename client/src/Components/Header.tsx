@@ -174,6 +174,27 @@ function Header() {
     }
   }, []);
 
+  useEffect(() => {
+    try {
+      axios({
+        url: "http://localhost:5000/login/success",
+        method: "GET",
+        withCredentials: true,
+      })
+        .then((result) => {
+          if (result.data) {
+            setIsLogin(true);
+            setUser(result.data);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
+
   const logout = () => {
     axios({
       url: "http://localhost:5000/logout",
