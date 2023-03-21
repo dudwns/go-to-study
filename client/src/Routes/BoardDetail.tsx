@@ -6,12 +6,26 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 
+const WrapperDiv = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  padding-top: 30px;
+`;
+
+const ImageBackground = styled.div`
+  width: 100%;
+  height: 30vh;
+  background-image: url("/images/imgslider3.jpg");
+  background-size: cover;
+`;
+
 const Wrapper = styled.div`
   height: 100vh;
-  width: 100%;
+  width: 95%;
   display: flex;
   flex-direction: column;
-  padding-top: 70px;
   background-color: ${(props) => props.theme.bgColor};
   color: ${(props) => props.theme.textColor};
   & > div {
@@ -44,7 +58,7 @@ const BoardContainer = styled.div`
   flex-direction: column;
   padding: 0 20px;
   background-color: ${(props) => props.theme.bgColor};
-  @media screen and (max-width: 1050px) {
+  @media screen and (max-width: 1085px) {
     width: 100%;
   }
 `;
@@ -68,7 +82,7 @@ const BoardHeader = styled.div`
 
     & > div > li:first-child {
       text-align: center;
-      @media screen and (max-width: 1050px) {
+      @media screen and (max-width: 1085px) {
         font-size: 14px;
       }
     }
@@ -226,7 +240,7 @@ const CommentForm = styled.form`
   margin-bottom: 30px;
   position: relative;
   width: 80%;
-  @media screen and (max-width: 1050px) {
+  @media screen and (max-width: 1085px) {
     width: 100%;
   }
 `;
@@ -268,7 +282,7 @@ const CommentItems = styled.ul`
   width: 80%;
   padding-bottom: 50px;
   background-color: ${(props) => props.theme.bgColor};
-  @media screen and (max-width: 1050px) {
+  @media screen and (max-width: 1085px) {
     width: 100%;
   }
 `;
@@ -977,224 +991,231 @@ function BoardDetail() {
 
   return (
     <>
-      <Wrapper>
-        <div>
-          <BoardContainer>
-            <List>
-              <ListBtn onClick={() => navigate(-1)}>목록</ListBtn>
-            </List>
-            <BoardWrapper>
-              <BoardHeader>
-                <ul>
-                  <div>
-                    <li>작성자: {boardData[0]?.username}</li>
-                  </div>
-                  <div>
-                    <li>등록일: {boardData[0]?.time}</li>
-                  </div>
-                  <div>
-                    <li>추천: {boardData[0]?.recommend}</li>
-                  </div>
-                </ul>
-              </BoardHeader>
-              <BoardContent>
-                <BoardTitle>{boardData[0]?.title}</BoardTitle>
-                <div dangerouslySetInnerHTML={{ __html: boardData[0]?.content }} />
-                <RecommendBtn onClick={(e) => onRecommendClick(e, boardData[0]?.recommend)}>
-                  <RecommendSvg
-                    className={(() => {
-                      let isTrue = false;
-                      recommend.map((recommendation: IRecommend) => {
-                        if (
-                          recommendation.boardId === Number(id) &&
-                          user.id === recommendation.userId
-                        )
-                          isTrue = true;
-                      });
-                      if (isTrue) return "active";
-                      else return "";
-                    })()}
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 512 512"
-                  >
-                    <path d="M313.4 32.9c26 5.2 42.9 30.5 37.7 56.5l-2.3 11.4c-5.3 26.7-15.1 52.1-28.8 75.2H464c26.5 0 48 21.5 48 48c0 18.5-10.5 34.6-25.9 42.6C497 275.4 504 288.9 504 304c0 23.4-16.8 42.9-38.9 47.1c4.4 7.3 6.9 15.8 6.9 24.9c0 21.3-13.9 39.4-33.1 45.6c.7 3.3 1.1 6.8 1.1 10.4c0 26.5-21.5 48-48 48H294.5c-19 0-37.5-5.6-53.3-16.1l-38.5-25.7C176 420.4 160 390.4 160 358.3V320 272 247.1c0-29.2 13.3-56.7 36-75l7.4-5.9c26.5-21.2 44.6-51 51.2-84.2l2.3-11.4c5.2-26 30.5-42.9 56.5-37.7zM32 192H96c17.7 0 32 14.3 32 32V448c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32V224c0-17.7 14.3-32 32-32z" />
-                  </RecommendSvg>
-                  <span>{boardData[0]?.recommend}</span>
-                </RecommendBtn>
-                <UpdateBtn onClick={updateBoard}>수정</UpdateBtn>
-                <RemoveBtn onClick={deletedBoard}>삭제</RemoveBtn>
-              </BoardContent>
-            </BoardWrapper>
-          </BoardContainer>
-          <Bookmark />
-        </div>
-
-        <CommentForm onSubmit={commentSubmitHandler}>
-          <CommentInput
-            type="text"
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
-            placeholder="댓글 추가..."
-          ></CommentInput>
-          <CommentBtn>댓글</CommentBtn>
-        </CommentForm>
-        <CommentItems>
-          {boardComment
-            .slice(0)
-            .reverse()
-            .map((data: IComment, index: number) =>
-              data.group ? null : (
-                <>
-                  <CommentItem key={index}>
+      <ImageBackground></ImageBackground>
+      <WrapperDiv>
+        <Wrapper>
+          <div>
+            <BoardContainer>
+              <List>
+                <ListBtn onClick={() => navigate(-1)}>목록</ListBtn>
+              </List>
+              <BoardWrapper>
+                <BoardHeader>
+                  <ul>
                     <div>
-                      {data.username}
-                      <span>
-                        <UpBtn
-                          className={(() => {
-                            let isTrue = false;
-                            likes.map((like: ILIKE) => {
-                              if (like.commentId === data.id && user.id === like.userId)
-                                isTrue = true;
-                            });
-                            if (isTrue) return "active";
-                            else return "";
-                          })()}
-                          onClick={(e) => upBtnClick(e, data.id, data.up)}
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 512 512"
-                        >
-                          <path d="M313.4 32.9c26 5.2 42.9 30.5 37.7 56.5l-2.3 11.4c-5.3 26.7-15.1 52.1-28.8 75.2H464c26.5 0 48 21.5 48 48c0 18.5-10.5 34.6-25.9 42.6C497 275.4 504 288.9 504 304c0 23.4-16.8 42.9-38.9 47.1c4.4 7.3 6.9 15.8 6.9 24.9c0 21.3-13.9 39.4-33.1 45.6c.7 3.3 1.1 6.8 1.1 10.4c0 26.5-21.5 48-48 48H294.5c-19 0-37.5-5.6-53.3-16.1l-38.5-25.7C176 420.4 160 390.4 160 358.3V320 272 247.1c0-29.2 13.3-56.7 36-75l7.4-5.9c26.5-21.2 44.6-51 51.2-84.2l2.3-11.4c5.2-26 30.5-42.9 56.5-37.7zM32 192H96c17.7 0 32 14.3 32 32V448c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32V224c0-17.7 14.3-32 32-32z" />
-                        </UpBtn>
-                      </span>
-                      <UpCount>{data.up}</UpCount>
+                      <li>작성자: {boardData[0]?.username}</li>
                     </div>
-                    <div>{data.comment}</div>
                     <div>
+                      <li>등록일: {boardData[0]?.time}</li>
+                    </div>
+                    <div>
+                      <li>추천: {boardData[0]?.recommend}</li>
+                    </div>
+                  </ul>
+                </BoardHeader>
+                <BoardContent>
+                  <BoardTitle>{boardData[0]?.title}</BoardTitle>
+                  <div dangerouslySetInnerHTML={{ __html: boardData[0]?.content }} />
+                  <RecommendBtn onClick={(e) => onRecommendClick(e, boardData[0]?.recommend)}>
+                    <RecommendSvg
+                      className={(() => {
+                        let isTrue = false;
+                        recommend.map((recommendation: IRecommend) => {
+                          if (
+                            recommendation.boardId === Number(id) &&
+                            user.id === recommendation.userId
+                          )
+                            isTrue = true;
+                        });
+                        if (isTrue) return "active";
+                        else return "";
+                      })()}
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 512 512"
+                    >
+                      <path d="M313.4 32.9c26 5.2 42.9 30.5 37.7 56.5l-2.3 11.4c-5.3 26.7-15.1 52.1-28.8 75.2H464c26.5 0 48 21.5 48 48c0 18.5-10.5 34.6-25.9 42.6C497 275.4 504 288.9 504 304c0 23.4-16.8 42.9-38.9 47.1c4.4 7.3 6.9 15.8 6.9 24.9c0 21.3-13.9 39.4-33.1 45.6c.7 3.3 1.1 6.8 1.1 10.4c0 26.5-21.5 48-48 48H294.5c-19 0-37.5-5.6-53.3-16.1l-38.5-25.7C176 420.4 160 390.4 160 358.3V320 272 247.1c0-29.2 13.3-56.7 36-75l7.4-5.9c26.5-21.2 44.6-51 51.2-84.2l2.3-11.4c5.2-26 30.5-42.9 56.5-37.7zM32 192H96c17.7 0 32 14.3 32 32V448c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32V224c0-17.7 14.3-32 32-32z" />
+                    </RecommendSvg>
+                    <span>{boardData[0]?.recommend}</span>
+                  </RecommendBtn>
+                  <UpdateBtn onClick={updateBoard}>수정</UpdateBtn>
+                  <RemoveBtn onClick={deletedBoard}>삭제</RemoveBtn>
+                </BoardContent>
+              </BoardWrapper>
+            </BoardContainer>
+            <Bookmark />
+          </div>
+
+          <CommentForm onSubmit={commentSubmitHandler}>
+            <CommentInput
+              type="text"
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              placeholder="댓글 추가..."
+              onFocus={(e) => (e.target.placeholder = "")}
+              onBlur={(e) => (e.target.placeholder = "댓글 추가...")}
+            ></CommentInput>
+            <CommentBtn>댓글</CommentBtn>
+          </CommentForm>
+          <CommentItems>
+            {boardComment
+              .slice(0)
+              .reverse()
+              .map((data: IComment, index: number) =>
+                data.group ? null : (
+                  <>
+                    <CommentItem key={index}>
                       <div>
-                        <ReplyDate>{data.date}</ReplyDate>
-                        <ReplyBtn onClick={(e) => onReplyClick(e, data.username, true)}>
-                          답글
-                        </ReplyBtn>
-                        <ReplyForm>
-                          <ReplyInput
-                            type="text"
-                            placeholder="답글 추가..."
-                            value={reply}
-                            onChange={(e) => setReply(e.target.value)}
-                            required
-                            onKeyDown={(e) => {
-                              if (e.key === "Enter")
-                                onReplySubmit(e, data.id, data.replyCount, true);
-                            }}
-                          ></ReplyInput>
-                          <button onClick={onCencleClick}>취소</button>
-                          <button onClick={(e) => onReplySubmit(e, data.id, data.replyCount, true)}>
-                            답글
-                          </button>
-                        </ReplyForm>
+                        {data.username}
+                        <span>
+                          <UpBtn
+                            className={(() => {
+                              let isTrue = false;
+                              likes.map((like: ILIKE) => {
+                                if (like.commentId === data.id && user.id === like.userId)
+                                  isTrue = true;
+                              });
+                              if (isTrue) return "active";
+                              else return "";
+                            })()}
+                            onClick={(e) => upBtnClick(e, data.id, data.up)}
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 512 512"
+                          >
+                            <path d="M313.4 32.9c26 5.2 42.9 30.5 37.7 56.5l-2.3 11.4c-5.3 26.7-15.1 52.1-28.8 75.2H464c26.5 0 48 21.5 48 48c0 18.5-10.5 34.6-25.9 42.6C497 275.4 504 288.9 504 304c0 23.4-16.8 42.9-38.9 47.1c4.4 7.3 6.9 15.8 6.9 24.9c0 21.3-13.9 39.4-33.1 45.6c.7 3.3 1.1 6.8 1.1 10.4c0 26.5-21.5 48-48 48H294.5c-19 0-37.5-5.6-53.3-16.1l-38.5-25.7C176 420.4 160 390.4 160 358.3V320 272 247.1c0-29.2 13.3-56.7 36-75l7.4-5.9c26.5-21.2 44.6-51 51.2-84.2l2.3-11.4c5.2-26 30.5-42.9 56.5-37.7zM32 192H96c17.7 0 32 14.3 32 32V448c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32V224c0-17.7 14.3-32 32-32z" />
+                          </UpBtn>
+                        </span>
+                        <UpCount>{data.up}</UpCount>
                       </div>
-                      {data.username === user.username ||
-                      boardData[0].username === user.username ? (
-                        <TarshSvg
-                          onClick={(e) => onTrashClickHandler(e, data.id)}
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 448 512"
-                        >
-                          <path d="M170.5 51.6L151.5 80h145l-19-28.4c-1.5-2.2-4-3.6-6.7-3.6H177.1c-2.7 0-5.2 1.3-6.7 3.6zm147-26.6L354.2 80H368h48 8c13.3 0 24 10.7 24 24s-10.7 24-24 24h-8V432c0 44.2-35.8 80-80 80H112c-44.2 0-80-35.8-80-80V128H24c-13.3 0-24-10.7-24-24S10.7 80 24 80h8H80 93.8l36.7-55.1C140.9 9.4 158.4 0 177.1 0h93.7c18.7 0 36.2 9.4 46.6 24.9zM80 128V432c0 17.7 14.3 32 32 32H336c17.7 0 32-14.3 32-32V128H80zm80 64V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16zm80 0V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16zm80 0V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16z" />
-                        </TarshSvg>
-                      ) : (
-                        ""
-                      )}
-                    </div>
-                  </CommentItem>
-                  {data.reply && (
-                    <ReplyToggle onClick={onReplyOpen}>
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-                        <path d="M169.4 342.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 274.7 54.6 137.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z" />
-                      </svg>
-                      답글 {data.replyCount}개
-                    </ReplyToggle>
-                  )}
-                  <ReplyList>
-                    {replyDatas.map((value) =>
-                      value.group === data.id ? (
-                        <ReplyItems>
-                          <ReplyItem key={value.id}>
-                            <div>
-                              {value.username}
-                              <span>
-                                <UpBtn
-                                  className={(() => {
-                                    let isTrue = false;
-                                    likes.map((like: ILIKE) => {
-                                      if (like.commentId === value.id && user.id === like.userId)
-                                        isTrue = true;
-                                    });
-                                    if (isTrue) return "active";
-                                    else return "";
-                                  })()}
-                                  onClick={(e) => upBtnClick(e, value.id, value.up)}
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  viewBox="0 0 512 512"
-                                >
-                                  <path d="M313.4 32.9c26 5.2 42.9 30.5 37.7 56.5l-2.3 11.4c-5.3 26.7-15.1 52.1-28.8 75.2H464c26.5 0 48 21.5 48 48c0 18.5-10.5 34.6-25.9 42.6C497 275.4 504 288.9 504 304c0 23.4-16.8 42.9-38.9 47.1c4.4 7.3 6.9 15.8 6.9 24.9c0 21.3-13.9 39.4-33.1 45.6c.7 3.3 1.1 6.8 1.1 10.4c0 26.5-21.5 48-48 48H294.5c-19 0-37.5-5.6-53.3-16.1l-38.5-25.7C176 420.4 160 390.4 160 358.3V320 272 247.1c0-29.2 13.3-56.7 36-75l7.4-5.9c26.5-21.2 44.6-51 51.2-84.2l2.3-11.4c5.2-26 30.5-42.9 56.5-37.7zM32 192H96c17.7 0 32 14.3 32 32V448c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32V224c0-17.7 14.3-32 32-32z" />
-                                </UpBtn>
-                              </span>
-
-                              <UpCount>{value.up}</UpCount>
-                            </div>
-                            <div>{value.comment}</div>
-                            <div>
-                              <div>
-                                <ReplyDate>{value.date}</ReplyDate>
-                                <ReplyBtn onClick={(e) => onReplyClick(e, value.username, false)}>
-                                  답글
-                                </ReplyBtn>
-                                <ReplyForm>
-                                  <ReplyInput
-                                    type="text"
-                                    placeholder="답글 추가..."
-                                    value={replyreply}
-                                    onChange={(e) => setReplyReply(e.target.value)}
-                                    onKeyDown={(e) => {
-                                      if (e.key === "Enter")
-                                        onReplySubmit(e, data.id, data.replyCount, false);
-                                    }}
-                                    required
-                                  ></ReplyInput>
-                                  <button onClick={onCencleClick}>취소</button>
-                                  <button
-                                    onClick={(e) =>
-                                      onReplySubmit(e, value.group, data.replyCount, false)
-                                    }
-                                  >
-                                    답글
-                                  </button>
-                                </ReplyForm>
-                              </div>
-                              {value.username === user.username ||
-                              boardData[0].username === user.username ? (
-                                <TarshSvg
-                                  onClick={(e) => onTrashClickHandler(e, value.id)}
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  viewBox="0 0 448 512"
-                                >
-                                  <path d="M170.5 51.6L151.5 80h145l-19-28.4c-1.5-2.2-4-3.6-6.7-3.6H177.1c-2.7 0-5.2 1.3-6.7 3.6zm147-26.6L354.2 80H368h48 8c13.3 0 24 10.7 24 24s-10.7 24-24 24h-8V432c0 44.2-35.8 80-80 80H112c-44.2 0-80-35.8-80-80V128H24c-13.3 0-24-10.7-24-24S10.7 80 24 80h8H80 93.8l36.7-55.1C140.9 9.4 158.4 0 177.1 0h93.7c18.7 0 36.2 9.4 46.6 24.9zM80 128V432c0 17.7 14.3 32 32 32H336c17.7 0 32-14.3 32-32V128H80zm80 64V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16zm80 0V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16zm80 0V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16z" />
-                                </TarshSvg>
-                              ) : (
-                                ""
-                              )}
-                            </div>
-                          </ReplyItem>
-                        </ReplyItems>
-                      ) : null
+                      <div>{data.comment}</div>
+                      <div>
+                        <div>
+                          <ReplyDate>{data.date}</ReplyDate>
+                          <ReplyBtn onClick={(e) => onReplyClick(e, data.username, true)}>
+                            답글
+                          </ReplyBtn>
+                          <ReplyForm>
+                            <ReplyInput
+                              type="text"
+                              placeholder="답글 추가..."
+                              value={reply}
+                              onChange={(e) => setReply(e.target.value)}
+                              required
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter")
+                                  onReplySubmit(e, data.id, data.replyCount, true);
+                              }}
+                            ></ReplyInput>
+                            <button onClick={onCencleClick}>취소</button>
+                            <button
+                              onClick={(e) => onReplySubmit(e, data.id, data.replyCount, true)}
+                            >
+                              답글
+                            </button>
+                          </ReplyForm>
+                        </div>
+                        {data.username === user.username ||
+                        boardData[0].username === user.username ? (
+                          <TarshSvg
+                            onClick={(e) => onTrashClickHandler(e, data.id)}
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 448 512"
+                          >
+                            <path d="M170.5 51.6L151.5 80h145l-19-28.4c-1.5-2.2-4-3.6-6.7-3.6H177.1c-2.7 0-5.2 1.3-6.7 3.6zm147-26.6L354.2 80H368h48 8c13.3 0 24 10.7 24 24s-10.7 24-24 24h-8V432c0 44.2-35.8 80-80 80H112c-44.2 0-80-35.8-80-80V128H24c-13.3 0-24-10.7-24-24S10.7 80 24 80h8H80 93.8l36.7-55.1C140.9 9.4 158.4 0 177.1 0h93.7c18.7 0 36.2 9.4 46.6 24.9zM80 128V432c0 17.7 14.3 32 32 32H336c17.7 0 32-14.3 32-32V128H80zm80 64V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16zm80 0V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16zm80 0V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16z" />
+                          </TarshSvg>
+                        ) : (
+                          ""
+                        )}
+                      </div>
+                    </CommentItem>
+                    {data.reply && (
+                      <ReplyToggle onClick={onReplyOpen}>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+                          <path d="M169.4 342.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 274.7 54.6 137.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z" />
+                        </svg>
+                        답글 {data.replyCount}개
+                      </ReplyToggle>
                     )}
-                  </ReplyList>
-                </>
-              )
-            )}
-        </CommentItems>
-      </Wrapper>
+                    <ReplyList>
+                      {replyDatas.map((value) =>
+                        value.group === data.id ? (
+                          <ReplyItems>
+                            <ReplyItem key={value.id}>
+                              <div>
+                                {value.username}
+                                <span>
+                                  <UpBtn
+                                    className={(() => {
+                                      let isTrue = false;
+                                      likes.map((like: ILIKE) => {
+                                        if (like.commentId === value.id && user.id === like.userId)
+                                          isTrue = true;
+                                      });
+                                      if (isTrue) return "active";
+                                      else return "";
+                                    })()}
+                                    onClick={(e) => upBtnClick(e, value.id, value.up)}
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 512 512"
+                                  >
+                                    <path d="M313.4 32.9c26 5.2 42.9 30.5 37.7 56.5l-2.3 11.4c-5.3 26.7-15.1 52.1-28.8 75.2H464c26.5 0 48 21.5 48 48c0 18.5-10.5 34.6-25.9 42.6C497 275.4 504 288.9 504 304c0 23.4-16.8 42.9-38.9 47.1c4.4 7.3 6.9 15.8 6.9 24.9c0 21.3-13.9 39.4-33.1 45.6c.7 3.3 1.1 6.8 1.1 10.4c0 26.5-21.5 48-48 48H294.5c-19 0-37.5-5.6-53.3-16.1l-38.5-25.7C176 420.4 160 390.4 160 358.3V320 272 247.1c0-29.2 13.3-56.7 36-75l7.4-5.9c26.5-21.2 44.6-51 51.2-84.2l2.3-11.4c5.2-26 30.5-42.9 56.5-37.7zM32 192H96c17.7 0 32 14.3 32 32V448c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32V224c0-17.7 14.3-32 32-32z" />
+                                  </UpBtn>
+                                </span>
+
+                                <UpCount>{value.up}</UpCount>
+                              </div>
+                              <div>{value.comment}</div>
+                              <div>
+                                <div>
+                                  <ReplyDate>{value.date}</ReplyDate>
+                                  <ReplyBtn onClick={(e) => onReplyClick(e, value.username, false)}>
+                                    답글
+                                  </ReplyBtn>
+                                  <ReplyForm>
+                                    <ReplyInput
+                                      type="text"
+                                      placeholder="답글 추가..."
+                                      value={replyreply}
+                                      onChange={(e) => setReplyReply(e.target.value)}
+                                      onKeyDown={(e) => {
+                                        if (e.key === "Enter")
+                                          onReplySubmit(e, data.id, data.replyCount, false);
+                                      }}
+                                      required
+                                    ></ReplyInput>
+                                    <button onClick={onCencleClick}>취소</button>
+                                    <button
+                                      onClick={(e) =>
+                                        onReplySubmit(e, value.group, data.replyCount, false)
+                                      }
+                                    >
+                                      답글
+                                    </button>
+                                  </ReplyForm>
+                                </div>
+                                {value.username === user.username ||
+                                boardData[0].username === user.username ? (
+                                  <TarshSvg
+                                    onClick={(e) => onTrashClickHandler(e, value.id)}
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 448 512"
+                                  >
+                                    <path d="M170.5 51.6L151.5 80h145l-19-28.4c-1.5-2.2-4-3.6-6.7-3.6H177.1c-2.7 0-5.2 1.3-6.7 3.6zm147-26.6L354.2 80H368h48 8c13.3 0 24 10.7 24 24s-10.7 24-24 24h-8V432c0 44.2-35.8 80-80 80H112c-44.2 0-80-35.8-80-80V128H24c-13.3 0-24-10.7-24-24S10.7 80 24 80h8H80 93.8l36.7-55.1C140.9 9.4 158.4 0 177.1 0h93.7c18.7 0 36.2 9.4 46.6 24.9zM80 128V432c0 17.7 14.3 32 32 32H336c17.7 0 32-14.3 32-32V128H80zm80 64V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16zm80 0V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16zm80 0V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16z" />
+                                  </TarshSvg>
+                                ) : (
+                                  ""
+                                )}
+                              </div>
+                            </ReplyItem>
+                          </ReplyItems>
+                        ) : null
+                      )}
+                    </ReplyList>
+                  </>
+                )
+              )}
+          </CommentItems>
+        </Wrapper>
+      </WrapperDiv>
     </>
   );
 }

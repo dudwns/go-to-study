@@ -178,8 +178,6 @@ const sideBarVariants = {
 const menuList = ["메인 화면", "컨텐츠 소개"];
 
 function Home() {
-  const [isLogin, setIsLogin] = useRecoilState(loginAtom); // 로그인 유무를 나타내는 boolean 값
-  const [user, setUser] = useRecoilState(userAtom); // 로그인 한 유저의 정보
   const [sideOpen, setSideOpen] = useState(false); // 사이드 메뉴 유무를 나타내는 boolean 값
   const [isDark, setisDark] = useRecoilState(isDarkAtom);
   const sideAni = useAnimation();
@@ -190,27 +188,6 @@ function Home() {
     }, 4000);
 
     sideAni.start({ display: "block", transition: { delay: 4, duration: 0.5 } });
-  }, []);
-
-  useEffect(() => {
-    try {
-      axios({
-        url: "http://localhost:5000/login/success",
-        method: "GET",
-        withCredentials: true,
-      })
-        .then((result) => {
-          if (result.data) {
-            setIsLogin(true);
-            setUser(result.data);
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    } catch (error) {
-      console.log(error);
-    }
   }, []);
 
   return (

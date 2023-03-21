@@ -34,25 +34,46 @@ const Content = styled(motion.div)`
   display: flex;
   flex-direction: column;
   align-items: center;
+  position: relative;
 `;
 
 const Text1 = styled(motion.div)`
   color: ${(props) => props.theme.textColor};
-  font-size: 4vw;
+  font-size: 70px;
   opacity: 0;
   position: absolute;
   top: 15%;
   left: 30%;
   transform: translateX(-50%) translateY(-50%);
+
+  @media screen and (max-width: 1500px) {
+    font-size: 60px;
+  }
+  @media screen and (max-width: 1200px) {
+    font-size: 50px;
+  }
+  @media screen and (max-width: 560px) {
+    font-size: 40px;
+  }
 `;
 const Text2 = styled(motion.div)`
   color: ${(props) => props.theme.textColor};
-  font-size: 2vw;
+  font-size: 40px;
   opacity: 0;
   position: absolute;
   top: 26%;
   left: 30%;
   transform: translateX(-50%) translateY(-50%);
+
+  @media screen and (max-width: 1500px) {
+    font-size: 30px;
+  }
+  @media screen and (max-width: 1200px) {
+    font-size: 20px;
+  }
+  @media screen and (max-width: 560px) {
+    font-size: 17px;
+  }
 `;
 
 const CircleContent = styled(motion.div)`

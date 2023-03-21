@@ -142,8 +142,8 @@ const topVariants = {
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const isLogin = useRecoilValue(loginAtom); // 로그인 유무를 나타내는 boolean 값
-  const user = useRecoilValue(userAtom); // 로그인 한 유저의 정보
+  const [isLogin, setIsLogin] = useRecoilState(loginAtom); // 로그인 유무를 나타내는 boolean 값
+  const [user, setUser] = useRecoilState(userAtom); // 로그인 한 유저의 정보
   const id = user.id;
   const navigate = useNavigate();
   const navAnimation = useAnimation();
@@ -151,6 +151,28 @@ function Header() {
   const [isDark, setisDark] = useRecoilState(isDarkAtom);
   const toggleDarkAtom = () => setisDark((prev) => !prev);
   const isHeader = useRecoilValue(isHeaderAtom);
+  console.log(isLogin);
+
+  useEffect(() => {
+    try {
+      axios({
+        url: "http://localhost:5000/login/success",
+        method: "GET",
+        withCredentials: true,
+      })
+        .then((result) => {
+          if (result.data) {
+            setIsLogin(true);
+            setUser(result.data);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
 
   const logout = () => {
     axios({

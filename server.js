@@ -44,25 +44,25 @@ app.post("/login", (req, res, next) => {
 
     const { loginId, password } = req.body;
 
-    const userInfo = userDatabase.filter((item) => {
+    const userData = userDatabase.filter((item) => {
       return (item.loginId === loginId) & (item.password === password);
     })[0];
 
-    if (!userInfo) {
+    if (!userData) {
       res.status(403).json("Not Authorized"); //로그인에 실패했을 때
     } else {
       try {
         // access Token 발급
         const accessToken = jwt.sign(
           {
-            id: userInfo.id,
-            loginId: userInfo.loginId,
-            username: userInfo.username,
-            email: userInfo.email,
+            id: userData.id,
+            loginId: userData.loginId,
+            username: userData.username,
+            email: userData.email,
           },
           process.env.ACCESS_SECRET,
           {
-            expiresIn: "10m",
+            expiresIn: "1m",
             issuer: "About Tech",
           }
         );
@@ -70,10 +70,10 @@ app.post("/login", (req, res, next) => {
         // refresh Token 발급
         const refreshToken = jwt.sign(
           {
-            id: userInfo.id,
-            loginId: userInfo.loginId,
-            username: userInfo.username,
-            email: userInfo.email,
+            id: userData.id,
+            loginId: userData.loginId,
+            username: userData.username,
+            email: userData.email,
           },
           process.env.REFRECH_SECRET,
           {
@@ -109,7 +109,7 @@ app.get("/accesstoken", (req, res) => {
       const token = req.cookies.accessToken; //accessToken값 가져와서 저장
       const data = jwt.verify(token, process.env.ACCESS_SECRET); //토큰 값을 확인
       const userData = userDatabase.filter((item) => {
-        return item.loginId === data.loginId; //email값이 같은 것을 찾음
+        return item.loginId === data.loginId; //ID 값이 같은 것을 찾음
       })[0];
 
       const { password, ...others } = userData; //password는 숨겨야 하기 때문에 제외
@@ -139,7 +139,7 @@ app.get("/refreshtoken", (req, res) => {
           id: userData.id,
           loginId: userData.loginId,
           username: userData.username,
-          email: userInfo.email,
+          email: userData.email,
         },
         process.env.ACCESS_SECRET,
         {

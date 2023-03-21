@@ -7,11 +7,25 @@ import { useRecoilValue } from "recoil";
 import { userAtom } from "../atoms";
 import { useNavigate } from "react-router-dom";
 
+const WrapperDiv = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  padding-top: 30px;
+`;
+
+const ImageBackground = styled.div`
+  width: 100%;
+  height: 30vh;
+  background-image: url("/images/imgslider3.jpg");
+  background-size: cover;
+`;
+
 const Wrapper = styled.div`
   height: 100%;
-  width: 100%;
+  width: 95%;
   display: flex;
-  padding-top: 120px;
   align-items: center;
   flex-direction: column;
   padding-bottom: 50px;
@@ -211,32 +225,39 @@ function BoardWrite() {
   };
 
   return (
-    <Wrapper>
-      <form onSubmit={InsertHandler}>
-        <Header>
-          <TitleInput
-            type="text"
-            placeholder="제목을 입력하세요."
-            onFocus={(e) => (e.target.placeholder = "")}
-            onBlur={(e) => (e.target.placeholder = "제목을 입력하세요.")}
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          ></TitleInput>
-          <InsertBtn>등록</InsertBtn>
-        </Header>
-        <ReactQuillDiv>
-          <ReactQuill
-            className="quill"
-            onChange={setContent}
-            modules={modules}
-            formats={formats}
-            value={content}
-            style={{ height: "400px" }}
-            placeholder="내용을 입력하세요."
-          ></ReactQuill>
-        </ReactQuillDiv>
-      </form>
-    </Wrapper>
+    <>
+      <ImageBackground></ImageBackground>
+      <WrapperDiv>
+        <Wrapper>
+          <form onSubmit={InsertHandler}>
+            <Header>
+              <TitleInput
+                type="text"
+                placeholder="제목을 입력하세요. (최대 50자)"
+                onFocus={(e) => (e.target.placeholder = "")}
+                onBlur={(e) => (e.target.placeholder = "제목을 입력하세요. (최대 50자)")}
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                maxLength={50}
+                required
+              ></TitleInput>
+              <InsertBtn>등록</InsertBtn>
+            </Header>
+            <ReactQuillDiv>
+              <ReactQuill
+                className="quill"
+                onChange={setContent}
+                modules={modules}
+                formats={formats}
+                value={content}
+                style={{ height: "400px" }}
+                placeholder="내용을 입력하세요."
+              ></ReactQuill>
+            </ReactQuillDiv>
+          </form>
+        </Wrapper>
+      </WrapperDiv>
+    </>
   );
 }
 

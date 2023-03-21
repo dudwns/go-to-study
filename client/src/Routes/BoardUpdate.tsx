@@ -6,11 +6,25 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
 
+const WrapperDiv = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  padding-top: 30px;
+`;
+
+const ImageBackground = styled.div`
+  width: 100%;
+  height: 30vh;
+  background-image: url("/images/imgslider3.jpg");
+  background-size: cover;
+`;
+
 const Wrapper = styled.div`
   height: 100%;
-  width: 100%;
+  width: 95%;
   display: flex;
-  padding-top: 120px;
   align-items: center;
   flex-direction: column;
   padding-bottom: 50px;
@@ -232,31 +246,38 @@ function BoardUpdate() {
   ];
 
   return (
-    <Wrapper>
-      <form onSubmit={updateHandler}>
-        <Header>
-          <TitleInput
-            type="text"
-            placeholder="제목을 입력하세요."
-            onFocus={(e) => (e.target.placeholder = "")}
-            onBlur={(e) => (e.target.placeholder = "제목을 입력하세요.")}
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          ></TitleInput>{" "}
-          <UpdateBtn>변경</UpdateBtn>
-        </Header>
-        <ReactQuillDiv>
-          <ReactQuill
-            onChange={setContent}
-            modules={modules}
-            formats={formats}
-            value={content}
-            style={{ height: "400px" }}
-            placeholder="내용을 입력하세요."
-          ></ReactQuill>
-        </ReactQuillDiv>
-      </form>
-    </Wrapper>
+    <>
+      <ImageBackground></ImageBackground>
+      <WrapperDiv>
+        <Wrapper>
+          <form onSubmit={updateHandler}>
+            <Header>
+              <TitleInput
+                type="text"
+                placeholder="제목을 입력하세요. (최대 50자)"
+                onFocus={(e) => (e.target.placeholder = "")}
+                onBlur={(e) => (e.target.placeholder = "제목을 입력하세요. (최대 50자)")}
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                maxLength={50}
+                required
+              ></TitleInput>
+              <UpdateBtn>변경</UpdateBtn>
+            </Header>
+            <ReactQuillDiv>
+              <ReactQuill
+                onChange={setContent}
+                modules={modules}
+                formats={formats}
+                value={content}
+                style={{ height: "400px" }}
+                placeholder="내용을 입력하세요."
+              ></ReactQuill>
+            </ReactQuillDiv>
+          </form>
+        </Wrapper>
+      </WrapperDiv>
+    </>
   );
 }
 export default BoardUpdate;

@@ -1,18 +1,32 @@
 import axios from "axios";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { useLocation, useMatch, useNavigate, useParams } from "react-router-dom";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useMatch, useNavigate, useParams } from "react-router-dom";
+import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import { boardAtom, bookmarkAtom, IBoard, IBookmark, loginAtom, userAtom } from "../atoms";
 import Bookmark from "../Components/Bookmark";
 import Pagination from "../Components/Pagination";
 
+const WrapperDiv = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  padding-top: 30px;
+`;
+
+const ImageBackground = styled.div`
+  width: 100%;
+  height: 30vh;
+  background-image: url("/images/imgslider3.jpg");
+  background-size: cover;
+`;
+
 const Wrapper = styled.div`
   height: 100%;
-  width: 100%;
+  width: 95%;
   display: flex;
-  padding-top: 70px;
   margin-bottom: 50px;
   color: ${(props) => props.theme.textColor};
   background-color: ${(props) => props.theme.bgColor};
@@ -23,8 +37,11 @@ const BorderContent = styled.div`
   display: flex;
   flex-direction: column;
   padding: 0 20px;
+  & button {
+    cursor: pointer;
+  }
 
-  @media screen and (max-width: 1050px) {
+  @media screen and (max-width: 1085px) {
     width: 100%;
   }
 `;
@@ -71,8 +88,11 @@ const SearchInput = styled.input`
     width: 300px;
   }
 
-  @media screen and (max-width: 550px) {
+  @media screen and (max-width: 590px) {
     width: 250px;
+  }
+  @media screen and (max-width: 520px) {
+    width: 230px;
   }
 `;
 
@@ -89,7 +109,7 @@ const WriteBtn = styled.button`
     width: 55px;
     font-size: 10px;
   }
-  @media screen and (max-width: 600px) {
+  @media screen and (max-width: 650px) {
     width: 45px;
     font-size: 7px;
     padding: 3px 0;
@@ -111,13 +131,8 @@ const ListBtn = styled.button`
     font-size: 10px;
   }
 
-  @media screen and (max-width: 1050px) {
+  @media screen and (max-width: 1085px) {
     display: none;
-  }
-  @media screen and (max-width: 600px) {
-    width: 45px;
-    font-size: 7px;
-    padding: 3px 0;
   }
 `;
 
@@ -133,12 +148,12 @@ const BookmarkBtn = styled.button`
   cursor: pointer;
   display: none;
 
-  @media screen and (max-width: 1050px) {
+  @media screen and (max-width: 1085px) {
     display: inline-block;
     padding: 4px 10px;
   }
 
-  @media screen and (max-width: 600px) {
+  @media screen and (max-width: 650px) {
     width: 50px;
     font-size: 7px;
     padding: 3px 0;
@@ -788,116 +803,121 @@ function Board() {
   };
 
   return (
-    <Wrapper>
-      <BorderContent>
-        <BoardMenu>
-          <select onChange={onOrderChange}>
-            <option value="최근 순">최근 순</option>
-            <option value="추천 순">추천 순</option>
-          </select>
-          <SearchForm
-            onSubmit={(e) => {
-              e.preventDefault();
-            }}
-          >
-            <select onChange={(e) => (searchStandard = e.target.value)}>
-              <option value="제목">제목</option>
-              <option value="작성자">작성자</option>
-            </select>
-            <SearchInput
-              type="text"
-              onKeyDown={onSearchSubmit}
-              placeholder="검색 할 내용을 입력하세요."
-              onFocus={(e) => (e.target.placeholder = "")}
-              onBlur={(e) => (e.target.placeholder = "검색 할 내용을 입력하세요.")}
-            />
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-              <path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" />
-            </svg>
-          </SearchForm>
-          <div>
-            <WriteBtn onClick={onWriteHandler}>글 쓰기</WriteBtn>
-            <ListBtn
-              onClick={() => {
-                if (keyword) navigate(`/board/1?keyword=${keyword}`);
-                else navigate(`/board/1`);
-              }}
-            >
-              목록
-            </ListBtn>
-            <BookmarkBtn onClick={onBookmarkBtnClick}>즐겨찾기</BookmarkBtn>
-          </div>
-        </BoardMenu>
-        <BoardHeader>
-          <span>작성자</span>
-          <span>제목</span>
-          <span>등록일</span>
-          <span>즐겨찾기</span>
-          <span>추천</span>
-        </BoardHeader>
-        <BoardContent>{searchComponent(selectBoard)}</BoardContent>
-        <PageNumbers>
-          <PrevBtn onClick={prevClicked}>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512">
-              <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z" />
-            </svg>
-          </PrevBtn>
-
-          <Pagination
-            totalPosts={board.length}
-            postsPerPage={10}
-            currentPage={page}
-            onClickPage={pageClicked}
-          />
-          <NextBtn onClick={nextClicked}>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512">
-              <path d="M246.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L178.7 256 41.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z" />
-            </svg>
-          </NextBtn>
-        </PageNumbers>
-        {/* <button style={{ display: "none" }} onClick={accessToken}>
-          get Access Token
-        </button>
-        <button style={{ display: "none" }} onClick={refreshToken}>
-          get Refresh Token
-        </button> */}
-      </BorderContent>
-      <Bookmark />
-      <AnimatePresence>
-        {bookmarkMatch ? (
-          <>
-            <Overlay animate={{ opacity: 1 }} exit={{ opacity: 0 }} />
-            <BookmarkContainer
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-            >
-              <CloseBtn
-                onClick={onOverlayClick}
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 384 512"
+    <>
+      <ImageBackground></ImageBackground>
+      <WrapperDiv>
+        <Wrapper>
+          <BorderContent>
+            {/* <button style={{ border: "1px solid red" }} onClick={accessToken}>
+              get Access Token
+            </button>
+            <button style={{ border: "1px solid red" }} onClick={refreshToken}>
+              get Refresh Token
+            </button> */}
+            <BoardMenu>
+              <select onChange={onOrderChange}>
+                <option value="최근 순">최근 순</option>
+                <option value="추천 순">추천 순</option>
+              </select>
+              <SearchForm
+                onSubmit={(e) => {
+                  e.preventDefault();
+                }}
               >
-                <path d="M376.6 84.5c11.3-13.6 9.5-33.8-4.1-45.1s-33.8-9.5-45.1 4.1L192 206 56.6 43.5C45.3 29.9 25.1 28.1 11.5 39.4S-3.9 70.9 7.4 84.5L150.3 256 7.4 427.5c-11.3 13.6-9.5 33.8 4.1 45.1s33.8 9.5 45.1-4.1L192 306 327.4 468.5c11.3 13.6 31.5 15.4 45.1 4.1s15.4-31.5 4.1-45.1L233.7 256 376.6 84.5z" />
-              </CloseBtn>
-              <BookmarkTitle>즐겨찾기 게시판</BookmarkTitle>
-              {bookmarkData.length !== 0 ? (
-                <BookmarkList>
-                  {bookmarkData.map((data: IBookmark, index: number) => (
-                    <li key={index} onClick={() => onListClick(data.boardId)}>
-                      {data.title}
-                    </li>
-                  ))}
-                </BookmarkList>
-              ) : (
-                <NullText>즐겨찾기 한 게시글이 없습니다.</NullText>
-              )}
-            </BookmarkContainer>
-          </>
-        ) : (
-          ""
-        )}
-      </AnimatePresence>
-    </Wrapper>
+                <select onChange={(e) => (searchStandard = e.target.value)}>
+                  <option value="제목">제목</option>
+                  <option value="작성자">작성자</option>
+                </select>
+                <SearchInput
+                  type="text"
+                  onKeyDown={onSearchSubmit}
+                  placeholder="검색 할 내용을 입력하세요."
+                  onFocus={(e) => (e.target.placeholder = "")}
+                  onBlur={(e) => (e.target.placeholder = "검색 할 내용을 입력하세요.")}
+                />
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                  <path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" />
+                </svg>
+              </SearchForm>
+              <div>
+                <WriteBtn onClick={onWriteHandler}>글 쓰기</WriteBtn>
+                <ListBtn
+                  onClick={() => {
+                    if (keyword) navigate(`/board/1?keyword=${keyword}`);
+                    else navigate(`/board/1`);
+                  }}
+                >
+                  목록
+                </ListBtn>
+                <BookmarkBtn onClick={onBookmarkBtnClick}>즐겨찾기</BookmarkBtn>
+              </div>
+            </BoardMenu>
+            <BoardHeader>
+              <span>작성자</span>
+              <span>제목</span>
+              <span>등록일</span>
+              <span>즐겨찾기</span>
+              <span>추천</span>
+            </BoardHeader>
+            <BoardContent>{searchComponent(selectBoard)}</BoardContent>
+            <PageNumbers>
+              <PrevBtn onClick={prevClicked}>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512">
+                  <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z" />
+                </svg>
+              </PrevBtn>
+
+              <Pagination
+                totalPosts={board.length}
+                postsPerPage={10}
+                currentPage={page}
+                onClickPage={pageClicked}
+              />
+              <NextBtn onClick={nextClicked}>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512">
+                  <path d="M246.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L178.7 256 41.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z" />
+                </svg>
+              </NextBtn>
+            </PageNumbers>
+          </BorderContent>
+          <Bookmark />
+          <AnimatePresence>
+            {bookmarkMatch ? (
+              <>
+                <Overlay animate={{ opacity: 1 }} exit={{ opacity: 0 }} />
+                <BookmarkContainer
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                >
+                  <CloseBtn
+                    onClick={onOverlayClick}
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 384 512"
+                  >
+                    <path d="M376.6 84.5c11.3-13.6 9.5-33.8-4.1-45.1s-33.8-9.5-45.1 4.1L192 206 56.6 43.5C45.3 29.9 25.1 28.1 11.5 39.4S-3.9 70.9 7.4 84.5L150.3 256 7.4 427.5c-11.3 13.6-9.5 33.8 4.1 45.1s33.8 9.5 45.1-4.1L192 306 327.4 468.5c11.3 13.6 31.5 15.4 45.1 4.1s15.4-31.5 4.1-45.1L233.7 256 376.6 84.5z" />
+                  </CloseBtn>
+                  <BookmarkTitle>즐겨찾기 게시판</BookmarkTitle>
+                  {bookmarkData.length !== 0 ? (
+                    <BookmarkList>
+                      {bookmarkData.map((data: IBookmark, index: number) => (
+                        <li key={index} onClick={() => onListClick(data.boardId)}>
+                          {data.title}
+                        </li>
+                      ))}
+                    </BookmarkList>
+                  ) : (
+                    <NullText>즐겨찾기 한 게시글이 없습니다.</NullText>
+                  )}
+                </BookmarkContainer>
+              </>
+            ) : (
+              ""
+            )}
+          </AnimatePresence>
+        </Wrapper>
+      </WrapperDiv>
+    </>
   );
 }
 

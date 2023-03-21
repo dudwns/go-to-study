@@ -2,28 +2,31 @@ import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import moment from "moment";
 
 const Wrapper = styled.div`
-  height: 100%;
-  min-height: 500px;
+  height: 100vh;
+  min-height: 600px;
   width: 100%;
   display: flex;
-  padding-top: 70px;
   padding-bottom: 50px;
   justify-content: center;
+  align-items: center;
   background-color: ${(props) => props.theme.bgColor};
   color: ${(props) => props.theme.textColor};
 `;
 
 const Container = styled.div`
-  border: 1px solid ${(props) => props.theme.borderColor};
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 500px;
   height: 350px;
-  border-radius: 5px;
   margin: 0 30px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  box-shadow: 0 13px 27px -5px rgba(50, 50, 93, 0.25), 0 8px 16px -8px rgba(0, 0, 0, 0.3),
+    0 -6px 16px -6px rgba(0, 0, 0, 0.025);
 `;
 
 const Title = styled.h2`
