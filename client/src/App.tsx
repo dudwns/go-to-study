@@ -17,6 +17,7 @@ import { ThemeProvider, createGlobalStyle } from "styled-components";
 import UserUpdate from "./Routes/UserUpdate";
 import UserFind from "./Routes/UserFind";
 import UserPasswordFind from "./Routes/UserPasswordFind";
+import { Helmet } from "react-helmet";
 
 interface IStyleProp {
   isDark: boolean;
@@ -96,6 +97,9 @@ function App() {
   return (
     <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
       <GlobalStyle isDark />
+      <Helmet>
+        <title>Go To Study</title>
+      </Helmet>
       <Router>
         <Header />
         <Routes>
