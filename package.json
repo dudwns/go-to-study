@@ -19,6 +19,7 @@
     "mysql": "^2.18.1",
     "nodemon": "^2.0.20",
     "react-query": "^3.39.2",
+    "store": "^2.0.12",
     "styled-components": "^5.3.6"
   },
   "devDependencies": {

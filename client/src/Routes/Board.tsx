@@ -8,6 +8,9 @@ import { boardAtom, bookmarkAtom, IBoard, IBookmark, loginAtom, userAtom } from 
 import Bookmark from "../Components/Bookmark";
 import Pagination from "../Components/Pagination";
 
+import Cookies from "js-cookie";
+import Api from "../lib/customApi";
+
 const WrapperDiv = styled.div`
   width: 100%;
   height: 100%;
@@ -463,10 +466,8 @@ function Board() {
   };
 
   const accessToken = () => {
-    axios({
-      url: "http://localhost:5000/accesstoken",
-      method: "GET",
-      withCredentials: true,
+    Api.get("http://localhost:5000/accesstoken").then((result) => {
+      localStorage.setItem("accessToken", result.data);
     });
   };
 
@@ -475,6 +476,8 @@ function Board() {
       url: "http://localhost:5000/refreshtoken",
       method: "GET",
       withCredentials: true,
+    }).then((result) => {
+      localStorage.setItem("accessToken", result.data);
     });
   };
 
@@ -802,18 +805,23 @@ function Board() {
     navigate(`/board/${page}/bookmark/${user.id}`);
   };
 
+  useEffect(() => {
+    const refreshToken = Cookies.get("refreshToken");
+    console.log("나" + refreshToken);
+  }, []);
+
   return (
     <>
       <ImageBackground></ImageBackground>
       <WrapperDiv>
         <Wrapper>
           <BorderContent>
-            {/* <button style={{ border: "1px solid red" }} onClick={accessToken}>
+            <button style={{ border: "1px solid red" }} onClick={accessToken}>
               get Access Token
             </button>
             <button style={{ border: "1px solid red" }} onClick={refreshToken}>
               get Refresh Token
-            </button> */}
+            </button>
             <BoardMenu>
               <select onChange={onOrderChange}>
                 <option value="최근 순">최근 순</option>

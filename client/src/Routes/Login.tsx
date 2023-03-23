@@ -100,6 +100,11 @@ function Login() {
     })
       .then((result) => {
         if (result.status === 200) {
+          localStorage.setItem(
+            "expiresAt",
+            moment().add(1, "minutes").format("yyyy-MM-DD HH:mm:ss")
+          );
+          localStorage.setItem("accessToken", result.data);
           navigate("/board/1");
         }
       })

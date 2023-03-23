@@ -93,7 +93,7 @@ app.post("/login", (req, res, next) => {
           httpOnly: true,
         });
 
-        res.status(200).json("login success");
+        res.status(200).json(accessToken);
       } catch (error) {
         res.status(500).json(error);
       }
@@ -101,7 +101,7 @@ app.post("/login", (req, res, next) => {
   });
 });
 
-// access Token 발급
+// access token이 있을 때 사용자 정보를 받아옴
 app.get("/accesstoken", (req, res) => {
   connection.query("SELECT * FROM CUSTOMER", (err, rows, fields) => {
     const userDatabase = rows;
@@ -148,13 +148,13 @@ app.get("/refreshtoken", (req, res) => {
         }
       );
 
-      //새로운 쿠키를 심어줌
+      // 새로운 쿠키를 심어줌
       res.cookie("accessToken", accessToken, {
         secure: false,
         httpOnly: true,
       });
 
-      res.status(200).json("Acces Token Recreated");
+      res.status(200).json(accessToken);
     } catch (error) {
       res.status(500).json(error);
     }
@@ -167,7 +167,7 @@ app.get("/login/success", (req, res) => {
     const userDatabase = rows;
     try {
       const token = req.cookies.accessToken;
-      const data = jwt.verify(token, process.env.ACCESS_SECRET);
+      const data = jwt.verify(token, process.env.ACCESS_SECRET); // 복호화
 
       const userData = userDatabase.filter((item) => {
         return item.loginId === data.loginId;

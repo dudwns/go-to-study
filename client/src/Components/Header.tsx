@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { isDarkAtom, isHeaderAtom, loginAtom, userAtom } from "../atoms";
 import { motion, useScroll, useAnimation } from "framer-motion";
 import { useEffect, useState } from "react";
+import Api from "../lib/customApi";
 
 const Nav = styled(motion.div)`
   height: 50px;
@@ -155,32 +156,12 @@ function Header() {
 
   useEffect(() => {
     try {
-      axios({
-        url: "http://localhost:5000/login/success",
-        method: "GET",
-        withCredentials: true,
-      })
-        .then((result) => {
-          if (result.data) {
-            setIsLogin(true);
-            setUser(result.data);
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    } catch (error) {
-      console.log(error);
-    }
-  }, []);
-
-  useEffect(() => {
-    try {
-      axios({
-        url: "http://localhost:5000/login/success",
-        method: "GET",
-        withCredentials: true,
-      })
+      // axios({
+      //   url: "http://localhost:5000/login/success",
+      //   method: "GET",
+      //   withCredentials: true,
+      // })
+      Api.get("http://localhost:5000/login/success")
         .then((result) => {
           if (result.data) {
             setIsLogin(true);
