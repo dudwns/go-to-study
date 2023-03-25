@@ -24,6 +24,7 @@ IDE: Visual Studio Code(1.76.2)
 
 - DB값 검증
 - JWT를 이용하여 Access Token & Refresh Token 발급
+- 아이디, 패스워드 찾기
 
 회원가입
 
