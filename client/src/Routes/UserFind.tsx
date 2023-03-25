@@ -159,7 +159,7 @@ function UserFind() {
           </FindFome>
         )}
         <MenuUl>
-          <li onClick={() => navigate("/userPasswordFind")}>비밀번호 찾기</li>
+          <li onClick={() => navigate("/userPasswordFind")}>패스워드 찾기</li>
           <li onClick={() => navigate("/login")}>로그인</li>
         </MenuUl>
       </Container>

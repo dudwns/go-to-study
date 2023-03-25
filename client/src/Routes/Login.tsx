@@ -109,7 +109,7 @@ function Login() {
         }
       })
       .catch((error) => {
-        alert("아이디 혹은 비밀번호가 틀렸습니다.");
+        alert("아이디 혹은 패스워드가 틀렸습니다.");
       });
   };
 
@@ -131,9 +131,9 @@ function Login() {
           <div>
             <input
               type="password"
-              placeholder="비밀번호"
+              placeholder="패스워드"
               onFocus={(e) => (e.target.placeholder = "")}
-              onBlur={(e) => (e.target.placeholder = "비밀번호")}
+              onBlur={(e) => (e.target.placeholder = "패스워드")}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             ></input>
@@ -143,7 +143,7 @@ function Login() {
         <MenuUl>
           <li onClick={() => navigate("/join")}>회원가입</li>
           <li onClick={() => navigate("/userFind")}>아이디 찾기</li>
-          <li onClick={() => navigate("/userPasswordFind")}>비밀번호 찾기</li>
+          <li onClick={() => navigate("/userPasswordFind")}>패스워드 찾기</li>
         </MenuUl>
       </Container>
     </Wrapper>
