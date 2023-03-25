@@ -354,6 +354,7 @@ const NextBtn = styled.button`
 const Overlay = styled(motion.div)`
   position: fixed;
   top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.2);
@@ -805,23 +806,18 @@ function Board() {
     navigate(`/board/${page}/bookmark/${user.id}`);
   };
 
-  useEffect(() => {
-    const refreshToken = Cookies.get("refreshToken");
-    console.log("나" + refreshToken);
-  }, []);
-
   return (
     <>
       <ImageBackground></ImageBackground>
       <WrapperDiv>
         <Wrapper>
           <BorderContent>
-            <button style={{ border: "1px solid red" }} onClick={accessToken}>
+            {/* <button style={{ border: "1px solid red" }} onClick={accessToken}>
               get Access Token
             </button>
             <button style={{ border: "1px solid red" }} onClick={refreshToken}>
               get Refresh Token
-            </button>
+            </button> */}
             <BoardMenu>
               <select onChange={onOrderChange}>
                 <option value="최근 순">최근 순</option>
