@@ -205,12 +205,12 @@ function Join() {
           </div>
 
           <div>
-            <div>비밀번호</div>
+            <div>패스워드</div>
             <input
               type="password"
-              placeholder="비밀번호를 입력하세요. (5자 이상)"
+              placeholder="패스워드를 입력하세요. (5자 이상)"
               onFocus={(e) => (e.target.placeholder = "")}
-              onBlur={(e) => (e.target.placeholder = "비밀번호를 입력하세요. (5자 이상)")}
+              onBlur={(e) => (e.target.placeholder = "패스워드를 입력하세요. (5자 이상)")}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
